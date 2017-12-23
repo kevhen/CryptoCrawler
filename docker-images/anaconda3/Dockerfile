@@ -7,5 +7,5 @@ FROM continuumio/miniconda3
 RUN conda install -y pymongo pyyaml
 RUN conda install -c conda-forge -y tweepy
 
-WORKDIR ~/
+WORKDIR /home
 RUN mkdir twitter-listener

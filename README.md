@@ -31,11 +31,8 @@ Build Docker:
 `sudo docker build -t custom_anaconda3 .`
 
 ### Start
-Start Container and bash into it:
-`docker run -i --name twitter-listener -d custom_anaconda3 /bin/bash`
-
-TODO: Start Container and start stream listener
-`docker run --name twitter-listener -v ~/coding/CryptoCrawler/twitter-listener:~/twitter-listener -d custom_anaconda3`
+Start Container (and bash):
+Cmd for Holger: `docker run -i --name twitter-listener -v ~/coding/CryptoCrawler/twitter-listener:/home/twitter-listener -d custom_anaconda3  /bin/bash`
 
 Bash into Container:
 `docker exec -t -i twitter-listener /bin/bash`
