@@ -8,7 +8,6 @@
 import tweepy
 import json
 import yaml
-import sys
 
 
 class MyStreamListener(tweepy.StreamListener):
@@ -24,11 +23,11 @@ class MyStreamListener(tweepy.StreamListener):
 
     def on_status(self, status):
         """Handle incoming tweets."""
-        # Looking in whole json string for keywords of the different collections
+        # Looking in whole json for keywords of the different collections
         tweet_json_str = json.dumps(status._json)
-        coll = self.identify_collection(tweet_json_str)
+        collections = self.identify_collection(tweet_json_str)
         print('-' * 15)
-        print(coll)
+        print(collections)
         print(status.text)
 
     def on_error(self, status_code):
