@@ -1,7 +1,8 @@
 # Presentation
-For the presentation, we can use [Marp](https://yhatt.github.io/marp/), 
-a Markdown Presentation Editor available for Mac, Linux and Win. I 
-created `PRESENTATION.md` with a default template for the presentation. 
+For the presentation, we can use [GitPitch](https://gitpitch.com/), 
+a Markdown Presentation Service, that can be accessed via URL 
+https://gitpich.com/$user/$repo/$branch , but we need to set the repo 
+public first. I created `PITCHME.md` with a default template for the presentation. 
 We could build on that.
 
 # Architecture
