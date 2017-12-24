@@ -1,8 +1,9 @@
-"""Listens to the Twitter stream.
+"""
+Listens to the Twitter stream.
 
 - Connects to Twitter API using creds in credentials.yaml.
 - Filters the Stream for words defined in config.yaml.
-- Stores the tweet in a Mongodb.
+- Stores the tweet in a Mongodb, connection params in config.yaml.
 """
 
 import tweepy
@@ -48,7 +49,7 @@ class MyStreamListener(tweepy.StreamListener):
         if len(collections) < 1:
         	collections.add('unknown')
         return collections
-        
+
     def store_tweet(self, tweet, collections):
     	"""Writes 'tweet' into mongo db, in all 'collections'"""
     	# open connection to mongo, if not already open

@@ -7,4 +7,7 @@ collections:
         - bitcoin
         - blockchain
     trumpp:
-        - trump        
+        - trump
+mongodb:
+    host: localhost
+    port: 8080
