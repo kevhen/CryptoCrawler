@@ -44,11 +44,20 @@ class MyStreamListener(tweepy.StreamListener):
             for word in words:
                 if word in tweet.lower():
                     collections.add(coll)
+        # If no words found, something went wrong. Put to "unknown".
+        if len(collections) < 1:
+        	collections.add('unknown')
         return collections
+        
+    def saveToMongo(self, tweet, collections):
+    	# open connection to mongo, if not already open
+    	for coll in collections:
+    	    # save tweet to mongo collection
+            print(coll)
 
 
 def startListening():
-    """Start listening to x streams."""
+    """Start listening to twitter streams."""
     # Load settings, config files expected in current dir
     with open('credentials.yaml', 'r') as stream:
         creds = yaml.load(stream)
@@ -65,14 +74,14 @@ def startListening():
     api = tweepy.API(auth)
 
     # Concat all words from configuration file
-    all_words = []
+    all_words = set()  # We want only unique words here
     for stream_name, word_list in conf['collections'].items():
-        all_words.extend(word_list)
+        all_words.update(word_list)
 
     print('Starting Stream Listener...')
     stream_listener = MyStreamListener(conf=conf)
     stream = tweepy.Stream(auth=api.auth, listener=stream_listener)
-    stream.filter(track=all_words, async=True)
+    stream.filter(track=list(all_words), async=True)
 
 
 if __name__ == '__main__':
