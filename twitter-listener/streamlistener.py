@@ -49,7 +49,8 @@ class MyStreamListener(tweepy.StreamListener):
         	collections.add('unknown')
         return collections
         
-    def saveToMongo(self, tweet, collections):
+    def store_tweet(self, tweet, collections):
+    	"""Writes 'tweet' into mongo db, in all 'collections'"""
     	# open connection to mongo, if not already open
     	for coll in collections:
     	    # save tweet to mongo collection

@@ -23,7 +23,7 @@ Run Docker Container:
 * `docker run --name crypto-mongo -v ~/mongodb:/data/db -d mongo:jessie`
 
 ## Microservice 2: Twitter Stream Listener
-* Based on Anaconder Docker Image
+* Based on  Docker Image
 * Storing the Tweets into Mongo DB
 
 ### Setup
