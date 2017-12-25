@@ -41,10 +41,10 @@ class MyStreamListener(tweepy.StreamListener):
     def identify_collection(self, tweet):
         """Identifies, to which collection the tweet belongs."""
         collections = set()
-        for coll, words in self.collections.items():
-            for word in words:
-                if word in tweet.lower():
-                    collections.add(coll)
+        for collectionName, data in self.collections.items():
+            for keyword in data.keywords:
+                if keyword in tweet.lower():
+                    collections.add(collectionName)
         # If no words found, something went wrong. Put to "unknown".
         if len(collections) < 1:
         	collections.add('unknown')

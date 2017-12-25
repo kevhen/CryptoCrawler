@@ -1,6 +1,10 @@
 collections:
     bitcoin:
-        - bitcoin
-        - blockchain
+        keywords:
+            - bitcoin
+            - blockchain
+        currencycode:
+            - BTC
     trumpp:
-        - trump
+        keywords:
+            - trump
