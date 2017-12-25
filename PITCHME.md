@@ -1,13 +1,17 @@
-@title[Introduction]
+@title[Title]
 
-# Git<span class="gold">Pitch</span>
+# CryptoCrawler
 
-#### Markdown Presentations For Everyone on Git.*
+#### A project in "Web & Social Media Analytics"
+Module "Web & Social Media Analytics"
+by Prof. Dr. S. Wilczek, Prof. Dr. J. Kirenz
+M.A. "Data Sciene & Business Analytics"
+University of Media, Stuttgart
 <br>
 <br>
-<span class="byline">[ GitHub, GitLab, Bitbucket, GitBucket, Gitea, Gogs 
-]</span>
+<span class="byline">[ Holger Büch & Kevin Hendle ]</span>
 
+Hint: For Slide-Styling see [Wiki](https://github.com/gitpitch/gitpitch/wiki/Slideshow-Settings)
 ---
 
 @title[PITCHME.md]
@@ -29,10 +33,10 @@
 ---?code=assets/md/hello.md&title=Step 1. PITCHME.md
 
 <br>
-#### Create slideshow content using GitHub Flavored Markdown in your 
+#### Create slideshow content using GitHub Flavored Markdown in your
 favorite editor.
 
-<span class="aside">It's as easy as README.md with simple 
+<span class="aside">It's as easy as README.md with simple
 slide-delimeters (---)</span>
 
 ---
@@ -64,7 +68,7 @@ Done!
 ![GitPitch Slideshow URLs](assets/images/gp-slideshow-urls.png)
 <br>
 <br>
-#### Instantly use your GitPitch slideshow URL to promote, pitch or 
+#### Instantly use your GitPitch slideshow URL to promote, pitch or
 present absolutely anything.
 
 ---
@@ -118,6 +122,5 @@ present absolutely anything.
 ### Go for it.
 ### Just add <span class="gold">PITCHME.md</span> ;)
 <br>
-[Click here to learn more @fa[external-link 
+[Click here to learn more @fa[external-link
 fa-pad-left]](https://github.com/gitpitch/gitpitch/wiki)
-
