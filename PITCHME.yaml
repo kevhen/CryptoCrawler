@@ -1,0 +1,6 @@
+theme-override : assets/PITCHME.css
+background: assets/bg.png
+background-size: cover
+highlight: monokai
+published : false
+slide-number: true
