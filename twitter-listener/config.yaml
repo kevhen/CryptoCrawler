@@ -1,10 +1,28 @@
 collections:
+    generalcrypto:
+        keywords:
+            - blockchain
+            - crypto
+            - altcoins
+            - altcoin
     bitcoin:
         keywords:
             - bitcoin
-            - blockchain
+            - btc
         currencycode:
             - BTC
+    ethereum:
+        keywords:
+            - ethereum
+            - eth
+        currencycode:
+            - ETH
+    iota:
+        keywords:
+            - iota
+            - iot
+        currencycode:
+            - IOT
     trumpp:
         keywords:
             - trump
