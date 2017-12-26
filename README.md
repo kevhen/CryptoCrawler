@@ -46,3 +46,6 @@ Start Container (and bash), path to `/CryptoCrawler/twitter-listener` has to be 
 
 Bash into Container:
 * `docker exec -t -i twitter-listener /bin/bash`
+
+## Microservice 3: Crypto Price Crawler
+* We will probably use the [Cryptocompare](https://www.cryptocompare.com/api)-API to retrieve the current and historic prices of the currencies.
