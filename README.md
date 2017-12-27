@@ -1,9 +1,8 @@
 # Presentation
-For the presentation, we can use [GitPitch](https://gitpitch.com/),
+For the presentation, we use [GitPitch](https://gitpitch.com/),
 a Markdown Presentation Service, that can be accessed via URL
-https://gitpitch.com/kevhen/CryptoCrawler/master , but we need to set
-the repo public first. I created `PITCHME.md` with a default template for the presentation.
-We could build on that.
+https://gitpitch.com/kevhen/CryptoCrawler/master.
+For Slide-Styling see [Wiki](https://github.com/gitpitch/gitpitch/wiki/Slideshow-Settings)
 
 # Architecture
 * I propose a Microservice Architecture: Stateless Docker Containers,
@@ -49,6 +48,7 @@ Bash into Container:
 
 ## Microservice 3: Crypto Price Crawler
 * We will probably use the [Cryptocompare](https://www.cryptocompare.com/api)-API to retrieve the current and historic prices of the currencies.
+* We will probably use the [Cryptocompare](https://www.cryptocompare.com/api)-API to retrieve the current and historic prices of the currencies.
 
 # Setup AWS
 ## VM Setup
@@ -77,3 +77,4 @@ Bash into Container:
 ## Start Crawler
 - Start Docker for mongo: `docker run --name crypto-mongo -v /data/mongodb:/data/db -d mongo:jessie`
 - Start Docker for stream listener: `docker run -t -i --name twitter-listener --link crypto-mongo:mongo -v /data/CryptoCrawler/twitter-listener:/home/twitter-listener -d custom_anaconda3 /bin/bash`
+
