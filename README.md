@@ -5,54 +5,59 @@ https://gitpitch.com/kevhen/CryptoCrawler/master.
 For Slide-Styling see [Wiki](https://github.com/gitpitch/gitpitch/wiki/Slideshow-Settings)
 
 # Architecture
-* I propose a Microservice Architecture: Stateless Docker Containers,
+- I propose a Microservice Architecture: Stateless Docker Containers,
 which are configured via a config.yaml file.
 
 ## Microservice 1: Mongo DB
-* Serving as data storage
-* DB is persisted on a Docker Volume
-* **No credentials configured, only listen to localhost!!**
+- Serving as data storage
+- DB is persisted on a Docker Volume
+- **No credentials configured, only listen to localhost!!**
 
 ### Setup
 Create Directory for Persistent Data. On VM:
-* `mkdir /data/mongodb`
+- `mkdir /data/mongodb`
 
 ### Start
 Run Docker Container:
-* First time:  `docker run --name crypto-mongo -t -v /data/mongodb:/data/db -d mongo:jessie`
-* Then: `docker start crypto-mongo`
+- First time:  `docker run --name crypto-mongo -t -v /data/mongodb:/data/db -d mongo:jessie`
+- Then: `docker start crypto-mongo`
 
 Useful command:
-* Bash into container `docker exec -it crypto-mongo /bin/bash`
+- Bash into container `docker exec -it crypto-mongo /bin/bash`
 
 ## Microservice 2: Twitter Stream Listener
-* Based on  Docker Image
-* Storing the Tweets into Mongo DB
-* Configuration via `config.yaml` in `/CryptoCrawler/twitter-listener` in Repo, with words to listen for, divided into sections (will be used to store tweets in different mongo-collections.)
+- Based on  Docker Image
+- Storing the Tweets into Mongo DB
+- Configuration via `config.yaml` in `/CryptoCrawler/twitter-listener` in Repo, with words to listen for, divided into sections (will be used to store tweets in different mongo-collections.)
 
 ### Setup
 Build Docker:
-* `cd /data/`
-* Download Dockerfile: `wget https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/anaconda3/Dockerfile`
-* Create `credentials.yaml` in `/data/` with Twitter credentials.
-* Build container: `sudo docker build --build-arg credsfile=./credentials.yaml -t custom_anaconda3 .`
+- `cd /data/`
+- Download Dockerfile: `wget https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/anaconda3/Dockerfile`
+- Create `credentials.yaml` in `/data/` with Twitter credentials.
+- Build container: `sudo docker build --build-arg credsfile=./credentials.yaml -t custom_anaconda3 .`
 
 ### Start
 Start Container:
-* First time: `docker run -t -i --name twitter-listener --link crypto-mongo:mongo  -d custom_anaconda3`
-* Then: `docker start twitter-listener`
+- First time: `docker run -t -i --name twitter-listener --link crypto-mongo:mongo  -d custom_anaconda3`
+- Then: `docker start twitter-listener`
 
 Useful commands
-* Attach: `docker attach twitter-listener`
-* Detach without closing: `CTRL + p, CTRL +q`
+- Attach: `docker attach twitter-listener`
+- Detach without closing: `CTRL + p, CTRL +q`
 
 ## Microservice 3: Crypto Price Crawler
-* We will probably use the [Cryptocompare](https://www.cryptocompare.com/api)-API to retrieve the current and historic prices of the currencies.
-* We will probably use the [Cryptocompare](https://www.cryptocompare.com/api)-API to retrieve the current and historic prices of the currencies.
+- We will probably use the [Cryptocompare](https://www.cryptocompare.com/api)-API to retrieve the current and historic prices of the currencies.
+- We will probably use the [Cryptocompare](https://www.cryptocompare.com/api)-API to retrieve the current and historic prices of the currencies.
 
 ## Microservice 4: Jupyter Notebook
-- First run: `docker run -d -p 8888:8888 --name jupyther-notebook --link crypto-mongo:mongo -v /data/notebooks:/workspace/ -e 'PASSWORD=$NOTEBOOK_PASSWORD' jupyter/datascience-notebook /bin/bash -c '/opt/conda/bin/jupyter notebook --ip='*' --notebook-dir=/workspace/ --port=8888 --no-browser'`
--
+Build container:
+- `sudo docker build https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/jupyter/Dockerfile -t custom_jupyter`
+
+Start container:
+- First run: `docker run -it --rm -v /data/notebooks:/home/jovyan/work -p 8888:8888 custom_jupyter'`
+- Use token in CLI together with hostname "ec2-34-238-122-216.compute-1.amazonaws.com" (currently, might change) to connect in Browser.
+
 # Setup AWS
 ## VM Setup
 - t2.micro
