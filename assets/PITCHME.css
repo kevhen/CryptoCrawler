@@ -2,6 +2,7 @@
 
 .reveal {
    font-family:: 'Open Sans', sans-serif;
+   color: #eee;
 }
 
 .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
@@ -12,4 +13,15 @@
 
 .reveal a {
     color: rgb(249, 38, 114);
+}
+
+.reveal .controls .navigate-up, .reveal .controls .navigate-up.enabled,
+.reveal .controls .navigate-down, .reveal .controls .navigate-down.enabled,
+.reveal .controls .navigate-left, .reveal .controls .navigate-left.enabled,
+.reveal .controls .navigate-right, .reveal .controls .navigate-right.enabled {
+    border-left-color: rgb(249, 38, 114);
+}
+
+.reveal .slide-number {
+    font-size: 1.75vh !important;
 }
