@@ -2,15 +2,15 @@
 
 # CryptoCrawler
 
-#### A project in "Web & Social Media Analytics"
+#### Mining Informations about Crypto Currencies from (Social) Media."
 <br>
-<div class="byline">by Holger Büch & Kevin Hendle</div>
+<div class="byline">by Holger Büch & Kevin Hendel</div>
 <br>
 <div class="hdm-module">
 Module "Web & Social Media Analytics"<br>
-by Prof. Dr. S. Wilczek, Prof. Dr. J. Kirenz<br>
-M.A. "Data Sciene & Business Analytics"<br>
-University of Media, Stuttgart<br>
+by Prof. Dr. Stephan Wilczek, Prof. Dr. Jan Kirenz<br>
+Master Data Sciene & Business Analytics<br>
+University of Media Stuttgart, Germany<br>
 </div>
 ---
 

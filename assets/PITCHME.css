@@ -31,12 +31,21 @@
 }
 
 .reveal .slide-number {
-    font-size: 1.75vh !important;
+    font-size: 1.5vh !important;
 }
 
 .reveal .progress span {
     background: rgb(249, 38, 114);
     ;
+}
+
+#title-footer {
+    opacity: 0.6;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+#title-footer:hover {
+    opacity: 1;
 }
 
 .hdm-module {
