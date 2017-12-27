@@ -2,7 +2,7 @@
 
 # CryptoCrawler
 
-#### Mining Informations about Crypto Currencies from (Social) Media."
+#### Mining information about Crypto-Currencies from the Web.
 <br>
 <div class="byline">by Holger Büch & Kevin Hendel</div>
 <br>
