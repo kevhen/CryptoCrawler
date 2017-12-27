@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans|Yanone+Kaffeesatz');
 .reveal {
     font-family: 'Open Sans', sans-serif;
+    font-size: 36px;
     color: #eee;
 }
 

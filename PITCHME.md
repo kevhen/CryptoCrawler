@@ -121,6 +121,3 @@ present absolutely anything.
 
 ### Go for it.
 ### Just add <span class="gold">PITCHME.md</span> ;)
-<br>
-[Click here to learn more @fa[external-link
-fa-pad-left]](https://github.com/gitpitch/gitpitch/wiki)
