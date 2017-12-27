@@ -5,6 +5,4 @@
 FROM jupyter/scipy-notebook
 
 USER root
-
-RUN conda install -y pymongo pyyaml
-RUN conda install -c conda-forge -y tweepy
+RUN conda install -y pymongo
