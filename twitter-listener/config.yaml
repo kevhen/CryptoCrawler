@@ -21,8 +21,8 @@
 # -------------------
 
 mongodb:
-    host: localhost
-    port: 8080
+    host: crypto-mongo
+    port: 27017
     db:   cryptocrawl
 
 collections:

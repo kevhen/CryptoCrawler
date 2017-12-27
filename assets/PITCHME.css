@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans|Yanone+Kaffeesatz');
+.reveal {
+    font-family: 'Open Sans', sans-serif !important;
+    font-size: 36px;
+    color: #eee;
+}
+
+.reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+    color: #eee;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    text-transform: none;
+}
+
+.reveal a {
+    color: rgb(249, 38, 114);
+}
+
+.reveal .controls .navigate-left, .reveal .controls .navigate-left.enabled {
+    border-right-color: rgb(249, 38, 114);
+}
+
+.reveal .controls .navigate-right, .reveal .controls .navigate-right.enabled {
+    border-left-color: rgb(249, 38, 114);
+}
+
+.reveal .controls .navigate-up, .reveal .controls .navigate-up.enabled {
+    border-bottom-color: rgb(249, 38, 114);
+}
+
+.reveal .controls .navigate-down, .reveal .controls .navigate-down.enabled {
+    border-top-color: rgb(249, 38, 114);
+}
+
+.reveal .slide-number {
+    font-size: 1.5vh !important;
+}
+
+.reveal .progress span {
+    background: rgb(249, 38, 114);
+    ;
+}
+
+#title-footer {
+    opacity: 0.6;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+#title-footer:hover {
+    opacity: 1;
+}
+
+.hdm-module {
+    font-size: 40% !important;
+    opacity: 0.3;
+}
+
+.byline {
+    font-size: 64% !important;
+}

@@ -12,5 +12,6 @@ WORKDIR /home
 RUN git clone https://github.com/kevhen/CryptoCrawler.git
 ADD $credsfile /home/CryptoCrawler/twitter-listener/credentials.yaml
 
+
 WORKDIR /home/CryptoCrawler/twitter-listener
 RUN python streamlistener.py
