@@ -20,6 +20,7 @@ class MyStreamListener(tweepy.StreamListener):
     def __init__(self, *args, **kwargs):
         """Extend tweepys init to allow additional parameters."""
         self.mute = False  # Helper for debug output in on_status()
+        self.count = 0  # Amount of Tweets recveived for debug output
         # Used for partitioning the tweets
         self.collections = kwargs['conf']['collections']
         self.mongodb = kwargs['conf']['mongodb']
@@ -36,6 +37,11 @@ class MyStreamListener(tweepy.StreamListener):
         if self.mute is not True:
             print('[INFO] Receiving tweets...')
             self.mute = True
+
+        # Info output amout of tweets
+        self.count += 1
+        if (self.count % 5000) == 0:  # Log every 5000 tweets
+            print('{} Tweets received. Still listening...'.format(self.count))
 
         # Looking in whole json for keywords of the different collections
         tweet_json_str = json.dumps(status._json)
