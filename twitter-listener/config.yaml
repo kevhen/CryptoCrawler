@@ -35,21 +35,22 @@ collections:
     bitcoin:
         keywords:
             - bitcoin
-            - btc
         currencycode:
             - BTC
     ethereum:
         keywords:
             - ethereum
-            - eth
         currencycode:
             - ETH
     iota:
         keywords:
             - iota
-            - iot
         currencycode:
             - IOT
     trumpp:
         keywords:
             - trumpp
+
+    car2go:
+        keywords:
+            - car2go
