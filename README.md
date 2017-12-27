@@ -49,3 +49,31 @@ Bash into Container:
 
 ## Microservice 3: Crypto Price Crawler
 * We will probably use the [Cryptocompare](https://www.cryptocompare.com/api)-API to retrieve the current and historic prices of the currencies.
+
+# Setup AWS
+## VM Setup
+- t2.micro
+- AMI: ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-20171121.1 (ami-aa2ea6d0)
+- root: 8GB
+- EBS: 16GB
+- open ssh (ip whitelist)
+- open http
+
+## Server Setup
+- Format EBS Drive: `sudo mkfs -t ext4 /dev/xvdb`
+- Make mount-point: `sudo mkdir /data`
+- Backup fstab: `sudo cp /etc/fstab /etc/fstab.orig`
+- Add new line to fstab: `sudo nano /etc/fstab` <br>
+  `/dev/xvdb /data ext4 defaults,nofail 0 2`
+- Apply new mountpoints: `sudo mount -a`
+- Install docker: `sudo apt-get install docker.io`
+- Add user to docker-group: `sudo usermod -a -G docker ubuntu`
+
+## Crawler Setup
+- `cd \data`
+- `git clone https://github.com/kevhen/CryptoCrawler`
+- `mkdir mongodb`
+
+## Start Crawler
+- Start Docker for mongo: `docker run --name crypto-mongo -v /data/mongodb:/data/db -d mongo:jessie`
+- Start Docker for stream listener: `docker run -t -i --name twitter-listener --link crypto-mongo:mongo -v /data/CryptoCrawler/twitter-listener:/home/twitter-listener -d custom_anaconda3 /bin/bash`
