@@ -69,11 +69,5 @@ Useful commands
 - Install docker: `sudo apt-get install docker.io`
 - Add user to docker-group: `sudo usermod -a -G docker ubuntu`
 
-## Crawler Setup
-- `cd \data`
-- `git clone https://github.com/kevhen/CryptoCrawler`
-- `mkdir mongodb`
-
-## Start Crawler
-- Start Docker for mongo: `docker run --name crypto-mongo -v /data/mongodb:/data/db -d mongo:jessie`
-- Start Docker for stream listener: `docker run -t -i --name twitter-listener --link crypto-mongo:mongo -d custom_anaconda3 /bin/bash`
+## Microservice Setup & Start
+see sections above.
