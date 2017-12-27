@@ -1,17 +1,15 @@
- @import url('https://fonts.googleapis.com/css?family=Open+Sans|Oswald');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans|Yanone+Kaffeesatz');
 
 .reveal {
    font-family:: 'Open Sans', sans-serif;
 }
 
 .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
-    margin: 0 0 20px 0;
-    color: #fff;
-    font-family: 'Oswald', sans-serif;
-    font-weight: 600;
-    line-height: 1.2;
-    letter-spacing: normal;
+    color: #eee;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
     text-transform: none;
-    text-shadow: none;
-    word-wrap: break-word;
+}
+
+.reveal a {
+    color: rgb(249, 38, 114);
 }
