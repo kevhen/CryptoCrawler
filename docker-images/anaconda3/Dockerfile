@@ -2,10 +2,15 @@
 # Dockerfile to build Miniconda3 container images
 # and install additional packages
 ############################################################
-
 FROM continuumio/miniconda3
+ARG credsfile=/data/CryptoCrawler/twitter-listener/credentials.yaml
+
 RUN conda install -y pymongo pyyaml
 RUN conda install -c conda-forge -y tweepy
 
 WORKDIR /home
-RUN mkdir twitter-listener
+RUN git clone https://github.com/kevhen/CryptoCrawler.git
+ADD $credsfile /home/CryptoCrawler/twitter-listener/credentials.yaml
+
+WORKDIR /home/CryptoCrawler/twitter-listener
+RUN python streamlistener.py
