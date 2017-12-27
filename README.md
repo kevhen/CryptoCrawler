@@ -35,7 +35,7 @@ Build Docker:
 * `cd /data/`
 * Download Dockerfile: `wget https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/anaconda3/Dockerfile`
 * Create `credentials.yaml` in `/data/` with Twitter credentials.
-* `sudo docker build --build-arg credsfile=./credentials.yaml -t custom_anaconda3 .
+* Build container: `sudo docker build --build-arg credsfile=./credentials.yaml -t custom_anaconda3 .`
 
 ### Start
 Start Container:
