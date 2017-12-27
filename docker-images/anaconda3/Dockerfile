@@ -3,7 +3,7 @@
 # and install additional packages
 ############################################################
 FROM continuumio/miniconda3
-ARG credsfile=/data/CryptoCrawler/twitter-listener/credentials.yaml
+ARG credsfile=credentials.yaml
 
 RUN conda install -y pymongo pyyaml
 RUN conda install -c conda-forge -y tweepy
@@ -14,4 +14,3 @@ ADD $credsfile /home/CryptoCrawler/twitter-listener/credentials.yaml
 
 
 WORKDIR /home/CryptoCrawler/twitter-listener
-RUN python streamlistener.py

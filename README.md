@@ -28,7 +28,7 @@ Run Docker Container:
 ### Setup
 Build Docker:
 * `cd docker-images/anaconda3`
-* `sudo docker build -t custom_anaconda3 .`
+* `sudo docker build --build-arg credsfile=credentials.yaml -t custom_anaconda3 .`
 
 Clone Repo to get python code for twitter-listener:
 * `git clone https://github.com/kevhen/CryptoCrawler.git`
@@ -76,5 +76,4 @@ Bash into Container:
 
 ## Start Crawler
 - Start Docker for mongo: `docker run --name crypto-mongo -v /data/mongodb:/data/db -d mongo:jessie`
-- Start Docker for stream listener: `docker run -t -i --name twitter-listener --link crypto-mongo:mongo -v /data/CryptoCrawler/twitter-listener:/home/twitter-listener -d custom_anaconda3 /bin/bash`
-
+- Start Docker for stream listener: `docker run -t -i --name twitter-listener --link crypto-mongo:mongo -d custom_anaconda3 /bin/bash`
