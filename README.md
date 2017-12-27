@@ -50,6 +50,9 @@ Useful commands
 * We will probably use the [Cryptocompare](https://www.cryptocompare.com/api)-API to retrieve the current and historic prices of the currencies.
 * We will probably use the [Cryptocompare](https://www.cryptocompare.com/api)-API to retrieve the current and historic prices of the currencies.
 
+## Microservice 4: Jupyter Notebook
+- First run: `docker run -d -p 8888:8888 --name jupyther-notebook --link crypto-mongo:mongo -v /data/notebooks:/workspace/ -e 'PASSWORD=$NOTEBOOK_PASSWORD' jupyter/datascience-notebook /bin/bash -c '/opt/conda/bin/jupyter notebook --ip='*' --notebook-dir=/workspace/ --port=8888 --no-browser'`
+-
 # Setup AWS
 ## VM Setup
 - t2.micro
