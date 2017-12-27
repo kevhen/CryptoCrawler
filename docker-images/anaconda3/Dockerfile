@@ -11,3 +11,6 @@ RUN conda install -c conda-forge -y tweepy
 WORKDIR /home
 RUN git clone https://github.com/kevhen/CryptoCrawler.git
 ADD $credsfile /home/CryptoCrawler/twitter-listener/credentials.yaml
+
+WORKDIR /home/CryptoCrawler/twitterlistener
+RUN python streamlistener.py
