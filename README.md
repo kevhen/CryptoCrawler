@@ -55,7 +55,7 @@ Build container:
 - `sudo docker build https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/jupyter/Dockerfile -t custom_jupyter`
 
 Start container:
-- First run: `docker run -it --rm -v /data/notebooks:/home/jovyan/work -p 8888:8888 custom_jupyter'`
+- First run: `docker run -it --rm  --link crypto-mongo:mongo --name custom-jupyer -v /data/notebooks:/home/jovyan/work -p 8888:8888 custom_jupyter`
 - Use token in CLI together with hostname "ec2-34-238-122-216.compute-1.amazonaws.com" (currently, might change) to connect in Browser.
 
 # Setup AWS
@@ -79,3 +79,7 @@ Start container:
 
 ## Microservice Setup & Start
 see sections above.
+
+# Useful Info & commands
+**Cleanup Docker**
+- `docker system prune -a`
