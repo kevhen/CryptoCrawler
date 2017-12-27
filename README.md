@@ -1,9 +1,8 @@
 # Presentation
-For the presentation, we can use [GitPitch](https://gitpitch.com/),
+For the presentation, we use [GitPitch](https://gitpitch.com/),
 a Markdown Presentation Service, that can be accessed via URL
-https://gitpitch.com/kevhen/CryptoCrawler/master , but we need to set
-the repo public first. I created `PITCHME.md` with a default template for the presentation.
-We could build on that.
+https://gitpitch.com/kevhen/CryptoCrawler/master.
+For Slide-Styling see [Wiki](https://github.com/gitpitch/gitpitch/wiki/Slideshow-Settings)
 
 # Architecture
 * I propose a Microservice Architecture: Stateless Docker Containers,

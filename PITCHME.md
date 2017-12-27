@@ -3,15 +3,15 @@
 # CryptoCrawler
 
 #### A project in "Web & Social Media Analytics"
-Module "Web & Social Media Analytics"
-by Prof. Dr. S. Wilczek, Prof. Dr. J. Kirenz
-M.A. "Data Sciene & Business Analytics"
-University of Media, Stuttgart
 <br>
 <br>
-<span class="byline">[ Holger Büch & Kevin Hendle ]</span>
-
-Hint: For Slide-Styling see [Wiki](https://github.com/gitpitch/gitpitch/wiki/Slideshow-Settings)
+<span class="byline">by Holger Büch & Kevin Hendle ]</span>
+<div class="hdm-module">
+Module "Web & Social Media Analytics"<br>
+by Prof. Dr. S. Wilczek, Prof. Dr. J. Kirenz<br>
+M.A. "Data Sciene & Business Analytics"<br>
+University of Media, Stuttgart<br>
+</div>
 ---
 
 @title[PITCHME.md]
