@@ -9,36 +9,46 @@ Listens to the Twitter stream.
 import tweepy
 import json
 import yaml
+import time
 from pymongo import MongoClient
+from pymongo import errors as pymongo_errors
+
 
 class MyStreamListener(tweepy.StreamListener):
     """Extends tweepy.StreamListener."""
 
     def __init__(self, *args, **kwargs):
         """Extend tweepys init to allow additional parameters."""
+        self.mute = False  # Helper for debug output in on_status()
         # Used for partitioning the tweets
         self.collections = kwargs['conf']['collections']
         self.mongodb = kwargs['conf']['mongodb']
         del kwargs['conf']
         # Open a connection to mongo:
-    	client = MongoClient(self.mongodb['host'], self.mongodb['port'])
+        client = MongoClient(self.mongodb['host'], self.mongodb['port'])
         self.db = client[self.mongodb['db']]
         # Invoke tweepys' class init
         super(MyStreamListener, self).__init__(*args, **kwargs)
 
     def on_status(self, status):
         """Handle incoming tweets."""
+        # Just info, that tweets are received correctly
+        if self.mute is not True:
+            print('[INFO] Receiving tweets...')
+            self.mute = True
+
         # Looking in whole json for keywords of the different collections
         tweet_json_str = json.dumps(status._json)
         collections = self.identify_collection(tweet_json_str)
 
-        # Store in mongo collection(s)
-        for collection_name in collections:
-        	self.db[collection_name].insert(status._json)
-
-        # Debug output
-        print('-' * 15)
-        print(collections, status.text)
+        # Try saving to mongo, delay on auto reconnect (e.g. container down)
+        try:
+            # Store in mongo collection(s)
+            for collection_name in collections:
+                self.db[collection_name].insert(status._json)
+        except pymongo_errors.AutoReconnect:
+            print('[ERROR] pymongo auto reconnect. Wait for some seconds...')
+            time.sleep(5)
 
     def on_error(self, status_code):
         """Handle API errors. Especially quit in 420 to avoid API penalty."""
@@ -47,17 +57,27 @@ class MyStreamListener(tweepy.StreamListener):
             # returning False in on_data disconnects the stream
             return False
 
-    def identify_collection(self, tweet):
+    def on_connect(self):
+        """Called once connected to streaming server."""
+        print('[INFO] Connected to Twitter Stream.')
+        return
+
+    def on_disconnect(self, notice):
+        """Called when twitter sends a disconnect notice."""
+        print('[WARNING] Disconnect from Stream. Notice: ', notice)
+        return
+
+    def identify_collection(self, tweet_json):
         """Identifies, to which collection(s) the tweet belongs."""
         collections = set()
         for collection_name, data in self.collections.items():
-            for keyword in data.keywords:
-                if keyword in tweet.lower():
+            for keyword in data['keywords']:
+                if keyword in tweet_json.lower():
                     collections.add(collection_name)
 
         # If no words found, something went wrong. Put to 'unknown':
         if len(collections) < 1:
-        	collections.add('unknown')
+            collections.add('unknown')
         return collections
 
 
@@ -80,10 +100,11 @@ def startListening():
 
     # Concat all words from configuration file
     all_words = set()  # We want only unique words here
-    for stream_name, word_list in conf['collections'].items():
-        all_words.update(word_list)
+    for collection_name, data in conf['collections'].items():
+        if 'keywords' in data:
+            all_words.update(data['keywords'])
 
-    print('Starting Stream Listener...')
+    print('[INFO] Starting Stream Listener.')
     stream_listener = MyStreamListener(conf=conf)
     stream = tweepy.Stream(auth=api.auth, listener=stream_listener)
     stream.filter(track=list(all_words), async=True)

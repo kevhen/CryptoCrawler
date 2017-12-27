@@ -41,8 +41,8 @@ Configure:
 
 ### Start
 Start Container (and bash), path to `/CryptoCrawler/twitter-listener` has to be adjusted:
-* `docker run -i --name twitter-listener -v PATHTO/CryptoCrawler/twitter-listener:/home/twitter-listener -d custom_anaconda3  /bin/bash`
-* For Holger: `docker run -i --name twitter-listener -v ~/coding/CryptoCrawler/twitter-listener:/home/twitter-listener -d custom_anaconda3  /bin/bash`
+* `docker run -t -i --name twitter-listener -v PATHTO/CryptoCrawler/twitter-listener:/home/twitter-listener -d custom_anaconda3  /bin/bash`
+* For Holger: `docker run -t -i --name twitter-listener --link crypto-mongo:mongo -v ~/coding/CryptoCrawler/twitter-listener:/home/twitter-listener -d custom_anaconda3 /bin/bash`
 
 Bash into Container:
 * `docker exec -t -i twitter-listener /bin/bash`
