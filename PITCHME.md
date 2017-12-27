@@ -4,8 +4,8 @@
 
 #### A project in "Web & Social Media Analytics"
 <br>
+<div class="byline">by Holger Büch & Kevin Hendle</div>
 <br>
-<span class="byline">by Holger Büch & Kevin Hendle ]</span>
 <div class="hdm-module">
 Module "Web & Social Media Analytics"<br>
 by Prof. Dr. S. Wilczek, Prof. Dr. J. Kirenz<br>
