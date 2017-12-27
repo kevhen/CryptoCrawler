@@ -1,3 +1,30 @@
+# ------------------
+# config.yaml to store options for streamlistener.py
+#
+# SCHEME:
+#
+# mongodb:
+#     host: <hostname>
+#     port: <portnumber>
+#     db: <name_of_db>
+#
+# collections:
+#     <collection_name>:    # Used as collection name in Mongo.
+#         keywords:
+#            - <words to listen for>   # Filter Twitter stream for these
+#            - <more words to listen for>
+#         currencycode:
+#            - BTC
+#     <next_collection_name>:
+#     [...]
+#
+# -------------------
+
+mongodb:
+    host: localhost
+    port: 8080
+    db:   cryptocrawl
+
 collections:
     generalcrypto:
         keywords:
@@ -25,4 +52,4 @@ collections:
             - IOT
     trumpp:
         keywords:
-            - trump
+            - trumpp

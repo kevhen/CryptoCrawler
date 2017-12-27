@@ -9,16 +9,20 @@ Listens to the Twitter stream.
 import tweepy
 import json
 import yaml
-
+from pymongo import MongoClient
 
 class MyStreamListener(tweepy.StreamListener):
     """Extends tweepy.StreamListener."""
 
     def __init__(self, *args, **kwargs):
-        """Extend the init to allow additional parameters."""
+        """Extend tweepys init to allow additional parameters."""
         # Used for partitioning the tweets
         self.collections = kwargs['conf']['collections']
+        self.mongodb = kwargs['conf']['mongodb']
         del kwargs['conf']
+        # Open a connection to mongo:
+    	client = MongoClient(self.mongodb['host'], self.mongodb['port'])
+        self.db = client[self.mongodb['db']]
         # Invoke tweepys' class init
         super(MyStreamListener, self).__init__(*args, **kwargs)
 
@@ -27,9 +31,14 @@ class MyStreamListener(tweepy.StreamListener):
         # Looking in whole json for keywords of the different collections
         tweet_json_str = json.dumps(status._json)
         collections = self.identify_collection(tweet_json_str)
+
+        # Store in mongo collection(s)
+        for collection_name in collections:
+        	self.db[collection_name].insert(status._json)
+
+        # Debug output
         print('-' * 15)
-        print(collections)
-        print(status.text)
+        print(collections, status.text)
 
     def on_error(self, status_code):
         """Handle API errors. Especially quit in 420 to avoid API penalty."""
@@ -39,23 +48,17 @@ class MyStreamListener(tweepy.StreamListener):
             return False
 
     def identify_collection(self, tweet):
-        """Identifies, to which collection the tweet belongs."""
+        """Identifies, to which collection(s) the tweet belongs."""
         collections = set()
-        for collectionName, data in self.collections.items():
+        for collection_name, data in self.collections.items():
             for keyword in data.keywords:
                 if keyword in tweet.lower():
-                    collections.add(collectionName)
-        # If no words found, something went wrong. Put to "unknown".
+                    collections.add(collection_name)
+
+        # If no words found, something went wrong. Put to 'unknown':
         if len(collections) < 1:
         	collections.add('unknown')
         return collections
-
-    def store_tweet(self, tweet, collections):
-    	"""Writes 'tweet' into mongo db, in all 'collections'"""
-    	# open connection to mongo, if not already open
-    	for coll in collections:
-    	    # save tweet to mongo collection
-            print(coll)
 
 
 def startListening():
