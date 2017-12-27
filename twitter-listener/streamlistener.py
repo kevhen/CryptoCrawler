@@ -40,7 +40,7 @@ class MyStreamListener(tweepy.StreamListener):
 
         # Info output amout of tweets
         self.count += 1
-        if (self.count % 5000) == 0:  # Log every 5000 tweets
+        if (self.count % 1000) == 0:  # Log every 5000 tweets
             print('{} Tweets received. Still listening...'.format(self.count))
 
         # Looking in whole json for keywords of the different collections
