@@ -14,13 +14,13 @@ University of Media Stuttgart, Germany<br>
 </div>
 ---
 
-@title[PITCHME.md]
+@title[Too much information...]
 
-#### GitPitch turns <span class="gold">PITCHME.md</span> into
-#### interactive,
-#### online and offline slideshows.
-<br>
-<span class="aside">Just like this one...</span>
+#### Too much information
+
+~500 MB Data after running for only 2 hours...
+
+![Tweets after two hours](assets/too_much_data.png)
 
 ---
 
