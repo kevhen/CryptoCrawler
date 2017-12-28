@@ -27,7 +27,7 @@
 
 **Presentation**
 - We use [GitPitch](https://gitpitch.com/), a Markdown Presentation Service
-- Access via: https://gitpitch.com/kevhen/CryptoCrawler/master ("master" can be replaced by other <branch-name>)
+- Access via: https://gitpitch.com/kevhen/CryptoCrawler/master ("master" can be replaced by other branch-name)
 - About Slide-Styling see [Wiki](https://github.com/gitpitch/gitpitch/wiki/Slideshow-Settings)
 
 # Architecture
