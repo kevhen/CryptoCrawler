@@ -7,15 +7,17 @@
 
 - [Documentation & Presentation](#documentation-presentation)
 - [Architecture](#architecture)
+- [Setup AWS](#setup-aws)
+	- [VM Setup](#vm-setup)
+	- [Server Setup](#server-setup)
+- [Microservices](#microservices)
 	- [Microservice 1: Mongo DB](#microservice-1-mongo-db)
 	- [Microservice 2: Twitter Stream Listener](#microservice-2-twitter-stream-listener)
 	- [Microservice 3: Crypto Price Crawler](#microservice-3-crypto-price-crawler)
 	- [Microservice 4: Jupyter Notebook](#microservice-4-jupyter-notebook)
-- [Setup AWS](#setup-aws)
-	- [VM Setup](#vm-setup)
-	- [Server Setup](#server-setup)
-	- [Microservice Setup & Start](#microservice-setup-start)
 - [Useful Info & commands](#useful-info-commands)
+	- [Docker](#docker)
+	- [Maintenance](#maintenance)
 
 <!-- /TOC -->
 
@@ -38,49 +40,6 @@
 
 **Hosting**
 - AWS (using free tier)
-
-## Microservice 1: Mongo DB
-- Serving as data storage
-- DB is persisted on a Docker Volume
-- **No credentials configured, only listen to localhost!!**
-
-### Setup
-Create Directory for Persistent Data. On VM:
-- `mkdir /data/mongodb`
-
-### Start
-Run Docker Container:
-- First time:  `docker run --name crypto-mongo -t -v /data/mongodb:/data/db -d mongo:jessie`
-- Then: `docker start crypto-mongo`
-
-## Microservice 2: Twitter Stream Listener
-- Based on  Docker Image
-- Storing the Tweets into Mongo DB
-- Configuration via `config.yaml` in `/CryptoCrawler/twitter-listener` in Repo, with words to listen for, divided into sections (will be used to store tweets in different mongo-collections.)
-
-### Setup
-Build Docker:
-- `cd /data/`
-- Download Dockerfile: `wget https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/anaconda3/Dockerfile`
-- Create `credentials.yaml` in `/data/` with Twitter credentials.
-- Build container: `sudo docker build --build-arg credsfile=./credentials.yaml -t custom_anaconda3 .`
-
-### Start
-Start Container:
-- First time: `docker run -t -i --name twitter-listener --link crypto-mongo:mongo  -d custom_anaconda3`
-- Then: `docker start twitter-listener`
-
-## Microservice 3: Crypto Price Crawler
-- We will probably use the [Cryptocompare](https://www.cryptocompare.com/api)-API to retrieve the current and historic prices of the currencies.
-- We will probably use the [Cryptocompare](https://www.cryptocompare.com/api)-API to retrieve the current and historic prices of the currencies.
-
-## Microservice 4: Jupyter Notebook
-Build container:
-- `sudo docker build https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/jupyter/Dockerfile -t custom_jupyter`
-
-Start container:
-- First time: `docker run -d --link crypto-mongo:mongo --name custom-jupyter -v /data/notebooks:/home/jovyan/work -p 8888:8888 custom_jupyter start-notebook.sh --NotebookApp.password='sha1:f6a0093ff7ca:be25a6064ba30e37265b0f800cbb925c636cc4fe'`
-- Then: `docker start custom-jupyter`
 
 # Setup AWS
 ## VM Setup
@@ -105,17 +64,66 @@ Start container:
 - Install docker: `sudo apt-get install docker.io`
 - Add user to docker-group: `sudo usermod -a -G docker ubuntu`
 
-## Microservice Setup & Start
-see sections above.
+# Microservices
+## Microservice 1: Mongo DB
+- Serving as data storage
+- DB is persisted on a Docker Volume
+- **No credentials configured, only listen to localhost!!**
+
+### Setup
+Create Directory for Persistent Data. On VM:
+- `mkdir /data/mongodb`
+No further setup needed, as we use Container from official Docker Repo.
+
+### Start
+Run Container:
+- First time:  `docker run --name crypto-mongo -t -v /data/mongodb:/data/db -d mongo:jessie`
+- Then: `docker start crypto-mongo`
+
+## Microservice 2: Twitter Stream Listener
+- Based on  Docker Image
+- Storing the Tweets into Mongo DB
+- Configuration via `config.yaml` in `/CryptoCrawler/twitter-listener` in Repo, with words to listen for, divided into sections (will be used to store tweets in different mongo-collections.)
+
+### Setup
+Build Container:
+- `cd /data/`
+- Download Dockerfile: `wget https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/anaconda3/Dockerfile`
+- Create `credentials.yaml` in `/data/` with Twitter credentials.
+- Build: `sudo docker build --build-arg credsfile=./credentials.yaml -t custom_anaconda3 .`
+
+### Start
+Run Container:
+- First time: `docker run -t -i --name twitter-listener --link crypto-mongo:mongo  -d custom_anaconda3`
+- Then: `docker start twitter-listener`
+
+## Microservice 3: Crypto Price Crawler
+- We will probably use the [Cryptocompare](https://www.cryptocompare.com/api)-API to retrieve the current and historic prices of the currencies.
+- We will probably use the [Cryptocompare](https://www.cryptocompare.com/api)-API to retrieve the current and historic prices of the currencies.
+
+## Microservice 4: Jupyter Notebook
+Build container:
+- Build: `sudo docker build https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/jupyter/Dockerfile -t custom_jupyter`
+
+Run Container:
+- First time: `docker run -d --link crypto-mongo:mongo --name custom-jupyter -v /data/notebooks:/home/jovyan/work -p 8888:8888 custom_jupyter start-notebook.sh --NotebookApp.password='sha1:f6a0093ff7ca:be25a6064ba30e37265b0f800cbb925c636cc4fe'`
+- Then: `docker start custom-jupyter`
+
+Access Notebook:
+- Via AWS public DNS-Name + :8888. E.g.: https://ec2-34-227-176-103.compute-1.amazonaws.com:8888
+- DNS-Name changes. Findout current name via AWS Console or on vm: `hostname -f`
 
 # Useful Info & commands
+
+## Docker
 **Cleanup Docker**
 - `docker system prune -a`
-
-**Show size of Docker Dir**
-- `sudo du -sh \data\mongodb`
 
 **Attach/Detach Container**
 - `docker attach container_name`
 - Detach without closing: `CTRL + p, CTRL +q`
 - Bash into container: `docker exec -it container_name /bin/bash`
+
+## Maintenance
+**Show size of MongoDB Directory**
+- `sudo du -sh \data\mongodb`
