@@ -18,7 +18,7 @@ University of Media Stuttgart, Germany<br>
 
 #### Too much information ... but not from Trumpp
 
-Over 500 MB Data during the first two hours:
+Over 500 MB Data during the first two hours. Count of Tweets per 10 min:
 ![Tweets after two hours](assets/too_much_data.png)
 
 ---
