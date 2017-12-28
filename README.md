@@ -102,6 +102,10 @@ Run Container:
 - We will probably use the [Cryptocompare](https://www.cryptocompare.com/api)-API to retrieve the current and historic prices of the currencies.
 
 ## Microservice 4: Jupyter Notebook
+- Run **Jupyter Notebook with Python 3** for ad-hoc analyzes and testing
+- Includes scipy-stack + pymongo
+- Password & IP on whitelist needed for access
+
 Build container:
 - Build: `sudo docker build https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/jupyter/Dockerfile -t custom_jupyter`
 
