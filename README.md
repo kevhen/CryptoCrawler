@@ -55,18 +55,22 @@ Start container:
 ## VM Setup
 - t2.micro
 - AMI: ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-20171121.1 (ami-aa2ea6d0)
-- root: 8GB
+- root: 15GB
 - EBS: 16GB
 - open ssh (ip whitelist)
 - open http
+- open tcp 8888 (jupyter notebook)
 
 ## Server Setup
+**Prepare & mount EBS Drive**
 - Format EBS Drive: `sudo mkfs -t ext4 /dev/xvdb`
 - Make mount-point: `sudo mkdir /data`
 - Backup fstab: `sudo cp /etc/fstab /etc/fstab.orig`
 - Add new line to fstab: `sudo nano /etc/fstab` <br>
   `/dev/xvdb /data ext4 defaults,nofail 0 2`
-- Apply new mountpoints: `sudo mount -a`
+- Apply new mountpoints: `sudo mount -a`#
+
+**Prepare Docker**
 - Install docker: `sudo apt-get install docker.io`
 - Add user to docker-group: `sudo usermod -a -G docker ubuntu`
 
