@@ -16,10 +16,10 @@ University of Media Stuttgart, Germany<br>
 
 @title[Too much information...]
 
-#### Too much information
+#### Too much information ... but not from Trumpp
 
+Over 500 MB Data during the first two hours:
 ![Tweets after two hours](assets/too_much_data.png)
-~500 MB Data during the first two hours
 
 ---
 
