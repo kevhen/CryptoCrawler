@@ -1,12 +1,39 @@
-# Presentation
-For the presentation, we use [GitPitch](https://gitpitch.com/),
-a Markdown Presentation Service, that can be accessed via URL
-https://gitpitch.com/kevhen/CryptoCrawler/master.
-For Slide-Styling see [Wiki](https://github.com/gitpitch/gitpitch/wiki/Slideshow-Settings)
+**Table of Contents**
+<!-- TOC depthFrom:1 depthTo:2 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+- [Documentation & Presentation](#documentation-presentation)
+- [Architecture](#architecture)
+	- [Microservice 1: Mongo DB](#microservice-1-mongo-db)
+	- [Microservice 2: Twitter Stream Listener](#microservice-2-twitter-stream-listener)
+	- [Microservice 3: Crypto Price Crawler](#microservice-3-crypto-price-crawler)
+	- [Microservice 4: Jupyter Notebook](#microservice-4-jupyter-notebook)
+- [Setup AWS](#setup-aws)
+	- [VM Setup](#vm-setup)
+	- [Server Setup](#server-setup)
+	- [Microservice Setup & Start](#microservice-setup-start)
+- [Useful Info & commands](#useful-info-commands)
+
+<!-- /TOC -->
+
+# Documentation & Presentation
+**Documentation**
+- Inline (Code Comments)
+- README.md (Infos about Setup & Operations)
+- Presentation (Ideas, Results, Learnings)
+
+**Presentation**
+- We use [GitPitch](https://gitpitch.com/), a Markdown Presentation Service
+- Access via: https://gitpitch.com/kevhen/CryptoCrawler/master ("master" can be replaced by other <branch-name>)
+- About Slide-Styling see [Wiki](https://github.com/gitpitch/gitpitch/wiki/Slideshow-Settings)
 
 # Architecture
-- I propose a Microservice Architecture: Stateless Docker Containers,
-which are configured via a config.yaml file.
+**Microservice Architecture**
+- Stateless
+- One Docker Container per Microservice
+- Configuration via config.yaml file
+
+**Hosting**
+- AWS (using free tier)
 
 ## Microservice 1: Mongo DB
 - Serving as data storage
