@@ -1,5 +1,6 @@
 # Credentials YAML
 credentials.yaml
+crypto.pem
 *.pem
 
 # Byte-compiled / optimized / DLL files
