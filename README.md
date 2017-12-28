@@ -22,9 +22,6 @@ Run Docker Container:
 - First time:  `docker run --name crypto-mongo -t -v /data/mongodb:/data/db -d mongo:jessie`
 - Then: `docker start crypto-mongo`
 
-Useful command:
-- Bash into container `docker exec -it crypto-mongo /bin/bash`
-
 ## Microservice 2: Twitter Stream Listener
 - Based on  Docker Image
 - Storing the Tweets into Mongo DB
@@ -41,10 +38,6 @@ Build Docker:
 Start Container:
 - First time: `docker run -t -i --name twitter-listener --link crypto-mongo:mongo  -d custom_anaconda3`
 - Then: `docker start twitter-listener`
-
-Useful commands
-- Attach: `docker attach twitter-listener`
-- Detach without closing: `CTRL + p, CTRL +q`
 
 ## Microservice 3: Crypto Price Crawler
 - We will probably use the [Cryptocompare](https://www.cryptocompare.com/api)-API to retrieve the current and historic prices of the currencies.
@@ -83,3 +76,11 @@ see sections above.
 # Useful Info & commands
 **Cleanup Docker**
 - `docker system prune -a`
+
+**Show size of Docker Dir**
+- `sudo du -sh \data\mongodb`
+
+**Attach/Detach Container**
+- `docker attach container_name`
+- Detach without closing: `CTRL + p, CTRL +q`
+- Bash into container: `docker exec -it container_name /bin/bash`
