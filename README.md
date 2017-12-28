@@ -55,8 +55,8 @@ Build container:
 - `sudo docker build https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/jupyter/Dockerfile -t custom_jupyter`
 
 Start container:
-- First run: `docker run -it --rm  --link crypto-mongo:mongo --name custom-jupyer -v /data/notebooks:/home/jovyan/work -p 8888:8888 custom_jupyter`
-- Use token in CLI together with hostname "ec2-34-238-122-216.compute-1.amazonaws.com" (currently, might change) to connect in Browser.
+- First time: `docker run -d --link crypto-mongo:mongo --name custom-jupyter -v /data/notebooks:/home/jovyan/work -p 8888:8888 custom_jupyter start-notebook.sh --NotebookApp.password='sha1:f6a0093ff7ca:be25a6064ba30e37265b0f800cbb925c636cc4fe'`
+- Then: `docker start custom-jupyter`
 
 # Setup AWS
 ## VM Setup
