@@ -1,4 +1,4 @@
-> **CryptoCrawler** - Crawling information about Crypto Currencies from the Web, analyze them and present them in a Web-Dashboard. A project from a course at universtity of media, stuttgart.
+> **CryptoCrawler** - Crawling information about Crypto Currencies from the Web, analyze them and present them in a Web-Dashboard. A project from a course at university of media, stuttgart.
 
 <br>
 
@@ -15,7 +15,7 @@
 	- [Microservice 2: Twitter Stream Listener](#microservice-2-twitter-stream-listener)
 	- [Microservice 3: Crypto Price Crawler](#microservice-3-crypto-price-crawler)
 	- [Microservice 4: Jupyter Notebook](#microservice-4-jupyter-notebook)
-- [Useful Info & commands](#useful-info-commands)
+- [Useful info & commands](#useful-info-commands)
 	- [Docker](#docker)
 	- [Maintenance](#maintenance)
 
@@ -113,7 +113,7 @@ Access Notebook:
 - Via AWS public DNS-Name + :8888. E.g.: https://ec2-34-227-176-103.compute-1.amazonaws.com:8888
 - DNS-Name changes. Findout current name via AWS Console or on vm: `hostname -f`
 
-# Useful Info & commands
+# Useful info & commands
 
 ## Docker
 **Cleanup Docker**
