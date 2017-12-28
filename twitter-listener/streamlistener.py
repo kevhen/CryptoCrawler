@@ -47,14 +47,9 @@ class MyStreamListener(tweepy.StreamListener):
         tweet_json_str = json.dumps(status._json)
         collections = self.identify_collection(tweet_json_str)
 
-        # Try saving to mongo, delay on auto reconnect (e.g. container down)
-        try:
-            # Store in mongo collection(s)
-            for collection_name in collections:
-                self.db[collection_name].insert(status._json)
-        except pymongo_errors.AutoReconnect:
-            print('[ERROR] pymongo auto reconnect. Wait for some seconds...')
-            time.sleep(5)
+        # Store tweets, but only those with english language
+        if status.lang == 'en':
+            self.store_tweet(status, collections)
 
     def on_error(self, status_code):
         """Handle API errors. Especially quit in 420 to avoid API penalty."""
@@ -85,6 +80,40 @@ class MyStreamListener(tweepy.StreamListener):
         if len(collections) < 1:
             collections.add('unknown')
         return collections
+
+    def store_tweet(self, tweet, collections):
+        """Store a subset of field from tweet to mongodb."""
+        # Select attributes to strore
+        tweet_mini = {}
+        tweet_mini['timestamp_ms'] = tweet.timestamp_ms
+        tweet_mini['id'] = tweet.id_str
+        tweet_mini['author_id'] = tweet.author.id_str
+        # Text of extended tweets (> 140 chars) is in a different field
+        if (tweet.truncated is True) and ('full_text' in tweet.extended_tweet):
+            tweet_mini['text'] = tweet.extended_tweet['full_text']
+        else:
+            tweet_mini['text'] = tweet.text
+        # Store geo info, but only if available
+        if (tweet.geo is not None):
+            tweet_mini['geo'] = tweet.geo
+        if (tweet.coordinates is not None):
+            tweet_mini['coordinates'] = tweet.coordinates
+        if (tweet.place is not None):
+            plc = tweet.place
+            tweet_mini['place'] = {}
+            tweet_mini['place']['name'] = plc.name
+            tweet_mini['place']['country'] = plc.country
+            tweet_mini['place']['coordinates'] = plc.bounding_box.coordinates
+            tweet_mini['place']['type'] = plc.bounding_box.type
+
+        # Try saving to mongo, delay on auto reconnect (e.g. container down)
+        try:
+            # Store in mongo collection(s)
+            for collection_name in collections:
+                self.db[collection_name].insert(tweet_mini)
+        except pymongo_errors.AutoReconnect:
+            print('[ERROR] pymongo auto reconnect. Wait for some seconds...')
+            time.sleep(5)
 
 
 def startListening():

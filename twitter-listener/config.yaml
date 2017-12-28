@@ -35,6 +35,7 @@ collections:
     bitcoin:
         keywords:
             - bitcoin
+            - bitcoins
         currencycode:
             - BTC
     ethereum:
@@ -45,6 +46,7 @@ collections:
     iota:
         keywords:
             - iota
+            - iotas
         currencycode:
             - IOT
     trumpp:
