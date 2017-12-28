@@ -1,4 +1,5 @@
-> CryptoCrawler: Crawl Information about Crypto Currencies from the Web, analyze them and present them in a Web-Dashboard. A project from a course at universtity of media, stuttgart.
+> CryptoCrawler: Crawling information about Crypto Currencies from the Web, analyze them and present them in a Web-Dashboard. A project from a course at universtity of media, stuttgart.
+
 <br><br>
 
 ### Table of Contents
