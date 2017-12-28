@@ -18,9 +18,9 @@ University of Media Stuttgart, Germany<br>
 
 #### Too much information ... but not from Trumpp
 
-Over <span class="pink">500 MB</span> Data gathered during the first two hours.
+Over <span class="pink">500 MB</span> Data during first two hours.
 
-Over <span class="pink">6000 Tweets</span> stored every ten minutes:
+Over <span class="pink">6000 Tweets</span> every ten minutes:
 ![Tweets after two hours](assets/too_much_data.png)
 
 ---
