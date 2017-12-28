@@ -49,7 +49,7 @@
 - EBS: 16GB
 - open ssh (ip whitelist)
 - open http
-- open tcp 8888 (jupyter notebook)
+- open tcp 8888 (for jupyter notebook. ip whitelist)
 
 ## Server Setup
 **Prepare & mount EBS Drive**
