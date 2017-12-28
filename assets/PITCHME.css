@@ -37,7 +37,13 @@
 
 .reveal .progress span {
     background: rgb(249, 38, 114);
-    ;
+
+}
+
+.reveal section img {
+    border: none;
+    background: none;
+    box-shadow: none;
 }
 
 #title-footer {
