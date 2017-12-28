@@ -11,6 +11,10 @@
     text-transform: none;
 }
 
+.reveal p {
+    font-size: 60%;
+}
+
 .reveal a {
     color: rgb(249, 38, 114);
 }

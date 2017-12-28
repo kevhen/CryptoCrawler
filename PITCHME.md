@@ -18,9 +18,8 @@ University of Media Stuttgart, Germany<br>
 
 #### Too much information
 
-~500 MB Data after running for only 2 hours...
-
 ![Tweets after two hours](assets/too_much_data.png)
+~500 MB Data during the first two hours
 
 ---
 
