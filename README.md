@@ -134,4 +134,4 @@ Access Notebook:
 
 ## Maintenance
 **Show size of MongoDB Directory**
-- `sudo du -sh \data\mongodb`
+- `sudo du -sh /data/mongodb`
