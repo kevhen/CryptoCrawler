@@ -128,6 +128,10 @@ Access Notebook:
 - Detach without closing: `CTRL + p, CTRL +q`
 - Bash into container: `docker exec -it container_name /bin/bash`
 
+**Connect to MongoDB in Container from Host**
+- Find out IP address of mongo-container: `docker inspect $CONTAINER_NAME | grep IPAddress`
+- Use that IP-Address in MongoDB Client
+
 ## Maintenance
 **Show size of MongoDB Directory**
 - `sudo du -sh \data\mongodb`
