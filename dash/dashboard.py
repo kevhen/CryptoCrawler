@@ -13,7 +13,7 @@ import yaml
 from pymongo import MongoClient
 
 
-def queryMongo(db, collections, query={}, fields={}):
+def query_mongo(db, collections, query={}, fields={}):
     """Query MongoDB and return a pandas dataframe."""
     df = None
     for collection in collections:
@@ -30,7 +30,7 @@ def queryMongo(db, collections, query={}, fields={}):
 
 def get_timeseries_data(db, collections):
     """Query MongoDB and return a pandas dataframe."""
-    df = queryMongo(db, collections, {}, {'timestamp'})
+    df = query_mongo(db, collections, {}, {'timestamp'})
     df['timestamp'] = pd.to_datetime(df['timestamp_ms'], unit='ms')
     df.index = df['timestamp']
     del df['timestamp']
@@ -41,7 +41,8 @@ def get_timeseries_data(db, collections):
     return df_result
 
 
-def initDash(conf):
+def init_dash(conf):
+    """Load the inital Dataset and show it in initial layout."""
     app = dash.Dash()
 
     # The following config were neccessary, as the CDN serving the files
@@ -49,16 +50,11 @@ def initDash(conf):
     app.css.config.serve_locally = True
     app.scripts.config.serve_locally = True
 
-    df = pd.read_csv(
-        'https://gist.githubusercontent.com/chriddyp/' +
-        '5d1ea79569ed194d432e56108a04d188/raw/' +
-        'a9f9e8076b837d541398e999dcbac2b2826a81f8/'+
-        'gdp-life-exp-2007.csv')
-
+    # Initially, use all collections
     topics_options = [{'label': i, 'value': i} for i in conf['collections']]
     topics_initial = [i for i in conf['collections']]
 
-    df_2 = get_timeseries_data(db, topics_initial)
+    df = get_timeseries_data(db, topics_initial)
 
     app.layout = html.Div([
         html.Label('Select topics for visualization'),
@@ -71,21 +67,16 @@ def initDash(conf):
             figure={
                 'data': [
                     go.Scatter(
-                        x=df[df['continent'] == i]['gdp per capita'],
-                        y=df[df['continent'] == i]['life expectancy'],
-                        text=df[df['continent'] == i]['country'],
-                        mode='markers',
+                        x=df.index,
+                        y=df[i],
+                        text=df[i].astype('int').astype('str') + ' Tweets',
                         opacity=0.7,
-                        marker={
-                            'size': 15,
-                            'line': {'width': 0.5, 'color': 'white'}
-                        },
                         name=i
-                    ) for i in df.continent.unique()
+                    ) for i in df.columns.values
                 ],
                 'layout': go.Layout(
-                    xaxis={'type': 'log', 'title': 'GDP Per Capita'},
-                    yaxis={'title': 'Life Expectancy'},
+                    xaxis={'title': 'Count of Tweets'},
+                    yaxis={'title': 'Timespan'},
                     margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
                     legend={'x': 0, 'y': 1},
                     hovermode='closest'
@@ -103,9 +94,9 @@ if __name__ == '__main__':
         conf = yaml.load(stream)
 
     # Open Connection to MongoDB
-    conn = MongoClient(conf['mongodb']['host'], conf['mongodb']['port'])
-    conn = MongoClient('172.17.0.2', conf['mongodb']['port'])
+    #conn = MongoClient(conf['mongodb']['host'], conf['mongodb']['port'])
+    conn = MongoClient('172.17.0.2', conf['mongodb']['port']) # Use local mongo-container IP for testing
     db = conn[conf['mongodb']['db']]
 
-    app = initDash(conf)
+    app = init_dash(conf)
     app.run_server()
