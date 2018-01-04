@@ -30,7 +30,7 @@ class dashboard():
         conn = MongoClient(self.config['mongodb']['host'],
                            self.config['mongodb']['port'])
         # Use local mongo-container IP for testing
-        #conn = MongoClient('172.17.0.2', self.config['mongodb']['port'])
+        # conn = MongoClient('172.17.0.2', self.config['mongodb']['port'])
         self.db = conn[self.config['mongodb']['db']]
 
         # Helper Variable for timestamp conversion
@@ -137,9 +137,15 @@ class dashboard():
         app.css.config.serve_locally = True
         app.scripts.config.serve_locally = True
 
-        # Initially, use all collections
+        # Values for Checkboxes
         topics_options = [{'label': i, 'value': i}
                           for i in self.topics]
+
+        # Initially, use all collections but trump & car2go
+        topics_default = []
+        for topic in self.topics:
+            if topic not in ['car2go', 'trump']:
+                topics_default.append(topic)
 
         # Layout of Dashboard
         app.layout = html.Div([
@@ -164,8 +170,7 @@ class dashboard():
                     dcc.Checklist(
                         id='global-topic-checklist',
                         options=topics_options,
-                        # select only crypto currency topics by default
-                        values=self.topics.remove('trump').remove('car2go')
+                        values=topics_default
                     ),
                 ], className='content')
             ], className='box'),
