@@ -1,0 +1,93 @@
+html {
+    font-family: "Open Sans", sans-serif;
+}
+
+h3 {
+    font-size: 18px;
+    font-weight: lighter;
+    color: rgb(249, 38, 114);
+    padding-top: 3px;
+    padding-left: 10px;
+    padding-bottom: 3px;
+    margin: 0px;
+}
+
+.container {
+    padding: 0px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 900px;
+    box-shadow: 0px 0px 5px 5px rgba(204, 204, 204, 0.4);
+    position: relative;
+}
+
+.banner {
+    height: 64px;
+    background-color: #333;
+    color: #fff;
+    padding: 12px;
+}
+
+.banner h1 {
+    display: inline;
+    line-height: 64px;
+    padding-left: 4px;
+}
+
+.banner img {
+    float: right;
+    padding-right: 4px;
+}
+
+.box {
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    margin: 5px;
+    overflow: hidden;
+}
+
+.box>.title {
+    border-bottom: 1px solid #ddd;
+    background-color: #fbfbfb;
+}
+
+.box>.content {
+    padding: 5px;
+}
+
+#bottom-line {
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    color: #777;
+    padding: 12px;
+}
+
+#global-topic-checklist {
+    font-size: 14px;
+    margin: 10px;
+}
+
+#global-topic-checklist>label {
+    margin-right: 16px;
+}
+
+#global-topic-checklist>label>input {
+    top: 2px;
+    position: relative;
+}
+
+#tweets-live-plot {
+    height: 200px;
+}
+
+#tweets-live-dropdown {
+    position: absolute;
+    width: 130px;
+    right: 20px;
+    z-index: 10;
+    opacity: 0.7;
+}
+#tweets-live-dropdown .Select-clear-zone {
+    display: None;
+}
