@@ -128,7 +128,7 @@ Access Notebook:
 Build Container:
 - `cd /data/`
 - Download Dockerfile: `wget https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/miniconda3-dash/Dockerfile`
-- Build: `sudo docker build --build-arg credsfile=./credentials.yaml -t miniconda3-dash .`
+- Build: `sudo docker build -t miniconda3-dash .`
 
 ### Start
 Run Container:
