@@ -67,57 +67,71 @@
 
 # Microservices
 ## Microservice 1: Mongo DB
+**Description:**
 - Serving as data storage
 - DB is persisted on a Docker Volume
 - **No credentials configured, only listen to localhost!!**
 
-### Setup
-Create Directory for Persistent Data. On VM:
-- `mkdir /data/mongodb`
-No further setup needed, as we use Container from official Docker Repo.
+**Build:**
+- Create Directory for Persistent Data. On VM: `mkdir /data/mongodb`
+- No further setup needed, as we use Container from official Docker Repo.
 
-### Start
-Run Container:
+**Run:**
 - First time:  `docker run --name crypto-mongo -t -v /data/mongodb:/data/db -d mongo:jessie`
 - Then: `docker start crypto-mongo`
 
 ## Microservice 2: Twitter Stream Listener
+**Description:**
 - Based on continuumio/miniconda3 Docker Image
 - Storing the Tweets into Mongo DB
 - Configuration via `config.yaml` in `/CryptoCrawler/twitter-listener` in Repo, with words to listen for, divided into sections (will be used to store tweets in different mongo-collections.)
 
-### Setup
-Build Container:
+**Build:**
 - `cd /data/`
 - Download Dockerfile: `wget https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/miniconda3-twitter/Dockerfile`
 - Create `credentials.yaml` in `/data/` with Twitter credentials.
 - Build: `sudo docker build --build-arg credsfile=./credentials.yaml -t miniconda3-twitter .`
 
-### Start
-Run Container:
+**Run:**
 - First time: `docker run -t -i --name crypto-twitter-listener --link crypto-mongo:mongo  -d miniconda3-twitter`
 - Then: `docker start crypto-twitter-listener`
 
 ## Microservice 3: Crypto Price Crawler
+**Description:**
 - Based on jupyter/scipy-notebook Docker Image
 - We will probably use the [Cryptocompare](https://www.cryptocompare.com/api)-API to retrieve the current and historic prices of the currencies.
 - We will probably use the [Cryptocompare](https://www.cryptocompare.com/api)-API to retrieve the current and historic prices of the currencies.
 
 ## Microservice 4: Jupyter Notebook
+**Description:**
 - Run **Jupyter Notebook with Python 3** for ad-hoc analyzes and testing
 - Includes scipy-stack + pymongo
 - Password & IP on whitelist needed for access
 
-Build container:
+**Build:**
 - Build: `sudo docker build https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/jupyter/Dockerfile -t jupyter`
 
-Run Container:
+**Run:**
 - First time: `docker run -d --link crypto-mongo:mongo --name crypto-jupyter -v /data/notebooks:/home/jovyan/work -p 8888:8888 jupyter start-notebook.sh --NotebookApp.password='sha1:f6a0093ff7ca:be25a6064ba30e37265b0f800cbb925c636cc4fe'`
 - Then: `docker start crypto-jupyter`
 
-Access Notebook:
+**Access Notebook:**
 - Via AWS public DNS-Name + :8888. E.g.: https://ec2-34-227-176-103.compute-1.amazonaws.com:8888
-- DNS-Name changes. Findout current name via AWS Console or on vm: `hostname -f`
+- The DNS-Name will change! Find out current name via AWS Console, or use command on VM: `hostname -f`
+
+## Microservice 5: Dashboard
+- Based on continuumio/miniconda3 Docker Image
+- Exposes Web-Dashboard via Port 8050
+- Configuration via `config.yaml` in `/CryptoCrawler/twitter-listener` in Repo, with words to listen for, divided into sections (will be used to store tweets in different mongo-collections.)
+
+**Build:**
+- `cd /data/`
+- Download Dockerfile: `wget https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/miniconda3-dash/Dockerfile`
+- Build: `sudo docker build -t miniconda3-dash .`
+
+**Run:**
+- First time: `docker run -t -i -p 8050:8050 --name crypto-dash --link crypto-mongo:mongo -d miniconda3-dash`
+- Then: `docker start crypto-dash`
 
 ## Microservice 5: Dashboard
 - Based on continuumio/miniconda3 Docker Image
@@ -138,18 +152,18 @@ Run Container:
 # Useful info & commands
 
 ## Docker
-**Cleanup Docker**
+**Cleanup Docker:**
 - `docker system prune -a`
 
-**Attach/Detach Container**
+**Attach/Detach Container:**
 - `docker attach container_name`
 - Detach without closing: `CTRL + p, CTRL +q`
 - Bash into container: `docker exec -it container_name /bin/bash`
 
-**Connect to MongoDB in Container from Host**
+**Connect to MongoDB in Container from Host:**
 - Find out IP address of mongo-container: `docker inspect $CONTAINER_NAME | grep IPAddress`
 - Use that IP-Address in MongoDB Client
 
 ## Maintenance
-**Show size of MongoDB Directory**
+**Show size of MongoDB Directory:**
 - `sudo du -sh /data/mongodb`
