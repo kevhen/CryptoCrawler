@@ -27,9 +27,10 @@ class dashboard():
             self.config = yaml.load(stream)
 
         # Open Connection to MongoDB
-        # conn = MongoClient(conf['mongodb']['host'], conf['mongodb']['port'])
+        conn = MongoClient(self.config['mongodb']['host'],
+                           self.config['mongodb']['port'])
         # Use local mongo-container IP for testing
-        conn = MongoClient('172.17.0.2', self.config['mongodb']['port'])
+        #conn = MongoClient('172.17.0.2', self.config['mongodb']['port'])
         self.db = conn[self.config['mongodb']['db']]
 
         # Helper Variable for timestamp conversion
@@ -171,7 +172,8 @@ class dashboard():
             # Live Tweets
             html.Div([
                 html.Div([
-                    html.H3('Tweets - Live Count - {} sec. per Tick'.format(self.update_interval))
+                    html.H3(
+                        'Tweets - Live Count - {} sec. per Tick'.format(self.update_interval))
                 ], className='title'),
                 html.Div([
                     # Dropdown to select time range for Live Tweet Chart
@@ -198,7 +200,8 @@ class dashboard():
                         })
                 ], className='content')
             ], className='box'),
-            html.Div('Build in January 2018 by kevhen & dynobo with ❤ and Plotly Dash', id='bottom-line'),
+            html.Div(
+                'Build in January 2018 by kevhen & dynobo with ❤ and Plotly Dash', id='bottom-line'),
             dcc.Interval(id='live-update',
                          interval=1000 * self.update_interval),
         ],  className='container')
