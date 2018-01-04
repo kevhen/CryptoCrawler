@@ -171,7 +171,7 @@ class dashboard():
             # Live Tweets
             html.Div([
                 html.Div([
-                    html.H3("Tweets - Live Count")
+                    html.H3('Tweets - Live Count - {} sec. per Tick'.format(self.update_interval))
                 ], className='title'),
                 html.Div([
                     # Dropdown to select time range for Live Tweet Chart
