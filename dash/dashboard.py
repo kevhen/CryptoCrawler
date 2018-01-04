@@ -251,4 +251,4 @@ class dashboard():
 
 if __name__ == '__main__':
     dashboard = dashboard()
-    dashboard.app.run_server()
+    dashboard.app.run_server(host='0.0.0.0')

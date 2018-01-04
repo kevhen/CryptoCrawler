@@ -15,6 +15,6 @@ RUN pip install plotly --upgrade  # Plotly graphing library used in examples
 WORKDIR /home
 RUN git clone https://github.com/kevhen/CryptoCrawler.git
 
-WORKDIR /home/dash
+WORKDIR /home/CryptoCrawler/dash
 
 CMD python dashboard.py
