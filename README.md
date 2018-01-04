@@ -44,7 +44,7 @@
 
 # Setup AWS
 ## VM Setup
-- t2.micro
+- t2.medium
 - AMI: ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-20171121.1 (ami-aa2ea6d0)
 - root: 15GB
 - EBS: 16GB
@@ -82,7 +82,6 @@
 
 ## Microservice 2: Twitter Stream Listener
 **Description:**
-- Based on continuumio/miniconda3 Docker Image
 - Storing the Tweets into Mongo DB
 - Configuration via `config.yaml` in `/CryptoCrawler/twitter-listener` in Repo, with words to listen for, divided into sections (will be used to store tweets in different mongo-collections.)
 
@@ -109,10 +108,10 @@
 - Password & IP on whitelist needed for access
 
 **Build:**
-- Build: `sudo docker build https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/jupyter/Dockerfile -t jupyter`
+- `sudo docker build https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/jupyter/Dockerfile -t custom_jupyter`
 
 **Run:**
-- First time: `docker run -d --link crypto-mongo:mongo --name crypto-jupyter -v /data/notebooks:/home/jovyan/work -p 8888:8888 jupyter start-notebook.sh --NotebookApp.password='sha1:f6a0093ff7ca:be25a6064ba30e37265b0f800cbb925c636cc4fe'`
+- First time: `docker run -d --link crypto-mongo:mongo --name crypto-jupyter -v /data/notebooks:/home/jovyan/work -p 8888:8888 custom_jupyter start-notebook.sh --NotebookApp.password='sha1:f6a0093ff7ca:be25a6064ba30e37265b0f800cbb925c636cc4fe'`
 - Then: `docker start crypto-jupyter`
 
 **Access Notebook:**
@@ -120,34 +119,20 @@
 - The DNS-Name will change! Find out current name via AWS Console, or use command on VM: `hostname -f`
 
 ## Microservice 5: Dashboard
-- Based on continuumio/miniconda3 Docker Image
+**Description:**
 - Exposes Web-Dashboard via Port 8050
 - Configuration via `config.yaml` in `/CryptoCrawler/twitter-listener` in Repo, with words to listen for, divided into sections (will be used to store tweets in different mongo-collections.)
 
 **Build:**
-- `cd /data/`
-- Download Dockerfile: `wget https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/miniconda3-dash/Dockerfile`
-- Build: `sudo docker build -t miniconda3-dash .`
+- `sudo docker build https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/miniconda3-dash/Dockerfile -t miniconda3-dash`
 
 **Run:**
 - First time: `docker run -t -i -p 8050:8050 --name crypto-dash --link crypto-mongo:mongo -d miniconda3-dash`
 - Then: `docker start crypto-dash`
 
-## Microservice 5: Dashboard
-- Based on continuumio/miniconda3 Docker Image
-- Exposes Web-Dashboard via Port 8050
-- Configuration via `config.yaml` in `/CryptoCrawler/twitter-listener` in Repo, with words to listen for, divided into sections (will be used to store tweets in different mongo-collections.)
-
-### Setup
-Build Container:
-- `cd /data/`
-- Download Dockerfile: `wget https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/miniconda3-dash/Dockerfile`
-- Build: `sudo docker build -t miniconda3-dash .`
-
-### Start
-Run Container:
-- First time: `docker run -t -i -p 8050:80 --name crypto-dash --link crypto-mongo:mongo -d miniconda3-dash`
-- Then: `docker start crypto-dash`
+**View Dashboard:**
+- Via AWS public DNS-Name + :8050. E.g.: https://ec2-34-227-176-103.compute-1.amazonaws.com:8050
+- The DNS-Name will change! Find out current name via AWS Console, or use command on VM: `hostname -f`
 
 # Useful info & commands
 

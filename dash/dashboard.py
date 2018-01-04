@@ -164,7 +164,8 @@ class dashboard():
                     dcc.Checklist(
                         id='global-topic-checklist',
                         options=topics_options,
-                        values=self.topics
+                        # select only crypto currency topics by default
+                        values=self.topics.remove('trump').remove('car2go')
                     ),
                 ], className='content')
             ], className='box'),
