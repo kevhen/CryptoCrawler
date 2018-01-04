@@ -15,6 +15,7 @@
 	- [Microservice 2: Twitter Stream Listener](#microservice-2-twitter-stream-listener)
 	- [Microservice 3: Crypto Price Crawler](#microservice-3-crypto-price-crawler)
 	- [Microservice 4: Jupyter Notebook](#microservice-4-jupyter-notebook)
+	- [Microservice 5: Dashboard](#microservice-5-dashboard)
 - [Useful info & commands](#useful-info-commands)
 	- [Docker](#docker)
 	- [Maintenance](#maintenance)
@@ -81,23 +82,24 @@ Run Container:
 - Then: `docker start crypto-mongo`
 
 ## Microservice 2: Twitter Stream Listener
-- Based on  Docker Image
+- Based on continuumio/miniconda3 Docker Image
 - Storing the Tweets into Mongo DB
 - Configuration via `config.yaml` in `/CryptoCrawler/twitter-listener` in Repo, with words to listen for, divided into sections (will be used to store tweets in different mongo-collections.)
 
 ### Setup
 Build Container:
 - `cd /data/`
-- Download Dockerfile: `wget https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/anaconda3/Dockerfile`
+- Download Dockerfile: `wget https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/miniconda3-twitter/Dockerfile`
 - Create `credentials.yaml` in `/data/` with Twitter credentials.
-- Build: `sudo docker build --build-arg credsfile=./credentials.yaml -t custom_anaconda3 .`
+- Build: `sudo docker build --build-arg credsfile=./credentials.yaml -t miniconda3-twitter .`
 
 ### Start
 Run Container:
-- First time: `docker run -t -i --name twitter-listener --link crypto-mongo:mongo  -d custom_anaconda3`
-- Then: `docker start twitter-listener`
+- First time: `docker run -t -i --name crypto-twitter-listener --link crypto-mongo:mongo  -d miniconda3-twitter`
+- Then: `docker start crypto-twitter-listener`
 
 ## Microservice 3: Crypto Price Crawler
+- Based on jupyter/scipy-notebook Docker Image
 - We will probably use the [Cryptocompare](https://www.cryptocompare.com/api)-API to retrieve the current and historic prices of the currencies.
 - We will probably use the [Cryptocompare](https://www.cryptocompare.com/api)-API to retrieve the current and historic prices of the currencies.
 
@@ -107,15 +109,31 @@ Run Container:
 - Password & IP on whitelist needed for access
 
 Build container:
-- Build: `sudo docker build https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/jupyter/Dockerfile -t custom_jupyter`
+- Build: `sudo docker build https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/jupyter/Dockerfile -t jupyter`
 
 Run Container:
-- First time: `docker run -d --link crypto-mongo:mongo --name custom-jupyter -v /data/notebooks:/home/jovyan/work -p 8888:8888 custom_jupyter start-notebook.sh --NotebookApp.password='sha1:f6a0093ff7ca:be25a6064ba30e37265b0f800cbb925c636cc4fe'`
-- Then: `docker start custom-jupyter`
+- First time: `docker run -d --link crypto-mongo:mongo --name crypto-jupyter -v /data/notebooks:/home/jovyan/work -p 8888:8888 jupyter start-notebook.sh --NotebookApp.password='sha1:f6a0093ff7ca:be25a6064ba30e37265b0f800cbb925c636cc4fe'`
+- Then: `docker start crypto-jupyter`
 
 Access Notebook:
 - Via AWS public DNS-Name + :8888. E.g.: https://ec2-34-227-176-103.compute-1.amazonaws.com:8888
 - DNS-Name changes. Findout current name via AWS Console or on vm: `hostname -f`
+
+## Microservice 5: Dashboard
+- Based on continuumio/miniconda3 Docker Image
+- Exposes Web-Dashboard via Port 8050
+- Configuration via `config.yaml` in `/CryptoCrawler/twitter-listener` in Repo, with words to listen for, divided into sections (will be used to store tweets in different mongo-collections.)
+
+### Setup
+Build Container:
+- `cd /data/`
+- Download Dockerfile: `wget https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/miniconda3-dash/Dockerfile`
+- Build: `sudo docker build --build-arg credsfile=./credentials.yaml -t miniconda3-dash .`
+
+### Start
+Run Container:
+- First time: `docker run -t -i -p 8050:80 --name crypto-dash --link crypto-mongo:mongo -d miniconda3-dash`
+- Then: `docker start crypto-dash`
 
 # Useful info & commands
 
