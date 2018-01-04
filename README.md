@@ -133,6 +133,22 @@
 - First time: `docker run -t -i -p 8050:8050 --name crypto-dash --link crypto-mongo:mongo -d miniconda3-dash`
 - Then: `docker start crypto-dash`
 
+## Microservice 5: Dashboard
+- Based on continuumio/miniconda3 Docker Image
+- Exposes Web-Dashboard via Port 8050
+- Configuration via `config.yaml` in `/CryptoCrawler/twitter-listener` in Repo, with words to listen for, divided into sections (will be used to store tweets in different mongo-collections.)
+
+### Setup
+Build Container:
+- `cd /data/`
+- Download Dockerfile: `wget https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/miniconda3-dash/Dockerfile`
+- Build: `sudo docker build -t miniconda3-dash .`
+
+### Start
+Run Container:
+- First time: `docker run -t -i -p 8050:80 --name crypto-dash --link crypto-mongo:mongo -d miniconda3-dash`
+- Then: `docker start crypto-dash`
+
 # Useful info & commands
 
 ## Docker
