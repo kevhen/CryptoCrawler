@@ -19,6 +19,7 @@ services:
       context: ./miniconda3-prices
     networks:
       - backend
+      - frontend
     depends_on:
       - crypto-mongo
 
@@ -41,6 +42,7 @@ services:
   twitter-listener:
     networks:
       - backend
+      - frontend
     build:
       context: ./miniconda3-twitter
       args:
