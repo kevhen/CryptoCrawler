@@ -19,7 +19,6 @@ services:
       context: ./miniconda3-prices
     networks:
       - backend
-      - frontend
 
   crypto-jupyter:
     networks:
@@ -33,7 +32,6 @@ services:
   twitter-listener:
     networks:
       - backend
-      - frontend
     build:
       context: ./miniconda3-twitter
       args:
@@ -47,3 +45,11 @@ services:
       context: ./miniconda3-dash
     ports:
       - 8050:8050
+
+  crypto-topics:
+    networks:
+      - backend
+    build:
+      context: ./miniconda3-topics
+    ports:
+      - 5000:5000
