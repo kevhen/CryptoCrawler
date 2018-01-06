@@ -77,7 +77,8 @@ def startListening(conf, db, scheduler):
     else:
         logger.warn('Valid coins could not be retrieved. Skipping this step')
 
-    scheduler.enter(10, 1, startListening, (db,scheduler,))
+    logger.info('Saved prices. Waiting until next call')
+    scheduler.enter(10, 1, startListening, (conf,db,scheduler,))
     scheduler.run()
 
 def init():
