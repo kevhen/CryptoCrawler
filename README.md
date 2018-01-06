@@ -84,7 +84,7 @@
 ## Microservice 2: Twitter Stream Listener
 **Description:**
 - Storing the Tweets into Mongo DB
-- Configuration via `config.yaml` in `/CryptoCrawler/twitter-listener` in Repo, with words to listen for, divided into sections (will be used to store tweets in different mongo-collections.)
+- Configuration via `/CryptoCrawler/config.yaml` in Repo, with words to listen for, divided into sections (will be used to store tweets in different mongo-collections.)
 
 **Build:**
 - `cd /data/`
@@ -122,7 +122,7 @@
 ## Microservice 5: Dashboard
 **Description:**
 - Exposes Web-Dashboard via Port 8050
-- Configuration via `config.yaml` in `/CryptoCrawler/twitter-listener` in Repo, with words to listen for, divided into sections (will be used to store tweets in different mongo-collections.)
+- Configuration via `/CryptoCrawler/config.yaml` in Repo, with words to listen for, divided into sections (will be used to store tweets in different mongo-collections.)
 
 **Build:**
 - `sudo docker build https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/miniconda3-dash/Dockerfile -t miniconda3-dash`
