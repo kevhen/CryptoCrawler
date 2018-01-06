@@ -19,6 +19,8 @@ services:
       context: ./miniconda3-prices
     networks:
       - backend
+    depends_on:
+      - crypto-mongo
 
   crypto-jupyter:
     volumes:
@@ -30,6 +32,11 @@ services:
       - 8888:8888
     build:
       context: ./jupyter
+    depends_on:
+      - crypto-mongo
+    entrypoint:
+      - start-notebook.sh
+      - --NotebookApp.password='sha1:f6a0093ff7ca:be25a6064ba30e37265b0f800cbb925c636cc4fe'
 
   twitter-listener:
     networks:
@@ -38,6 +45,8 @@ services:
       context: ./miniconda3-twitter
       args:
         credsfile: ./credentials.yaml
+    depends_on:
+      - crypto-mongo
 
   crypto-dash:
     networks:
@@ -47,6 +56,8 @@ services:
       context: ./miniconda3-dash
     ports:
       - 8050:8050
+    depends_on:
+      - crypto-mongo
 
   crypto-topics:
     networks:
@@ -55,3 +66,5 @@ services:
       context: ./miniconda3-topics
     ports:
       - 5000:5000
+    depends_on:
+      - crypto-mongo
