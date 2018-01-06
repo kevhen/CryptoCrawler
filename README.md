@@ -3,29 +3,23 @@
 <br>
 
 # Table of Contents
-
 <!-- TOC depthFrom:1 depthTo:2 withLinks:1 updateOnSave:1 orderedList:0 -->
 
- - [Documentation & Presentation](#documentation-presentation)
+- [Table of Contents](#table-of-contents)
 - [Architecture](#architecture)
 - [Setup AWS](#setup-aws)
-
-  - [VM Setup](#vm-setup)
-  - [Server Setup](#server-setup)
-
+	- [VM Setup](#vm-setup)
+	- [Server Setup](#server-setup)
 - [Microservices](#microservices)
-
-  - [Microservice 1: Mongo DB](#microservice-1-mongo-db)
-  - [Microservice 2: Twitter Stream Listener](#microservice-2-twitter-stream-listener)
-  - [Microservice 3: Crypto Price Crawler](#microservice-3-crypto-price-crawler)
-  - [Microservice 4: Jupyter Notebook](#microservice-4-jupyter-notebook)
-  - [Microservice 5: Dashboard](#microservice-5-dashboard)
-
+	- [Microservice 1: Mongo DB](#microservice-1-mongo-db)
+	- [Microservice 2: Twitter Stream Listener](#microservice-2-twitter-stream-listener)
+	- [Microservice 3: Crypto Price Crawler](#microservice-3-crypto-price-crawler)
+	- [Microservice 4: Jupyter Notebook](#microservice-4-jupyter-notebook)
+	- [Microservice 5: Dashboard](#microservice-5-dashboard)
+	- [Microservice 6: LDA Topic Identification](#microservice-6-lda-topic-identification)
 - [Useful info & commands](#useful-info-commands)
-
-  - [Docker](#docker)
-  - [Maintenance](#maintenance)
-
+	- [Docker](#docker)
+	- [Maintenance](#maintenance)
 - [Issues](#issues)
 
 <!-- /TOC -->
