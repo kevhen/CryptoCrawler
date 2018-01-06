@@ -64,6 +64,7 @@ services:
   crypto-topics:
     networks:
       - backend
+      - frontend      
     build:
       context: ./miniconda3-topics
     ports:
