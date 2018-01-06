@@ -128,7 +128,7 @@ def open_mongo():
     conn = MongoClient(config['mongodb']['host'],
                        config['mongodb']['port'])
     # Use local mongo-container IP for testing
-    conn = MongoClient('172.17.0.2', config['mongodb']['port'])
+    # conn = MongoClient('172.17.0.2', config['mongodb']['port'])
     db = conn[config['mongodb']['db']]
     return db
 
