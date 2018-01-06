@@ -181,7 +181,7 @@
 
 **Run:**
 
-- First time: `docker run -t -i -p 8050:8050 --name crypto-topics --link crypto-mongo:mongo -d miniconda3-topics`
+- First time: `docker run -t -i -p 5000:5000 --name crypto-topics --link crypto-mongo:mongo -d miniconda3-topics`
 - Then: `docker start crypto-topics`
 
 **Query:**
