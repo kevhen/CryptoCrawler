@@ -15,7 +15,7 @@ services:
       - backend
 
   crypto-price-listener:
-    build
+    build:
       context: ./miniconda3-prices
     networks:
       - backend
