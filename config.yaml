@@ -55,11 +55,3 @@ collections:
     car2go:
         keywords:
             - car2go
-
-dash:
-    live:
-        default:
-            - bitcoin
-            - ethereum
-            - iota
-        interval: 10

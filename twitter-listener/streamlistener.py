@@ -121,7 +121,7 @@ def startListening():
     # Load settings, config files expected in current dir
     with open('credentials.yaml', 'r') as stream:
         creds = yaml.load(stream)
-    with open('config.yaml', 'r') as stream:
+    with open('../config.yaml', 'r') as stream:
         conf = yaml.load(stream)
 
     # Set OAuth

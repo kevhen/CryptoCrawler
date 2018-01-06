@@ -23,7 +23,7 @@ class dashboard():
     def __init__(self, *args, **kwargs):
         """Prepare class variables on class init."""
         # Load the configuration file
-        with open('../twitter-listener/config.yaml', 'r') as stream:
+        with open('../config.yaml', 'r') as stream:
             self.config = yaml.load(stream)
 
         # Open Connection to MongoDB
