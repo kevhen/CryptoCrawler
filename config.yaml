@@ -25,6 +25,10 @@ mongodb:
     port: 27017
     db:   cryptocrawl
 
+cryptocompare:
+    coinlist: https://min-api.cryptocompare.com/data/all/coinlist
+    price: https://min-api.cryptocompare.com/data/pricemulti
+
 collections:
     generalcrypto:
         keywords:
@@ -36,19 +40,16 @@ collections:
         keywords:
             - bitcoin
             - bitcoins
-        currencycode:
-            - BTC
+        currencycode: BTC
     ethereum:
         keywords:
             - ethereum
-        currencycode:
-            - ETH
+        currencycode: ETH
     iota:
         keywords:
             - iota
             - iotas
-        currencycode:
-            - IOT
+        currencycode: IOT
     trump:
         keywords:
             - trump
