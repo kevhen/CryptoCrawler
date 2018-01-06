@@ -21,6 +21,8 @@ services:
       - backend
 
   crypto-jupyter:
+    volumes:
+      - /data/notebooks:/home/jovyan/work
     networks:
       - backend
       - frontend
