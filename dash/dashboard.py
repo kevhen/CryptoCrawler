@@ -15,6 +15,11 @@ import datetime
 import os
 from flask import send_from_directory
 from pymongo import MongoClient
+import logging
+logging.basicConfig(format='%(levelname)s - %(asctime)s: %(message)s',
+                    datefmt='%m/%d/%Y %H:%M:%S',
+                    level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class dashboard():
@@ -30,7 +35,7 @@ class dashboard():
         conn = MongoClient(self.config['mongodb']['host'],
                            self.config['mongodb']['port'])
         # Use local mongo-container IP for testing
-        #conn = MongoClient('172.17.0.2', self.config['mongodb']['port'])
+        conn = MongoClient('172.17.0.2', self.config['mongodb']['port'])
         self.db = conn[self.config['mongodb']['db']]
 
         # Helper Variable for timestamp conversion
@@ -43,6 +48,9 @@ class dashboard():
         # Interval for updating live charts
         self.update_interval = int(self.config['dash']['live']['interval'])
 
+        logger.info('Init Dashboard')
+        logger.info('Live Update Interval: {} s'.format(self.update_interval))
+
         # Draw Dashboard
         self.init_dash()
 
@@ -51,6 +59,7 @@ class dashboard():
     # ============================================
 
     def unix_time(self, dt):
+        """Convert DateTime object to Unixtimestamp in ms."""
         return round((dt - self.epoch).total_seconds() * 1000.0)
 
     # ============================================
@@ -109,7 +118,7 @@ class dashboard():
 
         # Convert to datetime
         if len(df) < 3:
-            print('[ERROR] No data for live dashboard!')
+            logger.error('No data for live dashboard!')
             return df
 
         df['timestamp_ms'] = pd.to_datetime(df['timestamp_ms'], unit='ms')
@@ -126,6 +135,29 @@ class dashboard():
         # Drop first values, because the values for the left side of timespan
         # is missleading:
         df_result = df_result.drop(df_result.index[0])
+
+        return df_result
+
+    def get_tweet_data(self, collections):
+        """Query MongoDB and return a pandas dataframe.
+
+        collections <List> : Mongo Collections to query
+
+        return <DataFrame> : tweets per collection per 5 minutes
+        """
+        # Query the mongo db
+        df = self.query_mongo(collections, {}, {'timestamp_ms': 1})
+
+        # Convert to datetime
+        df['timestamp_ms'] = pd.to_datetime(df['timestamp_ms'], unit='ms')
+
+        # Define Grouper
+        grouper = pd.Grouper(key='timestamp_ms', freq='60T')
+
+        # Group and aggregate
+        df_result = df.groupby([grouper, 'collection'])
+        df_result = df_result['timestamp_ms'].count(
+        ).unstack('collection').fillna(0)
 
         return df_result
 
@@ -178,7 +210,8 @@ class dashboard():
             html.Div([
                 html.Div([
                     html.H3(
-                        'Tweets - Live Count - {} sec. per Tick'.format(self.update_interval))
+                        'Tweets Count - Live - {} sec. per Tick' \
+                        .format(self.update_interval))
                 ], className='title'),
                 html.Div([
                     # Dropdown to select time range for Live Tweet Chart
@@ -203,8 +236,24 @@ class dashboard():
                         })
                 ], className='content')
             ], className='box'),
+
+            # Overall Tweets per Hour
+            html.Div([
+                html.Div([
+                    html.H3('Tweets per Hour')
+                ], className='title'),
+                html.Div([
+                    # Chart for All Tweets
+                    dcc.Graph(
+                        id='tweets-plot',
+                        figure=self.plot_tweets(
+                            self.topics_default))
+                ], className='content')
+            ], className='box'),
+
             html.Div(
-                'Build in January 2018 by kevhen & dynobo with ❤ and Plotly Dash', id='bottom-line'),
+                'Build in 01/2018 by kevhen & dynobo with ❤ and Plotly Dash',
+                id='bottom-line'),
             dcc.Interval(id='live-update',
                          interval=1000 * self.update_interval),
         ],  className='container')
@@ -216,8 +265,10 @@ class dashboard():
 
         @app.callback(
             ddp.Output('tweets-live-plot', 'figure'),
-            [ddp.Input(component_id='global-topic-checklist', component_property='values'),
-             ddp.Input(component_id='tweets-live-dropdown', component_property='value')],
+            [ddp.Input(component_id='global-topic-checklist',
+                       component_property='values'),
+             ddp.Input(component_id='tweets-live-dropdown',
+                       component_property='value')],
             [],
             [ddp.Event('live-update', 'interval')])
         def update_timeseries(topic_values, live_range):
@@ -226,9 +277,17 @@ class dashboard():
                 return
             return self.plot_live_tweets(topic_values, live_range)
 
+        @app.callback(
+            ddp.Output('tweets-plot', 'figure'),
+            [ddp.Input(component_id='global-topic-checklist',
+                       component_property='values')])
+        def update_timeseries(topic_values):
+            return self.plot_tweets(topic_values)
+
         self.app = app
 
     def plot_live_tweets(self, topics, live_range):
+        """Plot the live tweet chart."""
         df = self.get_live_data(topics, live_range)
         figure = {
             'data': [
@@ -241,14 +300,50 @@ class dashboard():
                 ) for i in df.columns.values
             ],
             'layout': go.Layout(
-                xaxis={'title': 'Time'},
-                yaxis={'title': 'Tweets'},
                 margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
                 showlegend=True,
-                legend={'x': 1, 'y': 0},
+                legend={'x': 1.02, 'y': 0.5},
                 hovermode='closest'
             )
         }
+        return figure
+
+    def plot_tweets(self, topics):
+        """Plot the live tweet chart."""
+        df = self.get_tweet_data(topics)
+
+        figure = {
+            'data': [
+                go.Scatter(
+                    x=df.index,
+                    y=df[i],
+                    text=df[i].astype('int').astype('str') + ' Tweets',
+                    opacity=0.7,
+                    name=i
+                ) for i in df.columns.values
+            ],
+            'layout': go.Layout(
+                xaxis={'rangeselector':
+                       {'buttons': [
+                           {'count': 1, 'label': '1 day', 'step': 'day',
+                               'stepmode': 'backward'},
+                           {'count': 1, 'label': '1 week', 'step': 'week',
+                            'stepmode': 'backward'},
+                           {'count': 1, 'label': '1 month', 'step': 'month',
+                            'stepmode': 'backward'},
+                           {'step': 'all'}
+                       ]},
+                       'ticks': 'inside',
+                       'ticklen': 15,
+                       'rangeslider': {},
+                       'type': 'date'},
+                margin={'l': 40, 'b': 0, 't': 10, 'r': 10},
+                showlegend=True,
+                legend={'x': 1.02, 'y': 0.5},
+                hovermode='closest'
+            )
+        }
+
         return figure
 
 
