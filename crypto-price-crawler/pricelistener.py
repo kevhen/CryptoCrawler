@@ -78,6 +78,7 @@ def startListening(conf, db, scheduler):
         logger.warn('Valid coins could not be retrieved. Skipping this step')
 
     scheduler.enter(10, 1, startListening, (db,scheduler,))
+    scheduler.run()
 
 def init():
     with open('../config.yaml', 'r') as stream:
@@ -86,7 +87,6 @@ def init():
     client = MongoClient(conf['mongodb']['host'], conf['mongodb']['port'])
     db = client[conf['mongodb']['db']]
     scheduler = sched.scheduler(time.time, time.sleep)
-    scheduler.run()
     startListening(conf,db,scheduler)
 
 if __name__ == '__main__':
