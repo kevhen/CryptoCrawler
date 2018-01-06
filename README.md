@@ -19,6 +19,7 @@
 - [Useful info & commands](#useful-info-commands)
 	- [Docker](#docker)
 	- [Maintenance](#maintenance)
+- [Issues](#issues)
 
 <!-- /TOC -->
 
@@ -152,3 +153,9 @@
 ## Maintenance
 **Show size of MongoDB Directory:**
 - `sudo du -sh /data/mongodb`
+
+# Issues
+
+**Things that could be improved, if we had more time:**
+
+- Data Loading for Dash is not efficient. If multiple users connect to Dash, performance goes down a lot.

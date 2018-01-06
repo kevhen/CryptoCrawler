@@ -38,9 +38,10 @@ class dashboard():
 
         # twitter topics / collections
         self.topics = [i for i in self.config['collections']]
+        self.topics_default = self.config['dash']['live']['default']
 
         # Interval for updating live charts
-        self.update_interval = 5
+        self.update_interval = int(self.config['dash']['live']['interval'])
 
         # Draw Dashboard
         self.init_dash()
@@ -141,12 +142,6 @@ class dashboard():
         topics_options = [{'label': i, 'value': i}
                           for i in self.topics]
 
-        # Initially, use all collections but trump & car2go
-        topics_default = []
-        for topic in self.topics:
-            if topic not in ['car2go', 'trump']:
-                topics_default.append(topic)
-
         # Layout of Dashboard
         app.layout = html.Div([
             html.Link(
@@ -170,7 +165,7 @@ class dashboard():
                     dcc.Checklist(
                         id='global-topic-checklist',
                         options=topics_options,
-                        values=topics_default
+                        values=self.topics_default
                     ),
                 ], className='content')
             ], className='box'),
@@ -197,10 +192,8 @@ class dashboard():
                     # Chart for Live Tweets
                     dcc.Graph(
                         id='tweets-live-plot',
-                        # Initialize figure with all topics and 1
-                        # min timerange
                         figure=self.plot_live_tweets(
-                            self.topics, 5),
+                            self.topics_default, 5),
                         config={
                             'displayModeBar': False
                         })
