@@ -1,0 +1,49 @@
+version: '1'
+
+networks:
+  backend:
+    internal: true
+  frontend:
+    internal: false
+
+services:
+  crypto-mongo:
+    image: mongo:jessie
+    volumes:
+      - /data/mongodb:/data/db:rw
+    networks:
+      - backend
+
+  crypto-price-listener:
+    build:
+      context: ./miniconda3-prices
+    networks:
+      - backend
+      - frontend
+
+  crypto-jupyter:
+    networks:
+      - backend
+      - frontend
+    ports:
+      - 8888:8888
+    build:
+      context: ./jupyter
+
+  twitter-listener:
+    networks:
+      - backend
+      - frontend
+    build:
+      context: ./miniconda3-twitter
+      args:
+        credsfile: ./credentials.yaml
+
+  crypto-dash:
+    networks:
+      - backend
+      - frontend
+    build:
+      context: ./miniconda3-dash
+    ports:
+      - 8050:8050
