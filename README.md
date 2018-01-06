@@ -3,6 +3,7 @@
 <br>
 
 # Table of Contents
+
 <!-- TOC depthFrom:1 depthTo:2 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [Table of Contents](#table-of-contents)
@@ -19,6 +20,7 @@
 	- [Microservice 6: LDA Topic Identification](#microservice-6-lda-topic-identification)
 - [Useful info & commands](#useful-info-commands)
 	- [Docker](#docker)
+	- [Docker Compose](#docker-compose)
 	- [Maintenance](#maintenance)
 - [Issues](#issues)
 
@@ -185,8 +187,10 @@
 - Then: `docker start crypto-topics`
 
 **Query:**
+
 - Example Call: <http://0.0.0.0:5000/lda?collection=bitcoin&start=1515082825836&end=1515082840114&topics=6>
 - Example Result:
+
   ```json
   {
   "tweet_count": 48,
@@ -200,7 +204,6 @@
   ],
   "num_topics": 6}
   ```
-
 
 # Useful info & commands
 
@@ -220,6 +223,17 @@
 
 - Find out IP address of mongo-container: `docker inspect $CONTAINER_NAME | grep IPAddress`
 - Use that IP-Address in MongoDB Client
+
+## Docker Compose
+
+**Build & run containers in background:**
+
+- `docker-compose up -d`
+
+**See output of containers:**
+
+- `docker-compose logs -f` for all output or
+- `docker-compose logs -f $CONTAINER_NAME` for output of some containers
 
 ## Maintenance
 
