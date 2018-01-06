@@ -235,6 +235,11 @@
 - `docker-compose logs -f` for all output or
 - `docker-compose logs -f $CONTAINER_NAME` for output of some containers
 
+**Force Rebuild all containers**
+
+- `docker-compose build --no-cache`
+
+
 ## Maintenance
 
 **Show size of MongoDB Directory:**
