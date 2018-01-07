@@ -85,7 +85,7 @@ class MyStreamListener(tweepy.StreamListener):
         """Store a subset of field from tweet to mongodb."""
         # Select attributes to strore
         tweet_mini = {}
-        tweet_mini['timestamp_ms'] = tweet.timestamp_ms
+        tweet_mini['timestamp_ms'] = int(tweet.timestamp_ms)
         tweet_mini['id'] = tweet.id_str
         tweet_mini['author_id'] = tweet.author.id_str
         # Text of extended tweets (> 140 chars) is in a different field

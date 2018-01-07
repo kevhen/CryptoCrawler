@@ -35,7 +35,7 @@ class dashboard():
         conn = MongoClient(self.config['mongodb']['host'],
                            self.config['mongodb']['port'])
         # Use local mongo-container IP for testing
-        #conn = MongoClient('172.17.0.2', self.config['mongodb']['port'])
+        conn = MongoClient('172.17.0.2', self.config['mongodb']['port'])
         self.db = conn[self.config['mongodb']['db']]
 
         # Helper Variable for timestamp conversion
@@ -146,8 +146,30 @@ class dashboard():
         return <DataFrame> : tweets per collection per 5 minutes
         """
         # Query the mongo db
-        df = self.query_mongo(collections, {}, {'timestamp_ms': 1})
+        df = None
+        for collection in collections:
+            cursor = self.db[collection].aggregate([{
+                '$group': {
+                    'timestamp_ms': {'$subtract': [
+                        {'$divide': ['timestamp_ms', 7200]},
+                        {'$mod': [{'$divide': ['timestamp_ms', 7200]},
+                        1]}
+                    ]},
+                    'count': [{'$count': 'timestamp_ms'}]
+                }
+            }])
+            df_temp = pd.DataFrame(list(cursor))
+            df_temp['collection'] = collection
+            if df is None:   # if we do not have a df yet, create it ...
+                df = df_temp
+            else:            # ... else append to it:
+                df = df.append(df_temp, ignore_index=True)
 
+        # Remove the mongo-row-id, as it's not needed
+        if '_id' in df.columns:
+            del df['_id']
+
+        print(df.head())
         # Convert to datetime
         df['timestamp_ms'] = pd.to_datetime(df['timestamp_ms'], unit='ms')
 
