@@ -100,6 +100,15 @@
 - First time: `docker run --name crypto-mongo -t -v /data/mongodb:/data/db -d mongo:jessie`
 - Then: `docker start crypto-mongo`
 
+**Optimize:**
+
+- We do lot's of queries based on "timestamp". Let's create an index on this field:
+- Bash into mongo: `docker exec -it crypto-mongo /bin/bash`
+- Start mongo client: `mongo`
+- Select DB: `use cryptocrawl` then `show collections`
+- Create Index on timestamp field: `db.$COLLECTIONNAME.createIndex({"timestamp_ms": 1}, {background:true})`
+- `db.collection.totalIndexSize()` should fit into RAM
+
 ## Microservice 2: Twitter Stream Listener
 
 **Description:**
