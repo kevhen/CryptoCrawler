@@ -114,7 +114,7 @@ class dashboard():
 
         # Query the mongo db
         df = self.query_mongo(collections, {'timestamp_ms': {
-                              "$gt": str(start_ms)}}, {'timestamp_ms': 1})
+                              "$gt": start_ms}}, {'timestamp_ms': 1})
 
         # Convert to datetime
         if len(df) < 3:
@@ -147,17 +147,38 @@ class dashboard():
         """
         # Query the mongo db
         df = None
+        agg_range = 1000 * 60 * 60 # by hours
         for collection in collections:
-            cursor = self.db[collection].aggregate([{
-                '$group': {
-                    'timestamp_ms': {'$subtract': [
-                        {'$divide': ['timestamp_ms', 7200]},
-                        {'$mod': [{'$divide': ['timestamp_ms', 7200]},
-                        1]}
-                    ]},
-                    'count': [{'$count': 'timestamp_ms'}]
-                }
-            }])
+            # Mongodb aggregation magic....
+            cursor = self.db[collection].aggregate([
+                {
+                    '$project': {
+                        'timestamp_ms': '$timestamp_ms',
+                        'div_val': {'$divide': ['$timestamp_ms', agg_range]},
+                    }
+                },
+                {
+                    '$project': {
+                        'timestamp_ms': '$timestamp_ms',
+                        'div_val': '$div_val',
+                        'mod_val': {'$mod': ['$div_val', 1]}
+                    }
+                },
+                {
+                    '$project': {
+                        'timestamp_ms': '$timestamp_ms',
+                        'div_val': '$div_val',
+                        'mod_val': '$mod_val',
+                        'sub_val': {'$subtract': ['$div_val', '$mod_val']},
+                    }
+                },
+                {
+                    '$group': {
+                        '_id': '$sub_val',
+                        'count': {'$sum': 1}
+                    }
+                }])
+
             df_temp = pd.DataFrame(list(cursor))
             df_temp['collection'] = collection
             if df is None:   # if we do not have a df yet, create it ...
@@ -165,21 +186,20 @@ class dashboard():
             else:            # ... else append to it:
                 df = df.append(df_temp, ignore_index=True)
 
+        # Restore the actual time stamps, which got "compressed"
+        # during mongodb aggregation
+        df['timestamp_ms'] = df['_id'].astype(int).multiply(agg_range)
+
         # Remove the mongo-row-id, as it's not needed
         if '_id' in df.columns:
             del df['_id']
 
-        print(df.head())
         # Convert to datetime
         df['timestamp_ms'] = pd.to_datetime(df['timestamp_ms'], unit='ms')
 
-        # Define Grouper
-        grouper = pd.Grouper(key='timestamp_ms', freq='60T')
-
         # Group and aggregate
-        df_result = df.groupby([grouper, 'collection'])
-        df_result = df_result['timestamp_ms'].count(
-        ).unstack('collection').fillna(0)
+        df_result = df.groupby(['timestamp_ms', 'collection'])
+        df_result = df_result['count'].sum().unstack('collection').fillna(0)
 
         return df_result
 
@@ -371,4 +391,4 @@ class dashboard():
 
 if __name__ == '__main__':
     dashboard = dashboard()
-    dashboard.app.run_server(host='0.0.0.0')
+    dashboard.app.run_server(host='0.0.0.0', port=5555)
