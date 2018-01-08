@@ -35,7 +35,7 @@ class dashboard():
         conn = MongoClient(self.config['mongodb']['host'],
                            self.config['mongodb']['port'])
         # Use local mongo-container IP for testing
-        # conn = MongoClient('172.17.0.2', self.config['mongodb']['port'])
+        conn = MongoClient('172.17.0.2', self.config['mongodb']['port'])
         self.db = conn[self.config['mongodb']['db']]
 
         # Helper Variable for timestamp conversion
@@ -391,4 +391,4 @@ class dashboard():
 
 if __name__ == '__main__':
     dashboard = dashboard()
-    dashboard.app.run_server(host='0.0.0.0', port=5555)
+    dashboard.app.run_server(host='0.0.0.0', port=8050)
