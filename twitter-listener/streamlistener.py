@@ -5,6 +5,7 @@ Listens to the Twitter stream.
 - Filters the Stream for words defined in config.yaml.
 - Stores the tweet in a Mongodb, connection params in config.yaml.
 """
+from pprint import pprint
 
 import tweepy
 import json
@@ -12,6 +13,11 @@ import yaml
 import time
 from pymongo import MongoClient
 from pymongo import errors as pymongo_errors
+import logging
+logging.basicConfig(format='%(levelname)s - %(asctime)s: %(message)s',
+                    datefmt='%m/%d/%Y %H:%M:%S',
+                    level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class MyStreamListener(tweepy.StreamListener):
@@ -27,6 +33,7 @@ class MyStreamListener(tweepy.StreamListener):
         del kwargs['conf']
         # Open a connection to mongo:
         client = MongoClient(self.mongodb['host'], self.mongodb['port'])
+        #client = MongoClient('172.17.0.2', self.mongodb['port'])
         self.db = client[self.mongodb['db']]
         # Invoke tweepys' class init
         super(MyStreamListener, self).__init__(*args, **kwargs)
@@ -35,37 +42,39 @@ class MyStreamListener(tweepy.StreamListener):
         """Handle incoming tweets."""
         # Just info, that tweets are received correctly
         if self.mute is not True:
-            print('[INFO] Receiving tweets...')
+            logger.info('Receiving tweets...')
             self.mute = True
 
         # Info output amout of tweets
         self.count += 1
-        if (self.count % 1000) == 0:  # Log every 5000 tweets
-            print('{} Tweets received. Still listening...'.format(self.count))
+        if (self.count % 1000) == 0:  # Log every 1000 tweets
+            logger.info(
+                '{} Tweets received. Still listening...'.format(self.count))
 
         # Looking in whole json for keywords of the different collections
         tweet_json_str = json.dumps(status._json)
         collections = self.identify_collection(tweet_json_str)
 
         # Store tweets, but only those with english language
-        if status.lang == 'en':
+        # that are no retweets
+        if status.lang == 'en' and not hasattr(status, 'retweeted_status'):
             self.store_tweet(status, collections)
 
     def on_error(self, status_code):
         """Handle API errors. Especially quit in 420 to avoid API penalty."""
-        print('[ERROR] API returns status code {}'.format(status_code))
+        logger.error('API returns status code {}'.format(status_code))
         if status_code == 420:
             # returning False in on_data disconnects the stream
             return False
 
     def on_connect(self):
         """Called once connected to streaming server."""
-        print('[INFO] Connected to Twitter Stream.')
+        logger.info('Connected to Twitter Stream.')
         return
 
     def on_disconnect(self, notice):
         """Called when twitter sends a disconnect notice."""
-        print('[WARNING] Disconnect from Stream. Notice: ', notice)
+        logger.warning('Disconnect from Stream. Notice: ', notice)
         return
 
     def identify_collection(self, tweet_json):
@@ -89,10 +98,15 @@ class MyStreamListener(tweepy.StreamListener):
         tweet_mini['id'] = tweet.id_str
         tweet_mini['author_id'] = tweet.author.id_str
         # Text of extended tweets (> 140 chars) is in a different field
-        if (tweet.truncated is True) and ('full_text' in tweet.extended_tweet):
+        if hasattr(tweet, 'extended_tweet') and \
+                ('full_text' in tweet.extended_tweet):
             tweet_mini['text'] = tweet.extended_tweet['full_text']
         else:
             tweet_mini['text'] = tweet.text
+
+        if tweet.text[-1] == '…':
+            pprint(tweet_mini['text'])
+
         # Store geo info, but only if available
         if (tweet.geo is not None):
             tweet_mini['geo'] = tweet.geo
@@ -112,7 +126,7 @@ class MyStreamListener(tweepy.StreamListener):
             for collection_name in collections:
                 self.db[collection_name].insert(tweet_mini)
         except pymongo_errors.AutoReconnect:
-            print('[ERROR] pymongo auto reconnect. Wait for some seconds...')
+            logger.error('Pymongo auto reconnect. Wait for some seconds...')
             time.sleep(5)
 
 
@@ -139,7 +153,7 @@ def startListening():
         if 'keywords' in data:
             all_words.update(data['keywords'])
 
-    print('[INFO] Starting Stream Listener.')
+    logger.info('Starting Stream Listener.')
     stream_listener = MyStreamListener(conf=conf)
     stream = tweepy.Stream(auth=api.auth, listener=stream_listener)
     stream.filter(track=list(all_words), async=True)
