@@ -255,14 +255,6 @@
 
 - `sudo du -sh /data/mongodb`
 
-**Change Datatype to LongInt:**
-```json
-db.trump.find({'timestamp_ms': {$exists: true}}).forEach(function(obj) {
-    obj.timestamp_ms = new NumberLong(obj.timestamp_ms);
-    db.trump.save(obj);
-});
-```
-
 # Issues
 
 **Things that could be improved, if we had more time:**
