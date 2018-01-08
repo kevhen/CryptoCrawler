@@ -5,8 +5,6 @@ Listens to the Twitter stream.
 - Filters the Stream for words defined in config.yaml.
 - Stores the tweet in a Mongodb, connection params in config.yaml.
 """
-from pprint import pprint
-
 import tweepy
 import json
 import yaml
@@ -33,7 +31,7 @@ class MyStreamListener(tweepy.StreamListener):
         del kwargs['conf']
         # Open a connection to mongo:
         client = MongoClient(self.mongodb['host'], self.mongodb['port'])
-        #client = MongoClient('172.17.0.2', self.mongodb['port'])
+        # client = MongoClient('172.17.0.2', self.mongodb['port'])
         self.db = client[self.mongodb['db']]
         # Invoke tweepys' class init
         super(MyStreamListener, self).__init__(*args, **kwargs)
@@ -103,9 +101,6 @@ class MyStreamListener(tweepy.StreamListener):
             tweet_mini['text'] = tweet.extended_tweet['full_text']
         else:
             tweet_mini['text'] = tweet.text
-
-        if tweet.text[-1] == '…':
-            pprint(tweet_mini['text'])
 
         # Store geo info, but only if available
         if (tweet.geo is not None):
