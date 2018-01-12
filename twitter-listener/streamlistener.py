@@ -127,31 +127,34 @@ class MyStreamListener(tweepy.StreamListener):
 
 def startListening():
     """Start listening to twitter streams."""
-    # Load settings, config files expected in current dir
-    with open('credentials.yaml', 'r') as stream:
-        creds = yaml.load(stream)
-    with open('../config.yaml', 'r') as stream:
-        conf = yaml.load(stream)
+    try:
+        # Load settings, config files expected in current dir
+        with open('credentials.yaml', 'r') as stream:
+            creds = yaml.load(stream)
+        with open('../config.yaml', 'r') as stream:
+            conf = yaml.load(stream)
 
-    # Set OAuth
-    auth = tweepy.OAuthHandler(creds['twitter']['api_key'],
-                               creds['twitter']['api_secret'])
-    auth.set_access_token(creds['twitter']['access_token'],
-                          creds['twitter']['access_secret'])
+        # Set OAuth
+        auth = tweepy.OAuthHandler(creds['twitter']['api_key'],
+                                   creds['twitter']['api_secret'])
+        auth.set_access_token(creds['twitter']['access_token'],
+                              creds['twitter']['access_secret'])
 
-    # Create API object
-    api = tweepy.API(auth)
+        # Create API object
+        api = tweepy.API(auth)
 
-    # Concat all words from configuration file
-    all_words = set()  # We want only unique words here
-    for collection_name, data in conf['collections'].items():
-        if 'keywords' in data:
-            all_words.update(data['keywords'])
+        # Concat all words from configuration file
+        all_words = set()  # We want only unique words here
+        for collection_name, data in conf['collections'].items():
+            if 'keywords' in data:
+                all_words.update(data['keywords'])
 
-    logger.info('Starting Stream Listener.')
-    stream_listener = MyStreamListener(conf=conf)
-    stream = tweepy.Stream(auth=api.auth, listener=stream_listener)
-    stream.filter(track=list(all_words), async=True)
+        logger.info('Starting Stream Listener.')
+        stream_listener = MyStreamListener(conf=conf)
+        stream = tweepy.Stream(auth=api.auth, listener=stream_listener)
+        stream.filter(track=list(all_words), async=True)
+    except Exception as e:
+        logger.error('Exception raised!', e)
 
 
 if __name__ == '__main__':
