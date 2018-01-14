@@ -46,18 +46,21 @@ if self.mute is not True:
     self.mute = True
 ```
 
++++
+
+@title[Markdown Syntax Demo]
+
+### Color Scheme for Background
+- #2779CC
+- #D66216
+-#CCA91F
+
 ![Tweets after two hours](assets/too_much_data.png)
 
----
-
+---?image=assets/bg-twitterlistener.png
 @title[Twitter Stream Listener]
 
-#### Problem 1: Too much information
-
-Over <span class="pink">500 MB</span> Data during first two hours.
-
-Over <span class="pink">6000 Tweets</span> every ten minutes:
-![Tweets after two hours](assets/too_much_data.png)
+# Twitter Stream Listener
 
 +++
 
