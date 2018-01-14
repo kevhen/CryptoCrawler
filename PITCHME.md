@@ -56,7 +56,15 @@ if self.mute is not True:
 - #CCA91F
 - #00A91F
 
-![Tweets after two hours](assets/too_much_data.png)
+---?image=assets/bg-mongodb.png
+@title[MongoDB Storage]
+
+#### Microservice 1
+# Mongo DB
+
++++
+
+#### To be done
 
 ---?image=assets/bg-twitterlistener.png
 @title[Twitter Stream Listener]
