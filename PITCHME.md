@@ -30,6 +30,14 @@ Text <span class="pink">with pink</span> and **bold**, *italic* and normal words
     - Sub Numeration A
     - Sub Numeration B
 
++++
+
+@title[Markdown Syntax Demo]
+
+### Source Code
+
+Some Code Examples:
+
 `Single Code line`
 
 ```python
