@@ -12,16 +12,96 @@ by Prof. Dr. Stephan Wilczek, Prof. Dr. Jan Kirenz<br>
 Master Data Sciene & Business Analytics<br>
 University of Media Stuttgart, Germany<br>
 </div>
+
 ---
 
-@title[Too much information...]
+@title[Markdown Syntax Demo]
 
-#### Too much information ... but not from Trumpp
+# Headline 1
+## Headline 2
+### Headline 3
+#### Headline 4
+##### Headline 5
+
+Text <span class="pink">with pink</span> and **bold**, *italic* and normal words and a [Link](https://github.com).
+
+- Numeration A
+- Numeration B
+    - Sub Numeration A
+    - Sub Numeration B
+
+`Single Code line`
+
+```python
+if self.mute is not True:
+    logger.info('Receiving tweets...')
+    self.mute = True
+```
+
+![Tweets after two hours](assets/too_much_data.png)
+
+---
+
+@title[Twitter Stream Listener]
+
+#### Problem 1: Too much information
 
 Over <span class="pink">500 MB</span> Data during first two hours.
 
 Over <span class="pink">6000 Tweets</span> every ten minutes:
 ![Tweets after two hours](assets/too_much_data.png)
+
++++
+
+@title[Twitter Stream - Information overload]
+
+#### Problem 1: Too much information
+
+Over <span class="pink">500 MB</span> Data during first two hours.
+
+Over <span class="pink">6000 Tweets</span> every ten minutes:
+![Tweets after two hours](assets/too_much_data.png)
+
++++
+
+@title[Twitter Stream - Information overload - solution]
+
+#### Solution
+
+Limit Stored attributes
+
+Limit stored Tweets
+- Exclude everything not EN
+- Exclude Retweets
+
++++
+
+@title[Twitter Stream - Bug]
+
+#### Problem 2: Bug in Tweepy Module
+```
+File "tstreamer.py", line 109, in
+myStream.userstream("with=following")
+File "/mnt/d5ddf659-feb7-4daf-95c6-09797c84aa98/venvs/python2ds/lib/python2.7/site-packages/tweepy/streaming.py", line 394, in userstream
+self._start(async)
+File "/mnt/d5ddf659-feb7-4daf-95c6-09797c84aa98/venvs/python2ds/lib/python2.7/site-packages/tweepy/streaming.py", line 361, in _start
+self._run()
+File "/mnt/d5ddf659-feb7-4daf-95c6-09797c84aa98/venvs/python2ds/lib/python2.7/site-packages/tweepy/streaming.py", line 294, in _run
+raise exception
+AttributeError: 'NoneType' object has no attribute 'strip'
+```
+https://github.com/tweepy/tweepy/issues/869 (open since March 2017)
+
++++
+
+@title[Twitter Stream - Bug - Solution]
+
+#### Problem 2: Bug in Tweepy Module
+Try older Version: `conda install -c conda-forge -y tweepy=3.2.0`
+Didn't work.
+Workaround:
+Auto-restart on exit:
+`while true; do python streamlistener.py; done`
 
 ---
 
