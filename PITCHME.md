@@ -14,7 +14,6 @@ University of Media Stuttgart, Germany<br>
 </div>
 
 ---
-
 @title[Markdown Syntax Demo]
 
 # Headline 1
@@ -31,7 +30,6 @@ Text <span class="pink">with pink</span> and **bold**, *italic* and normal words
     - Sub Numeration B
 
 +++
-
 @title[Markdown Syntax Demo]
 
 ### Source Code
@@ -47,7 +45,6 @@ if self.mute is not True:
 ```
 
 +++
-
 @title[Markdown Syntax Demo]
 
 ### Color Scheme for Background
@@ -56,15 +53,121 @@ if self.mute is not True:
 - #CCA91F
 - #00A91F
 
+---
+@title[Planning the Project]
+
+#### Projekt Preparation
+# Planning
+
++++
+@title[Goal]
+
+#### Goal
+- Topic: Hype on Crypto-Currencies
+- Idea A: Correlate development of Tweets and Stock-Values over time.
+- Idea B: Provide additional information, that helps to interpret those developments.
+- Idea C: Automatically buy/sell stocks based on prediction. (not done)
+
++++
+@title[Data Sources]
+
+#### Data Sources
+- Twitter Stream
+- Crypto-Stock-Market Stream
+- News
+
++++
+@title[KPIs]
+
+#### KPIs
+- Correlation coefficent between Stock-Values and (Sentiment of) Tweets
+- Delay between events in Stock-Values and on Twitter
+
++++
+@title[Setup]
+#### Project Setup
+**Github** for collaboration
+- Feature Branches & Pull requests
+- Ticketing / Bugs Tracking
+- Slides (gitpitch)
+
+**AWS** for Hosting
+- t2.medium running Ubuntu
+- Access via SSH
+
+**Architecture**
+- Docker based Microservices
+
+--- 
+@title[Architecture]
+
+#### Architecture
+# Docker based Microservices
+
++++
+@title[Docker]
+
+#### Docker
+- to do (Container, Docckerfile,..)
+
++++
+@title[Microservices]
+
+#### Microservices
+- to do (stateless, independent,...)
+
++++
+@title[In Action]
+
+#### In Action
+- to do (Build, Run, Docker-Compose)
+
 ---?image=assets/bg-mongodb.png
-@title[MongoDB Storage]
+@title[Microservice - MongoDB]
 
 #### Microservice 1
 # Mongo DB
 
 +++
+@title[MongoDB]
 
-#### To be done
+#### MongoDB
+- Document based Database
+- A Document contains a JSON object
+- Multiple Documents grouped to Collections
+- Database can be queried
+
++++ 
+@title[Docker Setup]
+
+#### Docker Setup
+- Official MongoDB Image
+- Persist Data in local path
+- Allow connections from other Containers
+
++++
+@title[Problem with Speed]
+
+#### Problem 1
+- Slow (CPU-eating) on Queries over Timestamp
+
+#### Solution
+- Create Index on Timestamp Attribute
+- Aggregate in DB, where possible
+
++++
+@title[Problem with Aggregation]
+
+#### Problem 1
+- MongoDB can aggregate DateTime-Object on Intervals.
+- But we get Timestamps in Milliseconds from Twitter.
+- How to aggregate Milliseconds?
+
+#### Solution A
+- Create & store DateTime value
+
+#### Solution B
+- Use Math
 
 ---?image=assets/bg-twitterlistener.png
 @title[Twitter Stream Listener]
