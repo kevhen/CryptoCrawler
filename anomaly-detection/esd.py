@@ -20,6 +20,11 @@ from webargs.flaskparser import use_args
 import statsmodels.api as sm
 import numpy as np
 from PyAstronomy import pyasl
+import logging
+logging.basicConfig(format='%(levelname)s - %(asctime)s: %(message)s',
+                    datefmt='%m/%d/%Y %H:%M:%S',
+                    level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 def agg_tweets(db, collection, start_time, end_time, hours):
@@ -60,31 +65,43 @@ def agg_tweets(db, collection, start_time, end_time, hours):
     # during mongodb aggregation
     df['timestamp_ms'] = df['_id'].astype(int).multiply(agg_range)
 
-    df = df[(df['timestamp_ms'] >= start_time) & (df['timestamp_ms'] <= end_time)]
+    df = df[(df['timestamp_ms'] >= start_time)
+            & (df['timestamp_ms'] <= end_time)]
 
     # Convert to datetime
-    df['timestamp_ms'] = pd.to_datetime(df['timestamp_ms'], unit='ms')
+    df['date'] = pd.to_datetime(df['timestamp_ms'], unit='ms')
 
     # Set as index
-    df = df.set_index(df['timestamp_ms'])
+    df = df.set_index(df['date'])
     df = df.sort_index()
 
     # Remove the mongo-row-id, as it's not needed
     if '_id' in df.columns:
         del df['_id']
-    if 'timestamp_ms' in df.columns:
-        del df['timestamp_ms']
+    if 'date' in df.columns:
+        del df['date']
     return df
 
 
 def detect_anomalies(df, hours):
     """Use Seasonal Decompose and ESD on residual to detect anomalies."""
-    frequency = (24 / hours)
+    # The frequency of the signal changes. We expect 24h cycles.
+    frequency = round(24 / hours)
+
+    # Seasonal decompose
     model = sm.tsa.seasonal_decompose(df['count'], freq=frequency)
+
+    # We only use residue values here
     resid = model.resid.values
+
+    # Set NaNs to 0, as this ESD doesn't handle them
     resid[np.isnan(resid)] = 0
+
+    # Use ESD to detect anomalies
     anomalies = pyasl.generalizedESD(resid, 10, 0.05)
-    result_df = df['count'].ix[anomalies[1]]
+
+    # Get the timestamps from the corresponding anomalies
+    result_df = df['timestamp_ms'].ix[anomalies[1]].tolist()
     return result_df
 
 
@@ -122,10 +139,15 @@ def init_flask():
     @use_args(anom_args)
     def detect_anoms(args):
         """Handle incoming request, send back anomalies."""
+        logger.info('Received request.')
         result = {}
-        df = agg_tweets(db, args['collection'], args['start'], args['end'], args['hours'])
+        df = agg_tweets(db, args['collection'], args[
+                        'start'], args['end'], args['hours'])
+
+        result['agg_hours'] = args['hours']
         result['values_count'] = len(df)
         result['anomalies'] = detect_anomalies(df, args['hours'])
+        logger.info('Sending result:', result)
         return json.dumps(result)
     return app
 
