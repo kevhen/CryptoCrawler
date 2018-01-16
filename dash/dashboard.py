@@ -147,7 +147,7 @@ class dashboard():
         """
         # Query the mongo db
         df = None
-        agg_range = 1000 * 60 * 60 # by hours
+        agg_range = 1000 * 60 * 60  # by hours
         for collection in collections:
             # Mongodb aggregation magic....
             cursor = self.db[collection].aggregate([
@@ -271,6 +271,7 @@ class dashboard():
                     # Chart for Live Tweets
                     dcc.Graph(
                         id='tweets-live-plot',
+                        style={'width': '878px', 'height': '200px'},
                         figure=self.plot_live_tweets(
                             self.topics_default, 5),
                         config={
@@ -287,6 +288,7 @@ class dashboard():
                 html.Div([
                     # Chart for All Tweets
                     dcc.Graph(
+                        style={'width': '878px', 'height': '450px'},
                         id='tweets-plot',
                         figure=self.plot_tweets(
                             self.topics_default))
@@ -351,7 +353,7 @@ class dashboard():
         return figure
 
     def plot_tweets(self, topics):
-        """Plot the live tweet chart."""
+        """Plot the overall twitter chart."""
         df = self.get_tweet_data(topics)
 
         figure = {
