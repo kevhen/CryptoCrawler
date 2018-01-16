@@ -5,4 +5,5 @@
 FROM jupyter/scipy-notebook:0b3ec811c968
 
 USER root
-RUN conda install -y pymongo pyastronomy
+RUN conda install -y pymongo
+RUN pip install pyastronomy
