@@ -5,6 +5,7 @@
 FROM continuumio/miniconda3
 
 RUN conda install -y flask
+RUN conda install -y -c statsmodels statsmodels 
 RUN pip install pyastronomy
 
 WORKDIR /home
