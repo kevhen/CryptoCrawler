@@ -64,10 +64,19 @@ services:
   crypto-topics:
     networks:
       - backend
-      - frontend      
+      - frontend
     build:
       context: ./miniconda3-topics
     ports:
       - 5000:5000
     depends_on:
       - crypto-mongo
+
+  crypto-anoms:
+    networks:
+      - backend
+      - frontend
+    build:
+      context: ./miniconda3-anoms
+    ports:
+      - 5001:5001
