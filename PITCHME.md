@@ -13,6 +13,7 @@ Master Data Sciene & Business Analytics<br>
 University of Media Stuttgart, Germany<br>
 </div>
 
+
 ---
 @title[Markdown Syntax Demo]
 
@@ -28,6 +29,7 @@ Text <span class="pink">with pink</span> and **bold**, *italic* and normal words
 - Numeration B
     - Sub Numeration A
     - Sub Numeration B
+
 
 +++
 @title[Markdown Syntax Demo]
@@ -53,11 +55,13 @@ if self.mute is not True:
 - #CCA91F
 - #00A91F
 
+
 ---
 @title[Planning the Project]
 
 #### Projekt Preparation
 # Planning
+
 
 +++
 @title[Goal]
@@ -67,6 +71,7 @@ if self.mute is not True:
 - Idea A: Correlate development of Tweets and Stock-Values over time.
 - Idea B: Provide additional information, that helps to interpret those developments.
 - Idea C: Automatically buy/sell stocks based on prediction. (not done)
+
 
 +++
 @title[Data Sources]
@@ -83,6 +88,7 @@ if self.mute is not True:
 - Correlation coefficent between Stock-Values and (Sentiment of) Tweets
 - Delay between events in Stock-Values and on Twitter
 
+
 +++
 @title[Setup]
 #### Project Setup
@@ -98,17 +104,20 @@ if self.mute is not True:
 **Architecture**
 - Docker based Microservices
 
+
 --- 
 @title[Architecture]
 
 #### Architecture
 # Docker based Microservices
 
+
 +++
 @title[Docker]
 
 #### Docker
-- to do (Container, Docckerfile,..)
+- to do (Container, Dockerfile,..)
+
 
 +++
 @title[Microservices]
@@ -116,17 +125,20 @@ if self.mute is not True:
 #### Microservices
 - to do (stateless, independent,...)
 
+
 +++
 @title[In Action]
 
 #### In Action
 - to do (Build, Run, Docker-Compose)
 
+
 ---?image=assets/bg-mongodb.png
 @title[Microservice - MongoDB]
 
 #### Microservice 1
 # Mongo DB
+
 
 +++
 @title[MongoDB]
@@ -137,13 +149,6 @@ if self.mute is not True:
 - Multiple Documents grouped to Collections
 - Database can be queried
 
-+++ 
-@title[Docker Setup]
-
-#### Docker Setup
-- Official MongoDB Image
-- Persist Data in local path
-- Allow connections from other Containers
 
 +++
 @title[Problem with Speed]
@@ -152,8 +157,9 @@ if self.mute is not True:
 - Slow (CPU-eating) on Queries over Timestamp
 
 #### Solution
-- Create Index on Timestamp Attribute
+- Create Index on Timestamp attribute
 - Aggregate in DB, where possible
+
 
 +++
 @title[Problem with Aggregation]
@@ -169,37 +175,42 @@ if self.mute is not True:
 #### Solution B
 - Use Math
 
+
 ---?image=assets/bg-twitterlistener.png
 @title[Twitter Stream Listener]
 
 #### Microservice 2
 # Twitter Stream Listener
 
-+++
 
++++
 @title[Twitter Stream - Information overload]
 
 #### Problem 1: Too much information
 
 Over <span class="pink">500 MB</span> Data during first two hours.
 
-Over <span class="pink">6000 Tweets</span> every ten minutes:
+Over <span class="pink">600 Tweets</span> per minute:
 ![Tweets after two hours](assets/too_much_data.png)
 
-+++
 
++++
 @title[Twitter Stream - Information overload - solution]
 
 #### Solution
 
 Limit Stored attributes
+- TweetID
+- Text
+- Timestamps
+- Geo-Information
 
 Limit stored Tweets
 - Exclude everything not EN
 - Exclude Retweets
 
-+++
 
++++
 @title[Twitter Stream - Bug]
 
 #### Problem 2: Bug in Tweepy Module
@@ -216,26 +227,52 @@ AttributeError: 'NoneType' object has no attribute 'strip'
 ```
 https://github.com/tweepy/tweepy/issues/869 (open since March 2017)
 
-+++
 
++++
 @title[Twitter Stream - Bug - Solution]
 
-#### Problem 2: Bug in Tweepy Module
-Try older Version: `conda install -c conda-forge -y tweepy=3.2.0`
+#### Solution A
+Tried older Version: `conda install -c conda-forge -y tweepy=3.2.0`
 Didn't work.
-Workaround:
-Auto-restart on exit:
+
+#### Solution B
+**Workaround:**
+- Handle Exceptions and reconnect Tweepy:
+`bla bla`
+- Just in case: Auto-restart Microservice on exit:
 `while true; do python streamlistener.py; done`
 
+
 ---
+@title[Microservice - Price Crawler]
 
-#### No more <span class="gray">Keynote</span>.
-#### No more <span class="gray">Powerpoint</span>.
-<br>
-#### Just <span class="gold">Markdown</span>.
-#### Then <span class="gold">Git-Commit</span>.
+#### Microservice 3
+# Crypto Price Crawler
 
----?code=assets/md/hello.md&title=Step 1. PITCHME.md
+
+---
+@title[Microservice - Anomaly Detection]
+
+#### Microservice 4
+# Anomaly Detection
+
+
++++
+@title[Idea]
+
+#### Idea
+Detect 'unusual' Events in:
+- Amount of Tweets received
+- Amount of Tweets with pos/neg sentiment
+- Prices of Crypto-Currencies
+Then use them for:
+- Visualization in Dashboard
+- Searching News in those time ranges
+to <span class="pink">ease the interpretation</span> of the data.
+
++++
+@title[Anomalies in Timeseries]
+
 
 <br>
 #### Create slideshow content using GitHub Flavored Markdown in your
