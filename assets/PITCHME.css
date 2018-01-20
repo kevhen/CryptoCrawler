@@ -11,9 +11,13 @@
     text-transform: none;
 }
 
-.reveal li, 
+.reveal li,
 .reveal p {
     font-size: 60%;
+}
+
+.reveal p {
+    margin: 20px 0px 0px 0px;
 }
 
 .reveal a {
