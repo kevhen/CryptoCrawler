@@ -35,7 +35,7 @@ class dashboard():
         conn = MongoClient(self.config['mongodb']['host'],
                            self.config['mongodb']['port'])
         # Use local mongo-container IP for testing
-        # conn = MongoClient('172.17.0.2', self.config['mongodb']['port'])
+        conn = MongoClient('172.17.0.2', self.config['mongodb']['port'])
         self.db = conn[self.config['mongodb']['db']]
 
         # Helper Variable for timestamp conversion
@@ -154,12 +154,14 @@ class dashboard():
                 {
                     '$project': {
                         'timestamp_ms': '$timestamp_ms',
+                        'score': '$score',
                         'div_val': {'$divide': ['$timestamp_ms', agg_range]},
                     }
                 },
                 {
                     '$project': {
                         'timestamp_ms': '$timestamp_ms',
+                        'score': '$score',
                         'div_val': '$div_val',
                         'mod_val': {'$mod': ['$div_val', 1]}
                     }
@@ -167,6 +169,7 @@ class dashboard():
                 {
                     '$project': {
                         'timestamp_ms': '$timestamp_ms',
+                        'score': '$score',
                         'div_val': '$div_val',
                         'mod_val': '$mod_val',
                         'sub_val': {'$subtract': ['$div_val', '$mod_val']},
@@ -175,6 +178,7 @@ class dashboard():
                 {
                     '$group': {
                         '_id': '$sub_val',
+                        'score': {'$avg': '$score'},
                         'count': {'$sum': 1}
                     }
                 }])
@@ -197,11 +201,7 @@ class dashboard():
         # Convert to datetime
         df['timestamp_ms'] = pd.to_datetime(df['timestamp_ms'], unit='ms')
 
-        # Group and aggregate
-        df_result = df.groupby(['timestamp_ms', 'collection'])
-        df_result = df_result['count'].sum().unstack('collection').fillna(0)
-
-        return df_result
+        return df
 
     # ============================================
     # Dash/Charting related methods
@@ -280,6 +280,10 @@ class dashboard():
                 ], className='content')
             ], className='box'),
 
+            # Hidden element to store data
+            # See: https://plot.ly/dash/sharing-data-between-callbacks
+            html.Div(id='hidden-data', style={'display': 'none'}),
+
             # Overall Tweets per Hour
             html.Div([
                 html.Div([
@@ -289,9 +293,19 @@ class dashboard():
                     # Chart for All Tweets
                     dcc.Graph(
                         style={'width': '878px', 'height': '450px'},
-                        id='tweets-plot',
-                        figure=self.plot_tweets(
-                            self.topics_default))
+                        id='tweets-plot')
+                ], className='content')
+            ], className='box'),
+
+            # Sentiment per Hour
+            html.Div([
+                html.Div([
+                    html.H3('Avg. Sentiment per Hour')
+                ], className='title'),
+                html.Div([
+                    dcc.Graph(
+                        style={'width': '878px', 'height': '450px'},
+                        id='senti-plot')
                 ], className='content')
             ], className='box'),
 
@@ -315,18 +329,34 @@ class dashboard():
                        component_property='value')],
             [],
             [ddp.Event('live-update', 'interval')])
-        def update_timeseries(topic_values, live_range):
+        def update_live_timeseries(topic_values, live_range):
             # Do nothing, if Live Chart is set to "off" (value = 0)
             if (live_range == 0) or (live_range is None):
                 return
             return self.plot_live_tweets(topic_values, live_range)
 
+        @app.callback(ddp.Output('hidden-data', 'children'),
+                      [ddp.Input(component_id='global-topic-checklist',
+                                 component_property='values')])
+        def clean_data(topic_values):
+            # Get Data
+            df = self.get_tweet_data(topic_values)
+            # Store in hidden element
+            return df.to_json(date_format='iso', orient='split')
+
         @app.callback(
             ddp.Output('tweets-plot', 'figure'),
-            [ddp.Input(component_id='global-topic-checklist',
-                       component_property='values')])
-        def update_timeseries(topic_values):
-            return self.plot_tweets(topic_values)
+            [ddp.Input('hidden-data', 'children')])
+        def update_timeseries(jsonified_data):
+            df = pd.read_json(jsonified_data, orient='split')
+            return self.plot_tweets(df)
+
+        @app.callback(
+            ddp.Output('senti-plot', 'figure'),
+            [ddp.Input('hidden-data', 'children')])
+        def update_senti(jsonified_data):
+            df = pd.read_json(jsonified_data, orient='split')
+            return self.plot_senti(df)
 
         self.app = app
 
@@ -352,9 +382,51 @@ class dashboard():
         }
         return figure
 
-    def plot_tweets(self, topics):
+    def plot_tweets(self, df):
         """Plot the overall twitter chart."""
-        df = self.get_tweet_data(topics)
+        # Group and aggregate
+        df = df.groupby(['timestamp_ms', 'collection'])
+        df = df['count'].sum().unstack('collection').fillna(0)
+
+        figure = {
+            'data': [
+                go.Scatter(
+                    x=df.index,
+                    y=df[i],
+                    text=df[i].astype('int').astype('str') + ' Tweets',
+                    opacity=0.7,
+                    name=i
+                ) for i in df.columns.values
+            ],
+            'layout': go.Layout(
+                xaxis={'rangeselector':
+                       {'buttons': [
+                           {'count': 1, 'label': '1 day', 'step': 'day',
+                               'stepmode': 'backward'},
+                           {'count': 1, 'label': '1 week', 'step': 'week',
+                            'stepmode': 'backward'},
+                           {'count': 1, 'label': '1 month', 'step': 'month',
+                            'stepmode': 'backward'},
+                           {'step': 'all'}
+                       ]},
+                       'ticks': 'inside',
+                       'ticklen': 15,
+                       'rangeslider': {},
+                       'type': 'date'},
+                margin={'l': 40, 'b': 0, 't': 10, 'r': 10},
+                showlegend=True,
+                legend={'x': 1.02, 'y': 0.5},
+                hovermode='closest'
+            )
+        }
+
+        return figure
+
+    def plot_senti(self, df):
+        """Plot the overall twitter chart."""
+        # Group and aggregate
+        df = df.groupby(['timestamp_ms', 'collection'])
+        df = df['score'].mean().unstack('collection').fillna(0)
 
         figure = {
             'data': [
