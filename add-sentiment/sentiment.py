@@ -30,7 +30,7 @@ def load_tweets(db, collection, update_all):
     else:
         query = {'sentiment': {'$exists': False}}
     fields = {'text': 1}
-    cursor = db[collection].find(query, fields)
+    cursor = db[collection].find(query, fields).limit(100000)
     df = pd.DataFrame(list(cursor))
     return df
 
