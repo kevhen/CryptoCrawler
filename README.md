@@ -18,6 +18,8 @@
 	- [Microservice 4: Jupyter Notebook](#microservice-4-jupyter-notebook)
 	- [Microservice 5: Dashboard](#microservice-5-dashboard)
 	- [Microservice 6: LDA Topic Identification](#microservice-6-lda-topic-identification)
+	- [Microservice 7: Anomaly Detection](#microservice-7-anomaly-detection)
+	- [Microservice 8: Sentiment Analysis](#microservice-8-sentiment-analysis)
 - [Useful info & commands](#useful-info-commands)
 	- [Docker](#docker)
 	- [Docker Compose](#docker-compose)
