@@ -62,9 +62,13 @@
 - AMI: ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-20171121.1 (ami-aa2ea6d0)
 - root: 15GB
 - EBS: 16GB
-- open ssh (ip whitelist)
-- open http
-- open tcp 8888 (for jupyter notebook. ip whitelist)
+- Ports open with ip whitelist (*for debugging only):
+    - ssh 22
+    - http 80
+    - tcp 8888 - Jupyter notebook
+    - tcp 8050 - Dashboard
+    - *tcp 5000 - Topic Modelling
+    - *tcp 5001 - Anomaly Detection
 
 ## Server Setup
 
