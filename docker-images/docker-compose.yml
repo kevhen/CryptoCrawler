@@ -81,7 +81,7 @@ services:
     ports:
       - 5001:5001
 
-  crypto-anoms:
+  crypto-senti:
     networks:
       - backend
     build:
