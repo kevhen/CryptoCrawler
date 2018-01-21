@@ -90,16 +90,6 @@
 - DB is persisted on a Docker Volume
 - **No credentials configured, only listen to localhost!!**
 
-**Build:**
-
-- Create Directory for Persistent Data. On VM: `mkdir /data/mongodb`
-- No further setup needed, as we use Container from official Docker Repo.
-
-**Run:**
-
-- First time: `docker run --name crypto-mongo -t -v /data/mongodb:/data/db -d mongo:jessie`
-- Then: `docker start crypto-mongo`
-
 **Optimize:**
 
 - We do lot's of queries based on "timestamp". Let's create an index on this field:
@@ -115,18 +105,6 @@
 
 - Storing the Tweets into Mongo DB
 - Configuration via `/CryptoCrawler/config.yaml` in Repo, with words to listen for, divided into sections (will be used to store tweets in different mongo-collections.)
-
-**Build:**
-
-- `cd /data/`
-- Download Dockerfile: `wget https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/miniconda3-twitter/Dockerfile`
-- Create `credentials.yaml` in `/data/` with Twitter credentials.
-- Build: `sudo docker build --build-arg credsfile=./credentials.yaml -t miniconda3-twitter .`
-
-**Run:**
-
-- First time: `docker run -t -i --name crypto-twitter-listener --link crypto-mongo:mongo -d miniconda3-twitter`
-- Then: `docker start crypto-twitter-listener`
 
 ## Microservice 3: Crypto Price Crawler
 
@@ -144,15 +122,6 @@
 - Includes scipy-stack + pymongo
 - Password & IP on whitelist needed for access
 
-**Build:**
-
-- `sudo docker build https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/jupyter/Dockerfile -t custom_jupyter`
-
-**Run:**
-
-- First time: `docker run -d --link crypto-mongo:mongo --name crypto-jupyter -v /data/notebooks:/home/jovyan/work -p 8888:8888 custom_jupyter start-notebook.sh --NotebookApp.password='sha1:f6a0093ff7ca:be25a6064ba30e37265b0f800cbb925c636cc4fe'`
-- Then: `docker start crypto-jupyter`
-
 **Access Notebook:**
 
 - Via AWS public DNS-Name + :8888\. E.g.: <https://ec2-34-227-176-103.compute-1.amazonaws.com:8888>
@@ -165,15 +134,6 @@
 - Exposes Web-Dashboard via Port 8050
 - Configuration via `/CryptoCrawler/config.yaml` in Repo, with words to listen for, divided into sections (will be used to store tweets in different mongo-collections.)
 
-**Build:**
-
-- `sudo docker build https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/miniconda3-dash/Dockerfile -t miniconda3-dash`
-
-**Run:**
-
-- First time: `docker run -t -i -p 8050:8050 --name crypto-dash --link crypto-mongo:mongo -d miniconda3-dash`
-- Then: `docker start crypto-dash`
-
 **View Dashboard:**
 
 - Via AWS public DNS-Name + :8050\. E.g.: <https://ec2-34-227-176-103.compute-1.amazonaws.com:8050>
@@ -185,15 +145,6 @@
 
 - Exposes Web-Service to Port 5000
 - Takes collection name, start + end timestamps and desired topic count, gives back topics as a list of words with probablility values
-
-**Build:**
-
-- `sudo docker build https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/miniconda3-topics/Dockerfile -t miniconda3-topics`
-
-**Run:**
-
-- First time: `docker run -t -i -p 5000:5000 --name crypto-topics --link crypto-mongo:mongo -d miniconda3-topics`
-- Then: `docker start crypto-topics`
 
 **Query:**
 
@@ -214,6 +165,46 @@
   "num_topics": 6}
   ```
 
+## Microservice 7: Anomaly Detection
+
+**Description:**
+
+- Exposes Web-Service to Port 5001
+- Takes a list of values of a timeseries, together with a frequency value and p value.
+- Responses the indexes of the anomal values in the list
+
+**Query:**
+- Example POST body to `http://localhost:5001/esd`
+```json
+{
+"ary": [112, 118, 132, 129, 121, 135, 148, 148, 136, 119, 104, 118, 115, 126,
+ 141, 135, 125, 149, 170, 170, 158, 133, 114, 140, 145, 150, 178, 163, 172,
+ 178, 199, 199, 184, 162, 146, 166, 171, 180, 193, 181, 183, 218, 230, 242,
+ 209, 191, 172, 194, 196, 196, 236, 235, 229, 243, 264, 272, 237, 211, 180,
+ 201, 204, 188, 235, 227, 234, 264, 302, 293, 259, 229, 203, 229, 242, 233,
+ 267, 269, 270, 315, 364, 347, 312, 274, 237, 278, 284, 277, 317, 313, 318,
+ 374, 413, 405, 355, 306, 271, 306, 315, 301, 356, 348, 355, 422, 465, 467,
+ 404, 347, 305, 336, 340, 318, 362, 348, 363, 435, 491, 505, 404, 359, 310,
+ 337, 360, 342, 406, 396, 420, 472, 548, 559, 463, 407, 362, 405, 417, 391,
+ 419, 461, 472, 535, 622, 606, 508, 461, 390, 432],
+"freq": 12,
+"p": 0.95
+}
+```
+- Example Response:
+```
+
+```
+
+## Microservice 8: Sentiment Analysis
+
+**Description:**
+- Used to add sentiment information to all tweets in MongoDB
+- Constently queries MongoDB for Tweets without sentiment/score (every 30sec)
+- Calculates sentiment & score and stores them to MongoDB
+- Very simple algo: Just look for pos/neg words from [a well known list for financial sentiment analysis](https://www3.nd.edu/~mcdonald/Word_Lists.html).
+- The **Score** value is: (count of positive words) - (count of negative words)
+- **Sentiment** can be "neg" (score < 0), "pos" (score > 0) or "neu" (score = 0)
 # Useful info & commands
 
 ## Docker
