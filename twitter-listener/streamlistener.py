@@ -158,4 +158,5 @@ def startListening():
 
 
 if __name__ == '__main__':
-    startListening()
+    while True:
+        startListening()
