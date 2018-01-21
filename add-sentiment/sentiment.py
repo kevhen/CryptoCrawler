@@ -153,4 +153,4 @@ if __name__ == '__main__':
     negatives = load_negative()
     positives = load_positive()
 
-    update_sentiment(db, collections, True)
+    update_sentiment(db, collections, False)
