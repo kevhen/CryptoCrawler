@@ -84,6 +84,7 @@ services:
   crypto-senti:
     networks:
       - backend
+      - frontend
     build:
       context: ./miniconda3-senti
     depends_on:
