@@ -29,7 +29,7 @@ def load_tweets(db, collection, update_all):
         query = {}
     else:
         query = {'sentiment': {'$exists': False}}
-    fields = {'text': 1, 'id': 1}
+    fields = {'text': 1}
     cursor = db[collection].find(query, fields)
     df = pd.DataFrame(list(cursor))
     return df
@@ -38,10 +38,20 @@ def load_tweets(db, collection, update_all):
 def write_sentiments(db, collection, df):
     """Load text from tweets in specified colleciton & time range."""
     for index, row in df.iterrows():
+        # Set sentiment value
+        if row['score'] == 0:
+            sentiment = 'neu'
+        elif row['score'] > 0:
+            sentiment = 'pos'
+        else:
+            sentiment = 'neg'
+
         query = {'_id': row['_id']}
         update = {'$set': {
-            'sentiment': row['sentiment']
+            'score': row['score'],
+            'sentiment': sentiment
         }}
+
         db[collection].update_one(query, update)
     return
 
@@ -69,7 +79,7 @@ def load_positive():
     with open('./pos.txt', 'r') as f:
         positives = f.readlines()
     positive = [pos.strip().lower() for pos in positives]
-    return positive
+    return set(positive)
 
 
 def load_negative():
@@ -77,12 +87,11 @@ def load_negative():
     with open('./neg.txt', 'r') as f:
         negatives = f.readlines()
     negatives = [pos.strip().lower() for pos in negatives]
-    return negatives
+    return set(negatives)
 
 
 def sentiment(text):
     """Use keywords to get sentiment."""
-    # count positive words in text
     pos = 0
     neg = 0
     for word in text.split():
@@ -102,20 +111,24 @@ def update_sentiment(db, collections, update_all=False):
     only new tweets get sentimented.
     """
     for collection in collections:
+        logger.info('-' * 50)
         logger.info('Updating sentiment for: {}'.format(collection))
         logger.info('Loading tweets...')
         df = load_tweets(db, collection, update_all)
-        logger.info('Clean text...')
-        df['text'] = df['text'].apply(clean)
-        logger.info('Get sentiment...')
-        df['sentiment'] = df['text'].apply(sentiment)
-        logger.info('Write to db...')
-        write_sentiments(db, collection, df)
-        logger.info('Done.')
+        if len(df) > 0:
+            logger.info('{} Tweets to process...'.format(len(df)))
+            logger.info('Clean text...')
+            df['text'] = df['text'].apply(clean)
+            logger.info('Get sentiment score...')
+            df['score'] = df['text'].apply(sentiment)
+            logger.info('Write to db...')
+            write_sentiments(db, collection, df)
+            logger.info('Done.')
+        else:
+            logger.info('No new tweets.')
 
     logger.info('Waiting 30 sec...')
     time.sleep(30)
-    exit()
     update_sentiment(db, collections, update_all)
     return
 
@@ -131,7 +144,7 @@ if __name__ == '__main__':
     conn = MongoClient(config['mongodb']['host'],
                        config['mongodb']['port'])
     # Use local mongo-container IP for testing
-    # conn = MongoClient('172.17.0.2', config['mongodb']['port'])
+    conn = MongoClient('172.17.0.2', config['mongodb']['port'])
     db = conn[config['mongodb']['db']]
 
     stop = set(stopwords.words('english') + ['rt'])
@@ -140,4 +153,4 @@ if __name__ == '__main__':
     negatives = load_negative()
     positives = load_positive()
 
-    update_sentiment(db, collections, False)
+    update_sentiment(db, collections, True)

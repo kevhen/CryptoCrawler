@@ -80,3 +80,11 @@ services:
       context: ./miniconda3-anoms
     ports:
       - 5001:5001
+
+  crypto-anoms:
+    networks:
+      - backend
+    build:
+      context: ./miniconda3-senti
+    depends_on:
+      - crypto-mongo
