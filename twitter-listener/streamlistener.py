@@ -63,6 +63,8 @@ class MyStreamListener(tweepy.StreamListener):
         logger.error('API returns status code {}'.format(status_code))
         if status_code == 420:
             # returning False in on_data disconnects the stream
+            logger.error('API returned 420. Sleeping for 5 min...')
+            time.sleep(300)
             return False
 
     def on_connect(self):
@@ -155,8 +157,9 @@ def startListening():
         stream.filter(track=list(all_words), async=True)
     except Exception as e:
         logger.error('Exception raised!', e)
+        logger.info('Try restarting...')
+        startListening()
 
 
 if __name__ == '__main__':
-    while True:
-        startListening()
+    startListening()
