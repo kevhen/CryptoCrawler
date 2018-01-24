@@ -6,6 +6,7 @@ FROM continuumio/miniconda3
 
 RUN conda install -y pymongo pyyaml
 RUN conda install -c conda-forge -y tweepy
+RUN conda install -c gomss-nowcast schedule
 
 WORKDIR /home
 RUN git clone https://github.com/kevhen/CryptoCrawler.git

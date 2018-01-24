@@ -252,6 +252,10 @@
 
 - `sudo du -sh /data/mongodb`
 
+**Show Top 10 largest directories:**
+
+- `du -a / | sort -n -r | head -n 10`
+
 # Issues
 
 **Things that could be improved, if we had more time:**

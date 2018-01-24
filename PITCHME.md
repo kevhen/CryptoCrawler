@@ -55,6 +55,25 @@ if self.mute is not True:
 - #CCA91F
 - #00A91F
 
+RecursionError
+```
+crypto-price-listener_1  |     self._backend, self._x509
+crypto-price-listener_1  |   File "/opt/conda/lib/python3.6/site-packages/cryptography/hazmat/backends/openssl/decode_asn1.py", line 249, in parse
+crypto-price-listener_1  |     value = handler(backend, ext_data)
+crypto-price-listener_1  |   File "/opt/conda/lib/python3.6/site-packages/cryptography/hazmat/backends/openssl/decode_asn1.py", line 428, in _decode_subject_alt_name
+crypto-price-listener_1  |     _decode_general_names_extension(backend, ext)
+crypto-price-listener_1  |   File "/opt/conda/lib/python3.6/site-packages/cryptography/x509/extensions.py", line 1008, in __init__
+crypto-price-listener_1  |     self._general_names = GeneralNames(general_names)
+crypto-price-listener_1  |   File "/opt/conda/lib/python3.6/site-packages/cryptography/x509/extensions.py", line 964, in __init__
+crypto-price-listener_1  |     if not all(isinstance(x, GeneralName) for x in general_names):
+crypto-price-listener_1  |   File "/opt/conda/lib/python3.6/site-packages/cryptography/x509/extensions.py", line 964, in <genexpr>
+crypto-price-listener_1  |     if not all(isinstance(x, GeneralName) for x in general_names):
+crypto-price-listener_1  |   File "/opt/conda/lib/python3.6/abc.py", line 182, in __instancecheck__
+crypto-price-listener_1  |     if subclass in cls._abc_cache:
+crypto-price-listener_1  |   File "/opt/conda/lib/python3.6/_weakrefset.py", line 72, in __contains__
+crypto-price-listener_1  |     wr = ref(item)
+crypto-price-listener_1  | RecursionError: maximum recursion depth exceeded while calling a Python object
+```
 
 ---
 @title[Planning the Project]
@@ -105,7 +124,7 @@ if self.mute is not True:
 - Docker based Microservices
 
 
---- 
+---
 @title[Architecture]
 
 #### Architecture
