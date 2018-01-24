@@ -82,8 +82,8 @@ class dashboard():
         set_range = {'autorange': True}
         for rd in relayout_datas:
             if (rd is not None) and \
-                    (('xaxis.autorange' in rd) or \
-                    ('yaxis.autorange' in rd)):
+                    (('xaxis.autorange' in rd) or
+                     ('yaxis.autorange' in rd)):
                 return {'autorange': True}
             if (rd is not None) and \
                     ('xaxis.range[0]' in rd) and \
@@ -404,15 +404,20 @@ class dashboard():
                                  component_property='values')])
         def clean_stock_data(topic_values):
             # Get Data
+            currencies = {
+                'BTC': 'bitcoin',
+                'IOT': 'iota',
+                'ETH': 'ethereum',
+            }
             currency_codes = []
-            if 'bitcoin' in topic_values:
-                currency_codes.append('BTC')
-            if 'iota' in topic_values:
-                currency_codes.append('IOT')
-            if 'ethereum' in topic_values:
-                currency_codes.append('ETH')
+            for key, val in currencies.items():
+                if val in topic_values:
+                    currency_codes.append(key)
+
             if len(currency_codes) > 0:
                 df = self.get_agg_data(currency_codes, 'EUR')
+                # Replace codes with names
+                df['collection'] = df['collection'].replace(currencies)
             else:
                 df = pd.DataFrame()
             # Store in hidden element
@@ -457,9 +462,9 @@ class dashboard():
         if (df is None) or (len(df) < 1):
             return {'data': [],
                     'layout': go.Layout(
-                                    paper_bgcolor='rgba(0,0,0,0)',
-                                    plot_bgcolor='rgba(0,0,0,0)'
-                                    )}
+                paper_bgcolor='rgba(0,0,0,0)',
+                plot_bgcolor='rgba(0,0,0,0)'
+            )}
         figure = {
             'data': [
                 go.Scatter(

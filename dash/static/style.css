@@ -6,7 +6,7 @@ html {
 h3 {
     font-size: 18px;
     font-weight: lighter;
-    color: #DB56B2;
+    color: #333;
     padding-top: 3px;
     padding-left: 10px;
     padding-bottom: 3px;
@@ -69,6 +69,7 @@ h3 {
     font-size: 12px;
     font-weight: bold;
     line-height: 24px;
+    color: #ddd;
 }
 
 .box {
