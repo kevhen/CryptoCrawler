@@ -432,7 +432,7 @@ class dashboard():
             [ddp.Input('hidden-stock-data', 'children'),
              ddp.Input('tweets-plot', 'relayoutData'),
              ddp.Input('senti-plot', 'relayoutData')])
-        def update_senti(jsonified_data, rd_tweets, rd_senti):
+        def update_plot(jsonified_data, rd_tweets, rd_senti):
             df = pd.read_json(jsonified_data, orient='split')
             x_axis = self.get_x([rd_tweets, rd_senti])
             return self.plot_stock(df, x_axis)
@@ -507,7 +507,7 @@ class dashboard():
                 go.Scatter(
                     x=df.index,
                     y=df[i],
-                    text=df[i].astype('int').astype('str') + ' Tweets',
+                    text='Sentiment: ' + df[i].map('{:.2f}'.format),
                     opacity=0.7,
                     name=i,
                     line={'color': self.colors[i]}
@@ -533,7 +533,7 @@ class dashboard():
                 go.Scatter(
                     x=df.index,
                     y=df[i],
-                    text=df[i].astype('int').astype('str') + ' Tweets',
+                    text='Stock value: ' + df[i].map('{:.2f}'.format) +' €',
                     opacity=0.7,
                     name=i,
                     line={'color': self.colors[i]}
