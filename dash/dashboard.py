@@ -35,7 +35,7 @@ class dashboard():
         conn = MongoClient(self.config['mongodb']['host'],
                            self.config['mongodb']['port'])
         # Use local mongo-container IP for testing
-        # conn = MongoClient('172.17.0.2', self.config['mongodb']['port'])
+        conn = MongoClient('172.17.0.2', self.config['mongodb']['port'])
         self.db = conn[self.config['mongodb']['db']]
 
         # Helper Variable for timestamp conversion
@@ -51,6 +51,17 @@ class dashboard():
         logger.info('Init Dashboard')
         logger.info('Live Update Interval: {} s'.format(self.update_interval))
 
+        # Set colors for collection:
+        self.colors = {
+            'generalcrypto': '#DB56B2',
+            'bitcoin': '#DBC256',
+            'ethereum': '#56DB7F',
+            'iota': '#56D3DB',
+            'trump': '#CE0000',
+            'car2go': '#A056DB',
+            'collection': 'black'
+        }
+
         # Draw Dashboard
         self.init_dash()
 
@@ -61,6 +72,19 @@ class dashboard():
     def unix_time(self, dt):
         """Convert DateTime object to Unixtimestamp in ms."""
         return round((dt - self.epoch).total_seconds() * 1000.0)
+
+    def get_x(self, relayout_datas):
+        """Get xaxis range settings from layout data."""
+        set_range = {'autorange': True}
+        for rd in relayout_datas:
+            if (rd is not None) and \
+                    ('xaxis.range[0]' in rd) and \
+                    ('xaxis.range[1]' in rd):
+                set_range = {'range': [
+                    rd['xaxis.range[0]'],
+                    rd['xaxis.range[1]']
+                ]}
+        return set_range
 
     # ============================================
     # Data Querying & prepartion related Methods
@@ -234,25 +258,11 @@ class dashboard():
                     src='/static/logo.png'),
             ], className='banner'),
 
-            # Topic Selection
-            html.Div([
-                html.Div([
-                    html.H3("Topic Selection")
-                ], className='title'),
-                html.Div([
-                    dcc.Checklist(
-                        id='global-topic-checklist',
-                        options=topics_options,
-                        values=self.topics_default
-                    ),
-                ], className='content')
-            ], className='box'),
-
             # Live Tweets
             html.Div([
                 html.Div([
                     html.H3(
-                        'Tweets Count - Live - {} sec. per Tick' \
+                        'Tweets per {} sec.' \
                         .format(self.update_interval))
                 ], className='title'),
                 html.Div([
@@ -278,11 +288,25 @@ class dashboard():
                             'displayModeBar': False
                         })
                 ], className='content')
-            ], className='box'),
+            ], className='live-box'),
 
             # Hidden element to store data
             # See: https://plot.ly/dash/sharing-data-between-callbacks
             html.Div(id='hidden-data', style={'display': 'none'}),
+
+            # Topic Selection
+            html.Div([
+                html.Div([
+                    html.H3("Topic Selection")
+                ], className='title'),
+                html.Div([
+                    dcc.Checklist(
+                        id='global-topic-checklist',
+                        options=topics_options,
+                        values=self.topics_default
+                    ),
+                ], className='content')
+            ], className='box'),
 
             # Overall Tweets per Hour
             html.Div([
@@ -292,7 +316,7 @@ class dashboard():
                 html.Div([
                     # Chart for All Tweets
                     dcc.Graph(
-                        style={'width': '878px', 'height': '450px'},
+                        style={'width': '878px', 'height': '250px'},
                         id='tweets-plot')
                 ], className='content')
             ], className='box'),
@@ -304,7 +328,7 @@ class dashboard():
                 ], className='title'),
                 html.Div([
                     dcc.Graph(
-                        style={'width': '878px', 'height': '450px'},
+                        style={'width': '878px', 'height': '250px'},
                         id='senti-plot')
                 ], className='content')
             ], className='box'),
@@ -346,17 +370,21 @@ class dashboard():
 
         @app.callback(
             ddp.Output('tweets-plot', 'figure'),
-            [ddp.Input('hidden-data', 'children')])
-        def update_timeseries(jsonified_data):
+            [ddp.Input('hidden-data', 'children'),
+             ddp.Input('senti-plot', 'relayoutData')])
+        def update_timeseries(jsonified_data, rd_senti):
             df = pd.read_json(jsonified_data, orient='split')
-            return self.plot_tweets(df)
+            x_axis = self.get_x([rd_senti])
+            return self.plot_tweets(df, x_axis)
 
         @app.callback(
             ddp.Output('senti-plot', 'figure'),
-            [ddp.Input('hidden-data', 'children')])
-        def update_senti(jsonified_data):
+            [ddp.Input('hidden-data', 'children'),
+             ddp.Input('tweets-plot', 'relayoutData')])
+        def update_senti(jsonified_data, rd_tweets):
             df = pd.read_json(jsonified_data, orient='split')
-            return self.plot_senti(df)
+            x_axis = self.get_x([rd_tweets])
+            return self.plot_senti(df, x_axis)
 
         self.app = app
 
@@ -370,19 +398,27 @@ class dashboard():
                     y=df[i],
                     text=df[i].astype('int').astype('str') + ' Tweets',
                     opacity=0.7,
-                    name=i
+                    name=i,
+                    line={'color': self.colors[i]}
                 ) for i in df.columns.values
             ],
             'layout': go.Layout(
                 margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
                 showlegend=True,
                 legend={'x': 1.02, 'y': 0.5},
-                hovermode='closest'
+                hovermode='closest',
+                paper_bgcolor='rgba(0,0,0,0)',
+                plot_bgcolor='rgba(0,0,0,0)',
+                font=dict(color='#7f7f7f'),
+                xaxis={'gridcolor': '#5E5E5E',
+                       'zerolinecolor': '#5E5E5E', 'linecolor': '#7f7f7f'},
+                yaxis={'gridcolor': '#5E5E5E',
+                       'zerolinecolor': '#5E5E5E', 'linecolor': '#7f7f7f'},
             )
         }
         return figure
 
-    def plot_tweets(self, df):
+    def plot_tweets(self, df, x_axis):
         """Plot the overall twitter chart."""
         # Group and aggregate
         df = df.groupby(['timestamp_ms', 'collection'])
@@ -395,39 +431,26 @@ class dashboard():
                     y=df[i],
                     text=df[i].astype('int').astype('str') + ' Tweets',
                     opacity=0.7,
-                    name=i
+                    name=i,
+                    line={'color': self.colors[i]}
                 ) for i in df.columns.values
             ],
             'layout': go.Layout(
-                xaxis={'rangeselector':
-                       {'buttons': [
-                           {'count': 1, 'label': '1 day', 'step': 'day',
-                               'stepmode': 'backward'},
-                           {'count': 1, 'label': '1 week', 'step': 'week',
-                            'stepmode': 'backward'},
-                           {'count': 1, 'label': '1 month', 'step': 'month',
-                            'stepmode': 'backward'},
-                           {'step': 'all'}
-                       ]},
-                       'ticks': 'inside',
-                       'ticklen': 15,
-                       'rangeslider': {},
-                       'type': 'date'},
-                margin={'l': 40, 'b': 0, 't': 10, 'r': 10},
+                margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
                 showlegend=True,
                 legend={'x': 1.02, 'y': 0.5},
-                hovermode='closest'
+                hovermode='closest',
+                xaxis=x_axis
             )
         }
 
         return figure
 
-    def plot_senti(self, df):
+    def plot_senti(self, df, x_axis):
         """Plot the overall twitter chart."""
         # Group and aggregate
         df = df.groupby(['timestamp_ms', 'collection'])
         df = df['score'].mean().unstack('collection').fillna(0)
-
         figure = {
             'data': [
                 go.Scatter(
@@ -435,28 +458,16 @@ class dashboard():
                     y=df[i],
                     text=df[i].astype('int').astype('str') + ' Tweets',
                     opacity=0.7,
-                    name=i
+                    name=i,
+                    line={'color': self.colors[i]}
                 ) for i in df.columns.values
             ],
             'layout': go.Layout(
-                xaxis={'rangeselector':
-                       {'buttons': [
-                           {'count': 1, 'label': '1 day', 'step': 'day',
-                               'stepmode': 'backward'},
-                           {'count': 1, 'label': '1 week', 'step': 'week',
-                            'stepmode': 'backward'},
-                           {'count': 1, 'label': '1 month', 'step': 'month',
-                            'stepmode': 'backward'},
-                           {'step': 'all'}
-                       ]},
-                       'ticks': 'inside',
-                       'ticklen': 15,
-                       'rangeslider': {},
-                       'type': 'date'},
-                margin={'l': 40, 'b': 0, 't': 10, 'r': 10},
+                margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
                 showlegend=True,
                 legend={'x': 1.02, 'y': 0.5},
-                hovermode='closest'
+                hovermode='closest',
+                xaxis=x_axis
             )
         }
 

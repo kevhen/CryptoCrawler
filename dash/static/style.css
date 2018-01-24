@@ -5,7 +5,7 @@ html {
 h3 {
     font-size: 18px;
     font-weight: lighter;
-    color: rgb(249, 38, 114);
+    color: #DB56B2;
     padding-top: 3px;
     padding-left: 10px;
     padding-bottom: 3px;
@@ -19,6 +19,8 @@ h3 {
     width: 900px;
     box-shadow: 0px 0px 5px 5px rgba(204, 204, 204, 0.4);
     position: relative;
+    overflow: hidden;
+    border-radius: 10px;
 }
 
 .banner {
@@ -37,6 +39,34 @@ h3 {
 .banner img {
     float: right;
     padding-right: 4px;
+}
+
+.live-box {
+    border: 0px;
+    margin: 0px;
+    overflow: hidden;
+    background: #333;
+    margin-bottom: 10px;
+}
+.live-box>.title {
+    position: absolute;
+    background-color: #111;
+    display: inline-block;
+    padding: 1px 5px;
+    border-radius: 5px;
+    text-align: center;
+    opacity: 0.6;
+    left: 50px;
+    top: 100px;
+    z-index: 100;
+    height: 24px;
+}
+.live-box>.title>h3 {
+    margin:0px;
+    padding:0px;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 24px;
 }
 
 .box {
@@ -66,10 +96,11 @@ h3 {
 #global-topic-checklist {
     font-size: 14px;
     margin: 10px;
+    text-align: center;
 }
 
 #global-topic-checklist>label {
-    margin-right: 16px;
+    margin-right: 38px;
 }
 
 #global-topic-checklist>label>input {
@@ -85,9 +116,31 @@ h3 {
     position: absolute;
     width: 130px;
     right: 20px;
+    top: 100px;
     z-index: 10;
-    opacity: 0.7;
+    font-size: 12px;
+    font-weight: bold;
+    opacity: 0.6;
 }
+
+#tweets-live-dropdown .Select-value-label {
+    color: #DB56B2;
+}
+#tweets-live-dropdown .Select-value {
+    line-height: 24px;
+}
+#tweets-live-dropdown .Select-control {
+    background-color: #111;
+    border-color: #7f7f7f;
+    height: 24px;
+}
+#tweets-live-dropdown .Select-input {
+    height: 22px;
+}
+#tweets-live-dropdown .Select-control input {
+    padding: 0px;
+}
+
 #tweets-live-dropdown .Select-clear-zone {
     display: None;
 }
