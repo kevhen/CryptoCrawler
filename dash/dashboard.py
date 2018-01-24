@@ -78,8 +78,13 @@ class dashboard():
 
     def get_x(self, relayout_datas):
         """Get xaxis range settings from layout data."""
+        print(relayout_datas)
         set_range = {'autorange': True}
         for rd in relayout_datas:
+            if (rd is not None) and \
+                    (('xaxis.autorange' in rd) or \
+                    ('yaxis.autorange' in rd)):
+                return {'autorange': True}
             if (rd is not None) and \
                     ('xaxis.range[0]' in rd) and \
                     ('xaxis.range[1]' in rd):
@@ -533,7 +538,7 @@ class dashboard():
                 go.Scatter(
                     x=df.index,
                     y=df[i],
-                    text='Stock value: ' + df[i].map('{:.2f}'.format) +' €',
+                    text='Stock value: ' + df[i].map('{:.2f}'.format) + ' €',
                     opacity=0.7,
                     name=i,
                     line={'color': self.colors[i]}
