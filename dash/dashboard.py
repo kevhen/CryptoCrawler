@@ -410,28 +410,31 @@ class dashboard():
         @app.callback(
             ddp.Output('tweets-plot', 'figure'),
             [ddp.Input('hidden-tweet-data', 'children'),
-             ddp.Input('senti-plot', 'relayoutData')])
-        def update_timeseries(jsonified_data, rd_senti):
+             ddp.Input('senti-plot', 'relayoutData'),
+             ddp.Input('stock-plot', 'relayoutData')])
+        def update_timeseries(jsonified_data, rd_senti, rd_stock):
             df = pd.read_json(jsonified_data, orient='split')
-            x_axis = self.get_x([rd_senti])
+            x_axis = self.get_x([rd_senti, rd_stock])
             return self.plot_tweets(df, x_axis)
 
         @app.callback(
             ddp.Output('senti-plot', 'figure'),
             [ddp.Input('hidden-tweet-data', 'children'),
-             ddp.Input('tweets-plot', 'relayoutData')])
-        def update_senti(jsonified_data, rd_tweets):
+             ddp.Input('tweets-plot', 'relayoutData'),
+             ddp.Input('stock-plot', 'relayoutData')])
+        def update_senti(jsonified_data, rd_tweets, rd_stock):
             df = pd.read_json(jsonified_data, orient='split')
-            x_axis = self.get_x([rd_tweets])
+            x_axis = self.get_x([rd_tweets, rd_stock])
             return self.plot_senti(df, x_axis)
 
         @app.callback(
             ddp.Output('stock-plot', 'figure'),
             [ddp.Input('hidden-stock-data', 'children'),
-             ddp.Input('tweets-plot', 'relayoutData')])
-        def update_senti(jsonified_data, rd_tweets):
+             ddp.Input('tweets-plot', 'relayoutData'),
+             ddp.Input('senti-plot', 'relayoutData')])
+        def update_senti(jsonified_data, rd_tweets, rd_senti):
             df = pd.read_json(jsonified_data, orient='split')
-            x_axis = self.get_x([rd_tweets])
+            x_axis = self.get_x([rd_tweets, rd_senti])
             return self.plot_stock(df, x_axis)
 
         self.app = app
