@@ -11,7 +11,7 @@ from pymongo import errors as pymongo_errors
 import requests
 import yaml
 import json
-import sched, time
+import schedule, time
 import logging
 logging.basicConfig(format='%(levelname)s - %(asctime)s: %(message)s', datefmt='%m/%d/%Y %H:%M:%S', level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -64,7 +64,7 @@ def saveToMongo(db, prices):
             logger.error('Pymongo auto reconnect. Wait for some seconds...')
             time.sleep(5)
 
-def startListening(conf, db, scheduler):
+def startListening(conf, db):
     logger.info('Starting Currency Listener')
     validCoins = checkCurrencies(conf)
     if validCoins:
@@ -78,8 +78,6 @@ def startListening(conf, db, scheduler):
         logger.warn('Valid coins could not be retrieved. Skipping this step')
 
     logger.info('Saved prices. Waiting until next call')
-    scheduler.enter(10, 1, startListening, (conf,db,scheduler,))
-    scheduler.run()
 
 def init():
     with open('../config.yaml', 'r') as stream:
@@ -87,8 +85,11 @@ def init():
     # Open a connection to mongo:
     client = MongoClient(conf['mongodb']['host'], conf['mongodb']['port'])
     db = client[conf['mongodb']['db']]
-    scheduler = sched.scheduler(time.time, time.sleep)
-    startListening(conf,db,scheduler)
+    schedule.every(10).seconds.do(startListening, conf, db)
+    while True:
+        schedule.run_pending()
+        time.sleep(2)
+
 
 if __name__ == '__main__':
     init()
