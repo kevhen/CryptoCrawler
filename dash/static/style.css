@@ -1,5 +1,6 @@
 html {
     font-family: "Open Sans", sans-serif;
+    background-color: #eee;
 }
 
 h3 {
@@ -20,6 +21,7 @@ h3 {
     box-shadow: 0px 0px 5px 5px rgba(204, 204, 204, 0.4);
     position: relative;
     overflow: hidden;
+    background-color: #fff;
     border-radius: 10px;
 }
 
@@ -114,7 +116,7 @@ h3 {
 
 #tweets-live-dropdown {
     position: absolute;
-    width: 130px;
+    width: 125px;
     right: 20px;
     top: 100px;
     z-index: 10;
@@ -124,7 +126,7 @@ h3 {
 }
 
 #tweets-live-dropdown .Select-value-label {
-    color: #DB56B2;
+    color: #BBB;
 }
 #tweets-live-dropdown .Select-value {
     line-height: 24px;
@@ -143,4 +145,9 @@ h3 {
 
 #tweets-live-dropdown .Select-clear-zone {
     display: None;
+}
+
+span.icon {
+    font-weight: bold;
+    margin-right: 16px;
 }

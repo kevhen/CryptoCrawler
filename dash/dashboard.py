@@ -55,8 +55,11 @@ class dashboard():
         self.colors = {
             'generalcrypto': '#DB56B2',
             'bitcoin': '#DBC256',
+            'BTC': '#DBC256',
             'ethereum': '#56DB7F',
+            'ETH': '#56DB7F',
             'iota': '#56D3DB',
+            'IOT': '#56D3DB',
             'trump': '#CE0000',
             'car2go': '#A056DB',
             'collection': 'black'
@@ -162,7 +165,7 @@ class dashboard():
 
         return df_result
 
-    def get_tweet_data(self, collections):
+    def get_agg_data(self, collections, attr):
         """Query MongoDB and return a pandas dataframe.
 
         collections <List> : Mongo Collections to query
@@ -178,14 +181,14 @@ class dashboard():
                 {
                     '$project': {
                         'timestamp_ms': '$timestamp_ms',
-                        'score': '$score',
+                        attr: '$' + attr,
                         'div_val': {'$divide': ['$timestamp_ms', agg_range]},
                     }
                 },
                 {
                     '$project': {
                         'timestamp_ms': '$timestamp_ms',
-                        'score': '$score',
+                        attr: '$' + attr,
                         'div_val': '$div_val',
                         'mod_val': {'$mod': ['$div_val', 1]}
                     }
@@ -193,7 +196,7 @@ class dashboard():
                 {
                     '$project': {
                         'timestamp_ms': '$timestamp_ms',
-                        'score': '$score',
+                        attr: '$' + attr,
                         'div_val': '$div_val',
                         'mod_val': '$mod_val',
                         'sub_val': {'$subtract': ['$div_val', '$mod_val']},
@@ -202,7 +205,7 @@ class dashboard():
                 {
                     '$group': {
                         '_id': '$sub_val',
-                        'score': {'$avg': '$score'},
+                        attr: {'$avg': '$' + attr},
                         'count': {'$sum': 1}
                     }
                 }])
@@ -292,7 +295,8 @@ class dashboard():
 
             # Hidden element to store data
             # See: https://plot.ly/dash/sharing-data-between-callbacks
-            html.Div(id='hidden-data', style={'display': 'none'}),
+            html.Div(id='hidden-tweet-data', style={'display': 'none'}),
+            html.Div(id='hidden-stock-data', style={'display': 'none'}),
 
             # Topic Selection
             html.Div([
@@ -311,7 +315,9 @@ class dashboard():
             # Overall Tweets per Hour
             html.Div([
                 html.Div([
-                    html.H3('Tweets per Hour')
+                    html.H3([
+                        html.Span('∑', className='icon'),
+                         'Tweets per Hour'])
                 ], className='title'),
                 html.Div([
                     # Chart for All Tweets
@@ -324,7 +330,9 @@ class dashboard():
             # Sentiment per Hour
             html.Div([
                 html.Div([
-                    html.H3('Avg. Sentiment per Hour')
+                    html.H3([
+                        html.Span('☺', className='icon'),
+                         'Avg. Sentiment per Hour'])
                 ], className='title'),
                 html.Div([
                     dcc.Graph(
@@ -333,6 +341,21 @@ class dashboard():
                 ], className='content')
             ], className='box'),
 
+            # Prices per Hour
+            html.Div([
+                html.Div([
+                    html.H3([
+                        html.Span('€', className='icon'),
+                         'Avg. Stock Prices per Hour'])
+                ], className='title'),
+                html.Div([
+                    dcc.Graph(
+                        style={'width': '878px', 'height': '250px'},
+                        id='stock-plot')
+                ], className='content')
+            ], className='box'),
+
+            # Footer
             html.Div(
                 'Build in 01/2018 by kevhen & dynobo with ❤ and Plotly Dash',
                 id='bottom-line'),
@@ -359,18 +382,34 @@ class dashboard():
                 return
             return self.plot_live_tweets(topic_values, live_range)
 
-        @app.callback(ddp.Output('hidden-data', 'children'),
+        @app.callback(ddp.Output('hidden-tweet-data', 'children'),
                       [ddp.Input(component_id='global-topic-checklist',
                                  component_property='values')])
-        def clean_data(topic_values):
+        def clean_tweet_data(topic_values):
             # Get Data
-            df = self.get_tweet_data(topic_values)
+            df = self.get_agg_data(topic_values, 'score')
+            # Store in hidden element
+            return df.to_json(date_format='iso', orient='split')
+
+        @app.callback(ddp.Output('hidden-stock-data', 'children'),
+                      [ddp.Input(component_id='global-topic-checklist',
+                                 component_property='values')])
+        def clean_stock_data(topic_values):
+            # Get Data
+            currency_codes = []
+            if 'bitcoin' in topic_values:
+                currency_codes.append('BTC')
+            if 'iota' in topic_values:
+                currency_codes.append('IOT')
+            if 'ethereum' in topic_values:
+                currency_codes.append('ETH')
+            df = self.get_agg_data(currency_codes, 'EUR')
             # Store in hidden element
             return df.to_json(date_format='iso', orient='split')
 
         @app.callback(
             ddp.Output('tweets-plot', 'figure'),
-            [ddp.Input('hidden-data', 'children'),
+            [ddp.Input('hidden-tweet-data', 'children'),
              ddp.Input('senti-plot', 'relayoutData')])
         def update_timeseries(jsonified_data, rd_senti):
             df = pd.read_json(jsonified_data, orient='split')
@@ -379,12 +418,21 @@ class dashboard():
 
         @app.callback(
             ddp.Output('senti-plot', 'figure'),
-            [ddp.Input('hidden-data', 'children'),
+            [ddp.Input('hidden-tweet-data', 'children'),
              ddp.Input('tweets-plot', 'relayoutData')])
         def update_senti(jsonified_data, rd_tweets):
             df = pd.read_json(jsonified_data, orient='split')
             x_axis = self.get_x([rd_tweets])
             return self.plot_senti(df, x_axis)
+
+        @app.callback(
+            ddp.Output('stock-plot', 'figure'),
+            [ddp.Input('hidden-stock-data', 'children'),
+             ddp.Input('tweets-plot', 'relayoutData')])
+        def update_senti(jsonified_data, rd_tweets):
+            df = pd.read_json(jsonified_data, orient='split')
+            x_axis = self.get_x([rd_tweets])
+            return self.plot_stock(df, x_axis)
 
         self.app = app
 
@@ -451,6 +499,32 @@ class dashboard():
         # Group and aggregate
         df = df.groupby(['timestamp_ms', 'collection'])
         df = df['score'].mean().unstack('collection').fillna(0)
+        figure = {
+            'data': [
+                go.Scatter(
+                    x=df.index,
+                    y=df[i],
+                    text=df[i].astype('int').astype('str') + ' Tweets',
+                    opacity=0.7,
+                    name=i,
+                    line={'color': self.colors[i]}
+                ) for i in df.columns.values
+            ],
+            'layout': go.Layout(
+                margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
+                showlegend=True,
+                legend={'x': 1.02, 'y': 0.5},
+                hovermode='closest',
+                xaxis=x_axis
+            )
+        }
+        return figure
+
+    def plot_stock(self, df, x_axis):
+        """Plot the average stock prices."""
+        # Group and aggregate
+        df = df.groupby(['timestamp_ms', 'collection'])
+        df = df['EUR'].mean().unstack('collection').fillna(0)
         figure = {
             'data': [
                 go.Scatter(
