@@ -12,4 +12,4 @@ RUN git clone https://github.com/kevhen/CryptoCrawler.git
 
 WORKDIR /home/CryptoCrawler/crypto-price-crawler
 
-CMD python pricelistener.py
+CMD while true; do python streamlistener.py; done
