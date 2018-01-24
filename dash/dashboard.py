@@ -121,7 +121,7 @@ class dashboard():
                 df = df.append(df_temp, ignore_index=True)
 
         # Remove the mongo-row-id, as it's not needed
-        if '_id' in df.columns:
+        if (df is not None) and ('_id' in df.columns):
             del df['_id']
 
         return df
@@ -149,7 +149,7 @@ class dashboard():
                               "$gt": start_ms}}, {'timestamp_ms': 1})
 
         # Convert to datetime
-        if len(df) < 3:
+        if (df is None) or (len(df) < 3):
             logger.error('No data for live dashboard!')
             return df
 
@@ -224,14 +224,17 @@ class dashboard():
 
         # Restore the actual time stamps, which got "compressed"
         # during mongodb aggregation
-        df['timestamp_ms'] = df['_id'].astype(int).multiply(agg_range)
+        if df is not None:
+            df['timestamp_ms'] = df['_id'].astype(int).multiply(agg_range)
 
-        # Remove the mongo-row-id, as it's not needed
-        if '_id' in df.columns:
-            del df['_id']
+            # Remove the mongo-row-id, as it's not needed
+            if '_id' in df.columns:
+                del df['_id']
 
-        # Convert to datetime
-        df['timestamp_ms'] = pd.to_datetime(df['timestamp_ms'], unit='ms')
+            # Convert to datetime
+            df['timestamp_ms'] = pd.to_datetime(df['timestamp_ms'], unit='ms')
+        else:
+            df = pd.DataFrame()
 
         return df
 
@@ -408,7 +411,10 @@ class dashboard():
                 currency_codes.append('IOT')
             if 'ethereum' in topic_values:
                 currency_codes.append('ETH')
-            df = self.get_agg_data(currency_codes, 'EUR')
+            if len(currency_codes) > 0:
+                df = self.get_agg_data(currency_codes, 'EUR')
+            else:
+                df = pd.DataFrame()
             # Store in hidden element
             return df.to_json(date_format='iso', orient='split')
 
@@ -447,6 +453,13 @@ class dashboard():
     def plot_live_tweets(self, topics, live_range):
         """Plot the live tweet chart."""
         df = self.get_live_data(topics, live_range)
+        # Don't try drawing, if we have no data
+        if (df is None) or (len(df) < 1):
+            return {'data': [],
+                    'layout': go.Layout(
+                                    paper_bgcolor='rgba(0,0,0,0)',
+                                    plot_bgcolor='rgba(0,0,0,0)'
+                                    )}
         figure = {
             'data': [
                 go.Scatter(
@@ -476,6 +489,9 @@ class dashboard():
 
     def plot_tweets(self, df, x_axis):
         """Plot the overall twitter chart."""
+        # Don't try drawing, if we have no data
+        if (df is None) or (len(df) < 1):
+            return {'data': []}
         # Group and aggregate
         df = df.groupby(['timestamp_ms', 'collection'])
         df = df['count'].sum().unstack('collection').fillna(0)
@@ -504,6 +520,9 @@ class dashboard():
 
     def plot_senti(self, df, x_axis):
         """Plot the overall twitter chart."""
+        # Don't try drawing, if we have no data
+        if (df is None) or (len(df) < 1):
+            return {'data': []}
         # Group and aggregate
         df = df.groupby(['timestamp_ms', 'collection'])
         df = df['score'].mean().unstack('collection').fillna(0)
@@ -530,6 +549,9 @@ class dashboard():
 
     def plot_stock(self, df, x_axis):
         """Plot the average stock prices."""
+        # Don't try drawing, if we have no data
+        if len(df) < 1:
+            return {'data': []}
         # Group and aggregate
         df = df.groupby(['timestamp_ms', 'collection'])
         df = df['EUR'].mean().unstack('collection').fillna(0)
