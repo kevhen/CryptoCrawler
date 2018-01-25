@@ -75,11 +75,12 @@ crypto-price-listener_1  |     wr = ref(item)
 crypto-price-listener_1  | RecursionError: maximum recursion depth exceeded while calling a Python object
 ```
 
----
-@title[Planning the Project]
 
-#### Projekt Preparation
-# Planning
+---
+@title[Introduction]
+
+#### Introduction
+# Idea & Planning
 
 Kevin
 
@@ -101,6 +102,7 @@ Kevin
 - Twitter Stream
 - Crypto-Stock-Market Stream
 - News
+
 
 +++
 @title[KPIs]
@@ -134,6 +136,7 @@ Kevin
 
 Kevin
 
+
 +++
 @title[Docker]
 
@@ -162,6 +165,7 @@ Kevin
 # Mongo DB
 
 Holger
+
 
 +++
 @title[MongoDB]
@@ -206,6 +210,7 @@ Holger
 # Twitter Stream Listener
 
 Holger
+
 
 +++
 @title[Twitter Stream - Information overload]
@@ -275,6 +280,7 @@ Didn't work.
 
 Kevin
 
+
 ---?image=assets/bg-cryptowrapper.png
 @title[Microservice - API Wrapper]
 
@@ -283,6 +289,7 @@ Kevin
 
 Kevin
 
+
 ---?image=assets/bg-anomaly.png
 @title[Microservice - Anomaly Detection]
 
@@ -290,6 +297,7 @@ Kevin
 # Anomaly Detection
 
 Holger
+
 
 +++
 @title[Idea]
@@ -304,6 +312,7 @@ Then use them for:
 - Searching News in those time ranges
 to <span class="pink">ease the interpretation</span> of the data.
 
+
 +++
 @title[Anomalies in Timeseries]
 
@@ -315,6 +324,7 @@ favorite editor.
 <span class="aside">It's as easy as README.md with simple
 slide-delimeters (---)</span>
 
+
 ---?image=assets/bg-topic.png
 @title[Microservice - Topic Modelling]
 
@@ -322,6 +332,7 @@ slide-delimeters (---)</span>
 # Topic Modelling
 
 Holger
+
 
 +++
 @title[Step 2. Git-Commit]
@@ -342,6 +353,7 @@ Done!
 @[3](Push PITCHME.md to your public repo and you're done!)
 @[5](Supports GitHub, GitLab, Bitbucket, GitBucket, Gitea, and Gogs.)
 
+
 ---?image=assets/bg-jupyter.png
 @title[Microservice - Jupyter Notebook]
 
@@ -349,6 +361,7 @@ Done!
 # Jupyter Notebook
 
 Kevin
+
 
 ---?image=assets/bg-dash.png
 @title[Microservice - Dash]
@@ -358,8 +371,8 @@ Kevin
 
 Holger & Kevin
 
-+++
 
++++
 @title[Step 3. Done!]
 
 ### <span class="gold">STEP 3. GET THE WORD OUT!</span>
@@ -370,59 +383,9 @@ Holger & Kevin
 #### Instantly use your GitPitch slideshow URL to promote, pitch or
 present absolutely anything.
 
+
 ---
-@title[Microservice - Jupyter Notebook]
+@title[Wrap up]
 
 #### What we have learned
 # Wrap up
-
----
-
-@title[Slide Rich]
-
-### <span class="gold">Slide Rich</span>
-
-#### Code Presenting for Blocks, Files, and GISTs
-#### Image, Video, Chart, and Math Slides
-#### Multiple Themes with Easy Customization
-<br>
-#### <span class="gold">Plus collaboration is built-in...</span>
-#### Your Slideshow is Part of Your Project
-#### Under Git Version Control within Your Git Repo
-
----
-
-@title[Feature Rich]
-
-### <span class="gold">Feature Rich</span>
-
-#### Present Online or Offline
-#### With Speaker Notes Support
-#### Print Presentation as PDF
-#### Auto-Generated Table-of-Contents
-#### Share Presentation on Twitter or LinkedIn
-
----
-
-### <span class="gold">GitPitch Pro - Coming Soon!</span>
-
-<br>
-<div class="left">
-    <i class="fa fa-user-secret fa-5x" aria-hidden="true"> </i><br>
-    <a href="https://gitpitch.com/pro-features" class="pro-link">
-    More details here.</a>
-</div>
-<div class="right">
-    <ul>
-        <li>Private Repos</li>
-        <li>Private URLs</li>
-        <li>Password-Protection</li>
-        <li>Image Opacity</li>
-        <li>SVG Image Support</li>
-    </ul>
-</div>
-
----
-
-### Go for it.
-### Just add <span class="gold">PITCHME.md</span> ;)
