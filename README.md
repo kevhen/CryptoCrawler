@@ -20,6 +20,7 @@
 	- [Microservice 6: LDA Topic Identification](#microservice-6-lda-topic-identification)
 	- [Microservice 7: Anomaly Detection](#microservice-7-anomaly-detection)
 	- [Microservice 8: Sentiment Analysis](#microservice-8-sentiment-analysis)
+	- [Microservice 9: Crypto Api Wrapper](#microservice-9-crypto-api-wrapper)
 - [Useful info & commands](#useful-info-commands)
 	- [Docker](#docker)
 	- [Docker Compose](#docker-compose)
@@ -118,7 +119,6 @@
 
 - Based on jupyter/scipy-notebook Docker Image
 - We will probably use the [Cryptocompare](https://www.cryptocompare.com/api)-API to retrieve the current and historic prices of the currencies.
-- We will probably use the [Cryptocompare](https://www.cryptocompare.com/api)-API to retrieve the current and historic prices of the currencies.
 
 ## Microservice 4: Jupyter Notebook
 
@@ -211,6 +211,19 @@
 - Very simple algo: Just look for pos/neg words from [a well known list for financial sentiment analysis](https://www3.nd.edu/~mcdonald/Word_Lists.html).
 - The **Score** value is: (count of positive words) - (count of negative words)
 - **Sentiment** can be "neg" (score < 0), "pos" (score > 0) or "neu" (score = 0)
+
+
+## Microservice 9: Crypto Api Wrapper
+
+**Description:**
+- Wraps the Histo-APIs of [Cryptocompare](https://www.cryptocompare.com/api) to use [HistoMinute](https://www.cryptocompare.com/api#-api-data-histominute-), [HistoHour](https://www.cryptocompare.com/api#-api-data-histohour-) and [HistoDay](https://www.cryptocompare.com/api#-api-data-histoday-) to a single API
+- Parses all responses to the format required for the dashboard
+
+URL-Parameters: 
+
+
+
+
 # Useful info & commands
 
 ## Docker
