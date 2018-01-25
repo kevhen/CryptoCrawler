@@ -9,10 +9,9 @@ Wraps the CryptoCompare API.
 
 from flask import Flask, request, abort
 from flask_restful import Resource, Api
-from flask.ext.jsonpify import jsonify
-from flask.ext.aiohttp import AioHTTP
 import time
 from datetime import date
+from flask_jsonpify import jsonify
 import math
 import requests
 import yaml
@@ -49,12 +48,15 @@ def parseCoin(coin):
 
 def buildParams(currency, coin, limit, to):
     params = { 'fsym': coin, 'tsym': currency, 'limit': limit, 'toTs': to }
+    return params
 
 def callExternalApi(step, params):
-    url = '{}{}'.format(requests.get(conf['cryptocompare']['histo'], step)
-    
-
-    return data
+    with open('../config.yaml', 'r') as stream:
+        conf = yaml.load(stream)
+    url = '{}{}'.format(conf['cryptocompare']['histo'], step)
+    response = requests.get(url, params=params)
+    parsedResponse = json.loads(response.content)
+    return parsedResponse
 
 def parseStep(step):
     allowedSteps = ['day', 'hour', 'minute']
@@ -71,14 +73,17 @@ def parseCurrency(currency):
         return 'EUR'
 
 def handleToTs(toTs, now):
-    if toTs is None or toTs > now or not isInt(toTs):
+    if toTs is None and not isInt(toTs):
+        return now
+    elif isInt(toTs) and int(toTs) > now:
         return now
     else:
-        return toTs
+        return int(toTs)
 
 def calculateLimit(fromTs, toTs, step):
-    if fromTs is not None and isInt(fromTs):
-        limit = getStepsBetween(step, fromTs, toTs)
+    if isInt(fromTs):
+        print('here')
+        limit = getStepsBetween(step, int(fromTs), toTs)
     else:
         limit = 30
     return limit
@@ -88,18 +93,21 @@ class HistoricalPrices(Resource):
     def get(self):
         now = int(time.time())
 
-        toTs = handleToTs(request.args.get('to'))
+        toTs = handleToTs(request.args.get('to'), now)
         fromTs = request.args.get('from')
         currency = parseCurrency(request.args.get('currency'))
         coin = parseCoin(request.args.get('coin'))
         step = parseStep(request.args.get('step'))
 
-        limit = calculateLimit(fromTs, toTs)
+        limit = calculateLimit(fromTs, toTs, step)
 
         params = buildParams(currency, coin, limit, toTs)
 
         result = callExternalApi(step, params)
 
+        #     result = {'from': getDaysBetween(fromTs, now), 'to': toTs}
+        # else:
+        #     result = abort(400, 'Missing `from` and/or `to` timestamp')
         return jsonify(result)
 
 api.add_resource(HistoricalPrices, '/price')
