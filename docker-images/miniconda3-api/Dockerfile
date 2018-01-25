@@ -4,13 +4,15 @@
 ############################################################
 FROM continuumio/miniconda3
 
-RUN conda install -y pymongo pyyaml
-RUN conda install -c conda-forge -y tweepy
-RUN conda install -c gomss-nowcast schedule
+RUN conda install -y pymongo pyyaml pandas
+
+RUN pip install flask-jsonpify
+RUN pip install flask
+RUN pip install flask_restful
 
 WORKDIR /home
 RUN git clone https://github.com/kevhen/CryptoCrawler.git
 
-WORKDIR /home/CryptoCrawler/crypto-price-crawler
+WORKDIR /home/CryptoCrawler/crypto-api-wrapper
 
-CMD while true; do python pricelistener.py; done
+CMD python apiwrapper.py

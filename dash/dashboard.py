@@ -2,7 +2,7 @@
 Provides a Dashboard.
 
 Creates an interactive Dashboard using Dash from Plotly and exposes
-it via port 80
+it via port 8050
 """
 import dash
 import dash_core_components as dcc
