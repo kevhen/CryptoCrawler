@@ -28,6 +28,7 @@ mongodb:
 cryptocompare:
     coinlist: https://min-api.cryptocompare.com/data/all/coinlist
     price: https://min-api.cryptocompare.com/data/pricemulti
+    histo: https://min-api.cryptocompare.com/data/histo
 
 collections:
     generalcrypto:
