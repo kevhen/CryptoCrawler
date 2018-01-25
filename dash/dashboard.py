@@ -35,7 +35,7 @@ class dashboard():
         conn = MongoClient(self.config['mongodb']['host'],
                            self.config['mongodb']['port'])
         # Use local mongo-container IP for testing
-        # conn = MongoClient('172.17.0.2', self.config['mongodb']['port'])
+        #conn = MongoClient('172.17.0.2', self.config['mongodb']['port'])
         self.db = conn[self.config['mongodb']['db']]
 
         # Helper Variable for timestamp conversion
@@ -51,6 +51,20 @@ class dashboard():
         logger.info('Init Dashboard')
         logger.info('Live Update Interval: {} s'.format(self.update_interval))
 
+        # Set colors for collection:
+        self.colors = {
+            'generalcrypto': '#DB56B2',
+            'bitcoin': '#DBC256',
+            'BTC': '#DBC256',
+            'ethereum': '#56DB7F',
+            'ETH': '#56DB7F',
+            'iota': '#56D3DB',
+            'IOT': '#56D3DB',
+            'trump': '#CE0000',
+            'car2go': '#A056DB',
+            'collection': 'black'
+        }
+
         # Draw Dashboard
         self.init_dash()
 
@@ -61,6 +75,24 @@ class dashboard():
     def unix_time(self, dt):
         """Convert DateTime object to Unixtimestamp in ms."""
         return round((dt - self.epoch).total_seconds() * 1000.0)
+
+    def get_x(self, relayout_datas):
+        """Get xaxis range settings from layout data."""
+        print(relayout_datas)
+        set_range = {'autorange': True}
+        for rd in relayout_datas:
+            if (rd is not None) and \
+                    (('xaxis.autorange' in rd) or
+                     ('yaxis.autorange' in rd)):
+                return {'autorange': True}
+            if (rd is not None) and \
+                    ('xaxis.range[0]' in rd) and \
+                    ('xaxis.range[1]' in rd):
+                set_range = {'range': [
+                    rd['xaxis.range[0]'],
+                    rd['xaxis.range[1]']
+                ]}
+        return set_range
 
     # ============================================
     # Data Querying & prepartion related Methods
@@ -89,7 +121,7 @@ class dashboard():
                 df = df.append(df_temp, ignore_index=True)
 
         # Remove the mongo-row-id, as it's not needed
-        if '_id' in df.columns:
+        if (df is not None) and ('_id' in df.columns):
             del df['_id']
 
         return df
@@ -117,7 +149,7 @@ class dashboard():
                               "$gt": start_ms}}, {'timestamp_ms': 1})
 
         # Convert to datetime
-        if len(df) < 3:
+        if (df is None) or (len(df) < 3):
             logger.error('No data for live dashboard!')
             return df
 
@@ -138,7 +170,7 @@ class dashboard():
 
         return df_result
 
-    def get_tweet_data(self, collections):
+    def get_agg_data(self, collections, attr):
         """Query MongoDB and return a pandas dataframe.
 
         collections <List> : Mongo Collections to query
@@ -154,14 +186,14 @@ class dashboard():
                 {
                     '$project': {
                         'timestamp_ms': '$timestamp_ms',
-                        'score': '$score',
+                        attr: '$' + attr,
                         'div_val': {'$divide': ['$timestamp_ms', agg_range]},
                     }
                 },
                 {
                     '$project': {
                         'timestamp_ms': '$timestamp_ms',
-                        'score': '$score',
+                        attr: '$' + attr,
                         'div_val': '$div_val',
                         'mod_val': {'$mod': ['$div_val', 1]}
                     }
@@ -169,7 +201,7 @@ class dashboard():
                 {
                     '$project': {
                         'timestamp_ms': '$timestamp_ms',
-                        'score': '$score',
+                        attr: '$' + attr,
                         'div_val': '$div_val',
                         'mod_val': '$mod_val',
                         'sub_val': {'$subtract': ['$div_val', '$mod_val']},
@@ -178,7 +210,7 @@ class dashboard():
                 {
                     '$group': {
                         '_id': '$sub_val',
-                        'score': {'$avg': '$score'},
+                        attr: {'$avg': '$' + attr},
                         'count': {'$sum': 1}
                     }
                 }])
@@ -192,14 +224,17 @@ class dashboard():
 
         # Restore the actual time stamps, which got "compressed"
         # during mongodb aggregation
-        df['timestamp_ms'] = df['_id'].astype(int).multiply(agg_range)
+        if df is not None:
+            df['timestamp_ms'] = df['_id'].astype(int).multiply(agg_range)
 
-        # Remove the mongo-row-id, as it's not needed
-        if '_id' in df.columns:
-            del df['_id']
+            # Remove the mongo-row-id, as it's not needed
+            if '_id' in df.columns:
+                del df['_id']
 
-        # Convert to datetime
-        df['timestamp_ms'] = pd.to_datetime(df['timestamp_ms'], unit='ms')
+            # Convert to datetime
+            df['timestamp_ms'] = pd.to_datetime(df['timestamp_ms'], unit='ms')
+        else:
+            df = pd.DataFrame()
 
         return df
 
@@ -234,25 +269,11 @@ class dashboard():
                     src='/static/logo.png'),
             ], className='banner'),
 
-            # Topic Selection
-            html.Div([
-                html.Div([
-                    html.H3("Topic Selection")
-                ], className='title'),
-                html.Div([
-                    dcc.Checklist(
-                        id='global-topic-checklist',
-                        options=topics_options,
-                        values=self.topics_default
-                    ),
-                ], className='content')
-            ], className='box'),
-
             # Live Tweets
             html.Div([
                 html.Div([
                     html.H3(
-                        'Tweets Count - Live - {} sec. per Tick' \
+                        'Tweets per {} sec.' \
                         .format(self.update_interval))
                 ], className='title'),
                 html.Div([
@@ -278,21 +299,38 @@ class dashboard():
                             'displayModeBar': False
                         })
                 ], className='content')
-            ], className='box'),
+            ], className='live-box'),
 
             # Hidden element to store data
             # See: https://plot.ly/dash/sharing-data-between-callbacks
-            html.Div(id='hidden-data', style={'display': 'none'}),
+            html.Div(id='hidden-tweet-data', style={'display': 'none'}),
+            html.Div(id='hidden-stock-data', style={'display': 'none'}),
+
+            # Topic Selection
+            html.Div([
+                html.Div([
+                    html.H3("Topic Selection")
+                ], className='title'),
+                html.Div([
+                    dcc.Checklist(
+                        id='global-topic-checklist',
+                        options=topics_options,
+                        values=self.topics_default
+                    ),
+                ], className='content')
+            ], className='box'),
 
             # Overall Tweets per Hour
             html.Div([
                 html.Div([
-                    html.H3('Tweets per Hour')
+                    html.H3([
+                        html.Span('∑', className='icon'),
+                         'Tweets per Hour'])
                 ], className='title'),
                 html.Div([
                     # Chart for All Tweets
                     dcc.Graph(
-                        style={'width': '878px', 'height': '450px'},
+                        style={'width': '878px', 'height': '250px'},
                         id='tweets-plot')
                 ], className='content')
             ], className='box'),
@@ -300,15 +338,32 @@ class dashboard():
             # Sentiment per Hour
             html.Div([
                 html.Div([
-                    html.H3('Avg. Sentiment per Hour')
+                    html.H3([
+                        html.Span('☺', className='icon'),
+                         'Avg. Sentiment per Hour'])
                 ], className='title'),
                 html.Div([
                     dcc.Graph(
-                        style={'width': '878px', 'height': '450px'},
+                        style={'width': '878px', 'height': '250px'},
                         id='senti-plot')
                 ], className='content')
             ], className='box'),
 
+            # Prices per Hour
+            html.Div([
+                html.Div([
+                    html.H3([
+                        html.Span('€', className='icon'),
+                         'Avg. Stock Prices per Hour'])
+                ], className='title'),
+                html.Div([
+                    dcc.Graph(
+                        style={'width': '878px', 'height': '250px'},
+                        id='stock-plot')
+                ], className='content')
+            ], className='box'),
+
+            # Footer
             html.Div(
                 'Build in 01/2018 by kevhen & dynobo with ❤ and Plotly Dash',
                 id='bottom-line'),
@@ -335,34 +390,81 @@ class dashboard():
                 return
             return self.plot_live_tweets(topic_values, live_range)
 
-        @app.callback(ddp.Output('hidden-data', 'children'),
+        @app.callback(ddp.Output('hidden-tweet-data', 'children'),
                       [ddp.Input(component_id='global-topic-checklist',
                                  component_property='values')])
-        def clean_data(topic_values):
+        def clean_tweet_data(topic_values):
             # Get Data
-            df = self.get_tweet_data(topic_values)
+            df = self.get_agg_data(topic_values, 'score')
+            # Store in hidden element
+            return df.to_json(date_format='iso', orient='split')
+
+        @app.callback(ddp.Output('hidden-stock-data', 'children'),
+                      [ddp.Input(component_id='global-topic-checklist',
+                                 component_property='values')])
+        def clean_stock_data(topic_values):
+            # Get Data
+            currencies = {
+                'BTC': 'bitcoin',
+                'IOT': 'iota',
+                'ETH': 'ethereum',
+            }
+            currency_codes = []
+            for key, val in currencies.items():
+                if val in topic_values:
+                    currency_codes.append(key)
+
+            if len(currency_codes) > 0:
+                df = self.get_agg_data(currency_codes, 'EUR')
+                # Replace codes with names
+                df['collection'] = df['collection'].replace(currencies)
+            else:
+                df = pd.DataFrame()
             # Store in hidden element
             return df.to_json(date_format='iso', orient='split')
 
         @app.callback(
             ddp.Output('tweets-plot', 'figure'),
-            [ddp.Input('hidden-data', 'children')])
-        def update_timeseries(jsonified_data):
+            [ddp.Input('hidden-tweet-data', 'children'),
+             ddp.Input('senti-plot', 'relayoutData'),
+             ddp.Input('stock-plot', 'relayoutData')])
+        def update_timeseries(jsonified_data, rd_senti, rd_stock):
             df = pd.read_json(jsonified_data, orient='split')
-            return self.plot_tweets(df)
+            x_axis = self.get_x([rd_senti, rd_stock])
+            return self.plot_tweets(df, x_axis)
 
         @app.callback(
             ddp.Output('senti-plot', 'figure'),
-            [ddp.Input('hidden-data', 'children')])
-        def update_senti(jsonified_data):
+            [ddp.Input('hidden-tweet-data', 'children'),
+             ddp.Input('tweets-plot', 'relayoutData'),
+             ddp.Input('stock-plot', 'relayoutData')])
+        def update_senti(jsonified_data, rd_tweets, rd_stock):
             df = pd.read_json(jsonified_data, orient='split')
-            return self.plot_senti(df)
+            x_axis = self.get_x([rd_tweets, rd_stock])
+            return self.plot_senti(df, x_axis)
+
+        @app.callback(
+            ddp.Output('stock-plot', 'figure'),
+            [ddp.Input('hidden-stock-data', 'children'),
+             ddp.Input('tweets-plot', 'relayoutData'),
+             ddp.Input('senti-plot', 'relayoutData')])
+        def update_plot(jsonified_data, rd_tweets, rd_senti):
+            df = pd.read_json(jsonified_data, orient='split')
+            x_axis = self.get_x([rd_tweets, rd_senti])
+            return self.plot_stock(df, x_axis)
 
         self.app = app
 
     def plot_live_tweets(self, topics, live_range):
         """Plot the live tweet chart."""
         df = self.get_live_data(topics, live_range)
+        # Don't try drawing, if we have no data
+        if (df is None) or (len(df) < 1):
+            return {'data': [],
+                    'layout': go.Layout(
+                paper_bgcolor='rgba(0,0,0,0)',
+                plot_bgcolor='rgba(0,0,0,0)'
+            )}
         figure = {
             'data': [
                 go.Scatter(
@@ -370,20 +472,31 @@ class dashboard():
                     y=df[i],
                     text=df[i].astype('int').astype('str') + ' Tweets',
                     opacity=0.7,
-                    name=i
+                    name=i,
+                    line={'color': self.colors[i]}
                 ) for i in df.columns.values
             ],
             'layout': go.Layout(
                 margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
                 showlegend=True,
                 legend={'x': 1.02, 'y': 0.5},
-                hovermode='closest'
+                hovermode='closest',
+                paper_bgcolor='rgba(0,0,0,0)',
+                plot_bgcolor='rgba(0,0,0,0)',
+                font=dict(color='#7f7f7f'),
+                xaxis={'gridcolor': '#5E5E5E',
+                       'zerolinecolor': '#5E5E5E', 'linecolor': '#7f7f7f'},
+                yaxis={'gridcolor': '#5E5E5E',
+                       'zerolinecolor': '#5E5E5E', 'linecolor': '#7f7f7f'},
             )
         }
         return figure
 
-    def plot_tweets(self, df):
+    def plot_tweets(self, df, x_axis):
         """Plot the overall twitter chart."""
+        # Don't try drawing, if we have no data
+        if (df is None) or (len(df) < 1):
+            return {'data': []}
         # Group and aggregate
         df = df.groupby(['timestamp_ms', 'collection'])
         df = df['count'].sum().unstack('collection').fillna(0)
@@ -395,71 +508,77 @@ class dashboard():
                     y=df[i],
                     text=df[i].astype('int').astype('str') + ' Tweets',
                     opacity=0.7,
-                    name=i
+                    name=i,
+                    line={'color': self.colors[i]}
                 ) for i in df.columns.values
             ],
             'layout': go.Layout(
-                xaxis={'rangeselector':
-                       {'buttons': [
-                           {'count': 1, 'label': '1 day', 'step': 'day',
-                               'stepmode': 'backward'},
-                           {'count': 1, 'label': '1 week', 'step': 'week',
-                            'stepmode': 'backward'},
-                           {'count': 1, 'label': '1 month', 'step': 'month',
-                            'stepmode': 'backward'},
-                           {'step': 'all'}
-                       ]},
-                       'ticks': 'inside',
-                       'ticklen': 15,
-                       'rangeslider': {},
-                       'type': 'date'},
-                margin={'l': 40, 'b': 0, 't': 10, 'r': 10},
+                margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
                 showlegend=True,
                 legend={'x': 1.02, 'y': 0.5},
-                hovermode='closest'
+                hovermode='closest',
+                xaxis=x_axis
             )
         }
 
         return figure
 
-    def plot_senti(self, df):
+    def plot_senti(self, df, x_axis):
         """Plot the overall twitter chart."""
+        # Don't try drawing, if we have no data
+        if (df is None) or (len(df) < 1):
+            return {'data': []}
         # Group and aggregate
         df = df.groupby(['timestamp_ms', 'collection'])
         df = df['score'].mean().unstack('collection').fillna(0)
-
         figure = {
             'data': [
                 go.Scatter(
                     x=df.index,
                     y=df[i],
-                    text=df[i].astype('int').astype('str') + ' Tweets',
+                    text='Sentiment: ' + df[i].map('{:.2f}'.format),
                     opacity=0.7,
-                    name=i
+                    name=i,
+                    line={'color': self.colors[i]}
                 ) for i in df.columns.values
             ],
             'layout': go.Layout(
-                xaxis={'rangeselector':
-                       {'buttons': [
-                           {'count': 1, 'label': '1 day', 'step': 'day',
-                               'stepmode': 'backward'},
-                           {'count': 1, 'label': '1 week', 'step': 'week',
-                            'stepmode': 'backward'},
-                           {'count': 1, 'label': '1 month', 'step': 'month',
-                            'stepmode': 'backward'},
-                           {'step': 'all'}
-                       ]},
-                       'ticks': 'inside',
-                       'ticklen': 15,
-                       'rangeslider': {},
-                       'type': 'date'},
-                margin={'l': 40, 'b': 0, 't': 10, 'r': 10},
+                margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
                 showlegend=True,
                 legend={'x': 1.02, 'y': 0.5},
-                hovermode='closest'
+                hovermode='closest',
+                xaxis=x_axis
             )
         }
+        return figure
 
+    def plot_stock(self, df, x_axis):
+        """Plot the average stock prices."""
+        # Don't try drawing, if we have no data
+        if len(df) < 1:
+            return {'data': []}
+        # Group and aggregate
+        df = df.groupby(['timestamp_ms', 'collection'])
+        df = df['EUR'].mean().unstack('collection').fillna(0)
+        figure = {
+            'data': [
+                go.Scatter(
+                    x=df.index,
+                    y=df[i],
+                    text='Stock value: ' + df[i].map('{:.2f}'.format) + ' €',
+                    opacity=0.7,
+                    name=i,
+                    line={'color': self.colors[i]}
+                ) for i in df.columns.values
+            ],
+            'layout': go.Layout(
+                margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
+                showlegend=True,
+                legend={'x': 1.02, 'y': 0.5},
+                hovermode='closest',
+                xaxis=x_axis
+            )
+        }
         return figure
 
 
