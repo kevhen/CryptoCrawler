@@ -262,7 +262,7 @@ Didn't work.
 `while true; do python streamlistener.py; done`
 
 
----
+---?image=assets/bg-pricecrawler.png
 @title[Microservice - Price Crawler]
 
 #### Microservice 3
@@ -301,7 +301,12 @@ favorite editor.
 slide-delimeters (---)</span>
 
 ---
+@title[Microservice - Topic Modelling]
 
+#### Microservice 5
+# Topic Modelling
+
++++
 @title[Step 2. Git-Commit]
 
 ### <span class="gold">STEP 2. GIT-COMMIT</span>
@@ -321,6 +326,19 @@ Done!
 @[5](Supports GitHub, GitLab, Bitbucket, GitBucket, Gitea, and Gogs.)
 
 ---
+@title[Microservice - Jupyter Notebook]
+
+#### Microservice 7
+# Jupyter Notebook
+
+
+---
+@title[Microservice - Dash]
+
+#### Microservice 8
+# Dashbord
+
++++
 
 @title[Step 3. Done!]
 
@@ -331,6 +349,12 @@ Done!
 <br>
 #### Instantly use your GitPitch slideshow URL to promote, pitch or
 present absolutely anything.
+
+---
+@title[Microservice - Jupyter Notebook]
+
+#### Wrap up
+# What we have learned
 
 ---
 
