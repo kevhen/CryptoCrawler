@@ -81,6 +81,8 @@ crypto-price-listener_1  | RecursionError: maximum recursion depth exceeded whil
 #### Projekt Preparation
 # Planning
 
+Kevin
+
 
 +++
 @title[Goal]
@@ -130,6 +132,7 @@ crypto-price-listener_1  | RecursionError: maximum recursion depth exceeded whil
 #### Architecture
 # Docker based Microservices
 
+Kevin
 
 +++
 @title[Docker]
@@ -158,6 +161,7 @@ crypto-price-listener_1  | RecursionError: maximum recursion depth exceeded whil
 #### Microservice 1
 # Mongo DB
 
+Holger
 
 +++
 @title[MongoDB]
@@ -201,6 +205,7 @@ crypto-price-listener_1  | RecursionError: maximum recursion depth exceeded whil
 #### Microservice 2
 # Twitter Stream Listener
 
+Holger
 
 +++
 @title[Twitter Stream - Information overload]
@@ -268,13 +273,23 @@ Didn't work.
 #### Microservice 3
 # Crypto Price Crawler
 
+Kevin
 
----
-@title[Microservice - Anomaly Detection]
+---?image=assets/bg-cryptowrapper.png
+@title[Microservice - API Wrapper]
 
 #### Microservice 4
+# Crypto API Wrapper
+
+Kevin
+
+---?image=assets/bg-anomaly.png
+@title[Microservice - Anomaly Detection]
+
+#### Microservice 5
 # Anomaly Detection
 
+Holger
 
 +++
 @title[Idea]
@@ -300,11 +315,13 @@ favorite editor.
 <span class="aside">It's as easy as README.md with simple
 slide-delimeters (---)</span>
 
----
+---?image=assets/bg-topic.png
 @title[Microservice - Topic Modelling]
 
-#### Microservice 5
+#### Microservice 6
 # Topic Modelling
+
+Holger
 
 +++
 @title[Step 2. Git-Commit]
@@ -325,18 +342,21 @@ Done!
 @[3](Push PITCHME.md to your public repo and you're done!)
 @[5](Supports GitHub, GitLab, Bitbucket, GitBucket, Gitea, and Gogs.)
 
----
+---?image=assets/bg-jupyter.png
 @title[Microservice - Jupyter Notebook]
 
 #### Microservice 7
 # Jupyter Notebook
 
+Kevin
 
----
+---?image=assets/bg-dash.png
 @title[Microservice - Dash]
 
 #### Microservice 8
 # Dashbord
+
+Holger & Kevin
 
 +++
 
@@ -353,8 +373,8 @@ present absolutely anything.
 ---
 @title[Microservice - Jupyter Notebook]
 
-#### Wrap up
-# What we have learned
+#### What we have learned
+# Wrap up
 
 ---
 
