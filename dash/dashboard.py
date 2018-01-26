@@ -261,6 +261,10 @@ class dashboard():
                 rel='stylesheet',
                 href='/static/style.css'
             ),
+            html.Link(
+                rel='stylesheet',
+                href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'
+            ),
 
             # Header
             html.Div([
@@ -368,7 +372,8 @@ class dashboard():
                 html.Div([
                     html.H3([
                         html.Img(src='/static/Twitter_Social_Icon_Circle_Color.svg', className='iconImage'),
-                         'Random tweets for the selected topic'])
+                         'Random tweets for the selected topic']),
+                        html.Button(className='fa fa-refresh refresh', id='refresh-tweets-button')
                 ], className='title'),
                 html.Div([
                 ], id='tweetbox', className='content')
@@ -414,17 +419,18 @@ class dashboard():
             [ddp.Input(component_id='global-topic-checklist',
                        component_property='values'),
              ddp.Input(component_id='tweets-live-dropdown',
-                       component_property='value')],
+                       component_property='value'),
+             ddp.Input(component_id='refresh-tweets-button', component_property='n_clicks')],
             [],
             [ddp.Event('live-update', 'interval')])
-        def returnUpdatedTweetbox(topic_values, live_range):
+        def returnUpdatedTweetbox(topic_values, live_range, n_clicks):
             # TODO: get 20 tweets here
 
             tweets = []
 
             # Just Testing
-            tweets.append(buildTweet(topic_values[0], live_range))
-            tweets.append(buildTweet('testtext', '7:51 PM - Dec 3, 2012'))
+            tweets.append(buildTweet(','.join(topic_values), live_range))
+            tweets.append(buildTweet('testtext', n_clicks))
             tweets.append(buildTweet('testtext', '7:51 PM - Dec 3, 2012'))
             tweets.append(buildTweet('testtext', '7:51 PM - Dec 3, 2012'))
             tweets.append(buildTweet('testtext', '7:51 PM - Dec 3, 2012'))
