@@ -13,8 +13,10 @@ import pandas as pd
 import yaml
 import datetime
 import os
+import json
 from flask import send_from_directory
 from pymongo import MongoClient
+import requests
 import logging
 logging.basicConfig(format='%(levelname)s - %(asctime)s: %(message)s',
                     datefmt='%m/%d/%Y %H:%M:%S',
@@ -35,7 +37,7 @@ class dashboard():
         conn = MongoClient(self.config['mongodb']['host'],
                            self.config['mongodb']['port'])
         # Use local mongo-container IP for testing
-        #conn = MongoClient('172.17.0.2', self.config['mongodb']['port'])
+        conn = MongoClient('172.17.0.2', self.config['mongodb']['port'])
         self.db = conn[self.config['mongodb']['db']]
 
         # Helper Variable for timestamp conversion
@@ -238,6 +240,27 @@ class dashboard():
 
         return df
 
+    def get_anomalies(self, s):
+        """Query anomaly detection service, return anomaly data for charts."""
+        url = 'http://0.0.0.0:5001/esd'
+        url = 'http://127.0.0.1:5001/esd'
+        data = list(s.values)
+        payload = {
+            "ary": data,
+            "freq": 12,
+            "p": 0.05
+        }
+        response = requests.post(url, json=payload)
+
+        result = []
+        if response.ok:
+            content = json.loads(response.content)
+            if 'idx_anoms' in content:
+                result = content['idx_anoms']
+
+        s_result = s.iloc[result]
+        return s_result
+
     # ============================================
     # Dash/Charting related methods
     # ============================================
@@ -332,6 +355,17 @@ class dashboard():
                          'Tweets per Hour'])
                 ], className='title'),
                 html.Div([
+                    dcc.Checklist(
+                        id='tweet-anoms-toggle',
+                        options=[
+                            {'label': 'Anomalies',
+                             'value': 'anoms'}
+                        ],
+                        values=[]
+                    ),
+                ], className='content'),
+
+                html.Div([
                     # Chart for All Tweets
                     dcc.Graph(
                         style={'width': '878px', 'height': '250px'},
@@ -371,9 +405,11 @@ class dashboard():
             html.Div([
                 html.Div([
                     html.H3([
-                        html.Img(src='/static/Twitter_Social_Icon_Circle_Color.svg', className='iconImage'),
+                        html.Img(
+                            src='/static/Twitter_Social_Icon_Circle_Color.svg', className='iconImage'),
                          'Random tweets for the selected topic']),
-                        html.Button(className='fa fa-refresh refresh', id='refresh-tweets-button')
+                    html.Button(className='fa fa-refresh refresh',
+                                id='refresh-tweets-button')
                 ], className='title'),
                 html.Div([
                 ], id='tweetbox', className='content')
@@ -412,7 +448,6 @@ class dashboard():
                 ])
             ], className='EmbeddedTweet')
             return tweet
-
 
         @app.callback(
             dash.dependencies.Output('tweetbox', 'children'),
@@ -456,10 +491,27 @@ class dashboard():
                       [ddp.Input(component_id='global-topic-checklist',
                                  component_property='values')])
         def clean_tweet_data(topic_values):
-            # Get Data
+            # Query for Data
             df = self.get_agg_data(topic_values, 'score')
-            # Store in hidden element
-            return df.to_json(date_format='iso', orient='split')
+
+            # Group and aggregate
+            df = df.groupby(['timestamp_ms', 'collection'])
+            df_score = df['score'].mean().unstack('collection').fillna(0)
+            df_count = df['count'].sum().unstack('collection').fillna(0)
+
+            # Get Anomalies for count
+            df_anoms = pd.DataFrame()
+            for col in df_count.columns.values:
+                df_anoms[col] = self.get_anomalies(df_count[col])
+
+            # Jsonfy & concat DFs, then store string in hidden element
+            data = df_count.to_json(date_format='iso', orient='split') \
+                + "\n" + \
+                df_score.to_json(date_format='iso', orient='split') \
+                + "\n" + \
+                df_anoms.to_json(date_format='iso', orient='split') \
+
+            return data
 
         @app.callback(ddp.Output('hidden-stock-data', 'children'),
                       [ddp.Input(component_id='global-topic-checklist',
@@ -489,11 +541,19 @@ class dashboard():
             ddp.Output('tweets-plot', 'figure'),
             [ddp.Input('hidden-tweet-data', 'children'),
              ddp.Input('senti-plot', 'relayoutData'),
-             ddp.Input('stock-plot', 'relayoutData')])
-        def update_timeseries(jsonified_data, rd_senti, rd_stock):
-            df = pd.read_json(jsonified_data, orient='split')
+             ddp.Input('stock-plot', 'relayoutData'),
+             ddp.Input('tweet-anoms-toggle', 'values')])
+        def update_timeseries(jsonified_data, rd_senti, rd_stock, toggle):
+            print(toggle)
+            data = jsonified_data.split('\n')[0]
+            df = pd.read_json(data, orient='split')
+            if 'anoms' in toggle:
+                anoms = jsonified_data.split('\n')[2]
+                df_anoms = pd.read_json(anoms, orient='split')
+            else:
+                df_anoms = None
             x_axis = self.get_x([rd_senti, rd_stock])
-            return self.plot_tweets(df, x_axis)
+            return self.plot_tweets(df, df_anoms, x_axis)
 
         @app.callback(
             ddp.Output('senti-plot', 'figure'),
@@ -501,7 +561,8 @@ class dashboard():
              ddp.Input('tweets-plot', 'relayoutData'),
              ddp.Input('stock-plot', 'relayoutData')])
         def update_senti(jsonified_data, rd_tweets, rd_stock):
-            df = pd.read_json(jsonified_data, orient='split')
+            data = jsonified_data.split('\n')[1]
+            df = pd.read_json(data, orient='split')
             x_axis = self.get_x([rd_tweets, rd_stock])
             return self.plot_senti(df, x_axis)
 
@@ -554,14 +615,31 @@ class dashboard():
         }
         return figure
 
-    def plot_tweets(self, df, x_axis):
+    def plot_tweets(self, df, df_anoms, x_axis):
         """Plot the overall twitter chart."""
         # Don't try drawing, if we have no data
         if (df is None) or (len(df) < 1):
             return {'data': []}
-        # Group and aggregate
-        df = df.groupby(['timestamp_ms', 'collection'])
-        df = df['count'].sum().unstack('collection').fillna(0)
+
+        # Create annotations
+        annos = []
+        if df_anoms is not None:
+            for col in df_anoms.columns.values:
+                for idx, item in df_anoms[col].iteritems():
+                    annos.append(dict(
+                        x=idx,
+                        y=item,
+                        xref='x',
+                        yref='y',
+                        arrowcolor=self.colors[col],
+                        showarrow=True,
+                        arrowhead=6,
+                        arrowsize=2,
+                        clicktoshow=True,
+                        opacity=0.4,
+                        ax=-10,
+                        ay=-10
+                    ))
 
         figure = {
             'data': [
@@ -579,7 +657,8 @@ class dashboard():
                 showlegend=True,
                 legend={'x': 1.02, 'y': 0.5},
                 hovermode='closest',
-                xaxis=x_axis
+                xaxis=x_axis,
+                annotations=annos
             )
         }
 
@@ -590,9 +669,7 @@ class dashboard():
         # Don't try drawing, if we have no data
         if (df is None) or (len(df) < 1):
             return {'data': []}
-        # Group and aggregate
-        df = df.groupby(['timestamp_ms', 'collection'])
-        df = df['score'].mean().unstack('collection').fillna(0)
+
         figure = {
             'data': [
                 go.Scatter(
