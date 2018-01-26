@@ -429,23 +429,6 @@ class dashboard():
 
             return html.Div(tweets, id='tweetbox', className='content')
 
-        #
-        # @app.callback(
-        #     dash.dependencies.Output('tweet-text-1', 'children'),
-        #     [],
-        #     [],
-        #     [ddp.Event('live-update', 'interval')])
-        # def returnTweet1():
-        #     return 'test1'
-        #
-        # @app.callback(
-        #     dash.dependencies.Output('tweet-text-2', 'children'),
-        #     [],
-        #     [],
-        #     [ddp.Event('live-update', 'interval')])
-        # def returnTweet2():
-        #     return 'test2'
-
         @app.callback(
             ddp.Output('tweets-live-plot', 'figure'),
             [ddp.Input(component_id='global-topic-checklist',
