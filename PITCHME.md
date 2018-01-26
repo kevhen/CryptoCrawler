@@ -135,8 +135,8 @@ crypto-price-listener_1  | RecursionError: maximum recursion depth exceeded whil
 @title[Docker]
 
 #### Docker
-- to do (Container, Dockerfile,..)
-
+- Virtualized Containers for each Microservice
+- 
 
 +++
 @title[Microservices]

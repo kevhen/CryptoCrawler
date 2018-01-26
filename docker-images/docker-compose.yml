@@ -23,6 +23,15 @@ services:
     depends_on:
       - crypto-mongo
 
+  crypto-api-wrapper:
+    build:
+      context: ./miniconda3-api
+    networks:
+      - backend
+      - frontend
+    ports:
+      - 8050:8050
+
   crypto-jupyter:
     volumes:
       - /data/notebooks:/home/jovyan/work
