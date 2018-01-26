@@ -285,7 +285,7 @@ class dashboard():
                             {'label': 'Last minute', 'value': 1},
                             {'label': 'Last 5 min', 'value': 5},
                             {'label': 'Last 15 min', 'value': 15},
-                            {'label': 'Last 30 min', 'value': 20}
+                            {'label': 'Last 30 min', 'value': 30}
                         ],
                         value=5
                     ),
