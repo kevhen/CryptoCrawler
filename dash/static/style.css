@@ -152,3 +152,62 @@ span.icon {
     font-weight: bold;
     margin-right: 16px;
 }
+
+.iconImage {
+    height: 21px !important;
+    margin-right: 16px;
+}
+
+/*  Twitter Styling for embedded tweets */
+
+
+.EmbeddedTweet {
+  overflow: hidden;
+  background-color: #fff;
+  border: 1px solid #e1e8ed;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+.Tweet-header {
+  height: 25px;
+  position: relative;
+  padding-left: 45px;
+  white-space: nowrap
+}
+
+.Tweet-brand {
+  position: relative;
+  z-index: 1;
+  float: right !important;
+}
+
+.Icon {
+  display: inline-block;
+  height: 1.25em;
+  background-repeat: no-repeat;
+  background-size: contain;
+  vertical-align: text-bottom
+}
+
+.Tweet-body {
+  margin-top: 14px
+}
+
+.Tweet-text {
+  text-align: left;
+  direction: ltr
+}
+
+a {
+  background-color: transparent
+}
+
+a:active, a:hover {
+  outline: 0
+}
+
+.Tweet-metadata {
+  font-size: 14px;
+  color: #697882
+}

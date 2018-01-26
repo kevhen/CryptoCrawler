@@ -363,6 +363,53 @@ class dashboard():
                 ], className='content')
             ], className='box'),
 
+            # Random Tweets
+            html.Div([
+                html.Div([
+                    html.H3([
+                        html.Img(src='/static/Twitter_Social_Icon_Circle_Color.svg', className='iconImage'),
+                         'Random tweets for the selected topic'])
+                ], className='title'),
+                html.Div([
+                    html.Div([
+                        html.Blockquote([
+                            html.Div([
+                                html.Div([
+                                    html.Img(
+                                        src='/static/Twitter_Social_Icon_Circle_Color.svg', className='Icon')
+                                ], className='Tweet-brand')
+                            ], className='Tweet-header'),
+                            html.Div([
+                                html.P([
+                                    """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc tempor pellentesque ante at fringilla. Etiam mattis sollicitudin posuere. Fusce faucibus vehicula diam id ornare. Phasellus congue, velit vel facilisis porttitor, mauris magna tincidunt nunc, non ultricies tellus lorem vel nulla. Cras rutrum turpis justo, non rutrum leo congue porttitor. Morbi ullamcorper ullamcorper lectus in venenatis. Phasellus hendrerit mi sed mauris rhoncus cursus. Nam pretium pretium erat tempus auctor. Sed semper diam ipsum, eu interdum massa ullamcorper in. Pellentesque quis nunc nibh. Aenean vestibulum odio non velit elementum pharetra. Etiam accumsan enim quis nisl porta, sit amet egestas ligula tempor."""
+                                ], className='Tweet-text'),
+                                html.Div([
+                                    '7:51 PM - Dec 3, 2012'
+                                ], className='Tweet-metadata')
+                            ], className='Tweet-body')
+                        ])
+                    ], className='EmbeddedTweet'),
+                    html.Div([
+                        html.Blockquote([
+                            html.Div([
+                                html.Div([
+                                    html.Img(
+                                        src='/static/Twitter_Social_Icon_Circle_Color.svg', className='Icon')
+                                ], className='Tweet-brand')
+                            ], className='Tweet-header'),
+                            html.Div([
+                                html.P([
+                                    """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc tempor pellentesque ante at fringilla. Etiam mattis sollicitudin posuere. Fusce faucibus vehicula diam id ornare. Phasellus congue, velit vel facilisis porttitor, mauris magna tincidunt nunc, non ultricies tellus lorem vel nulla. Cras rutrum turpis justo, non rutrum leo congue porttitor. Morbi ullamcorper ullamcorper lectus in venenatis. Phasellus hendrerit mi sed mauris rhoncus cursus. Nam pretium pretium erat tempus auctor. Sed semper diam ipsum, eu interdum massa ullamcorper in. Pellentesque quis nunc nibh. Aenean vestibulum odio non velit elementum pharetra. Etiam accumsan enim quis nisl porta, sit amet egestas ligula tempor."""
+                                ], className='Tweet-text'),
+                                html.Div([
+                                    '7:51 PM - Dec 3, 2012'
+                                ], className='Tweet-metadata')
+                            ], className='Tweet-body')
+                        ])
+                    ], className='EmbeddedTweet')
+                ], className='content')
+            ], className='box'),
+
             # Footer
             html.Div(
                 'Build in 01/2018 by kevhen & dynobo with ❤ and Plotly Dash',
