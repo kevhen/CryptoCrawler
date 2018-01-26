@@ -381,8 +381,7 @@ class dashboard():
                             ], className='Tweet-header'),
                             html.Div([
                                 html.P([
-                                    """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc tempor pellentesque ante at fringilla. Etiam mattis sollicitudin posuere. Fusce faucibus vehicula diam id ornare. Phasellus congue, velit vel facilisis porttitor, mauris magna tincidunt nunc, non ultricies tellus lorem vel nulla. Cras rutrum turpis justo, non rutrum leo congue porttitor. Morbi ullamcorper ullamcorper lectus in venenatis. Phasellus hendrerit mi sed mauris rhoncus cursus. Nam pretium pretium erat tempus auctor. Sed semper diam ipsum, eu interdum massa ullamcorper in. Pellentesque quis nunc nibh. Aenean vestibulum odio non velit elementum pharetra. Etiam accumsan enim quis nisl porta, sit amet egestas ligula tempor."""
-                                ], className='Tweet-text'),
+                                ], id='tweet-text-1', className='Tweet-text'),
                                 html.Div([
                                     '7:51 PM - Dec 3, 2012'
                                 ], className='Tweet-metadata')
@@ -399,8 +398,7 @@ class dashboard():
                             ], className='Tweet-header'),
                             html.Div([
                                 html.P([
-                                    """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc tempor pellentesque ante at fringilla. Etiam mattis sollicitudin posuere. Fusce faucibus vehicula diam id ornare. Phasellus congue, velit vel facilisis porttitor, mauris magna tincidunt nunc, non ultricies tellus lorem vel nulla. Cras rutrum turpis justo, non rutrum leo congue porttitor. Morbi ullamcorper ullamcorper lectus in venenatis. Phasellus hendrerit mi sed mauris rhoncus cursus. Nam pretium pretium erat tempus auctor. Sed semper diam ipsum, eu interdum massa ullamcorper in. Pellentesque quis nunc nibh. Aenean vestibulum odio non velit elementum pharetra. Etiam accumsan enim quis nisl porta, sit amet egestas ligula tempor."""
-                                ], className='Tweet-text'),
+                                ], id='tweet-text-2', className='Tweet-text'),
                                 html.Div([
                                     '7:51 PM - Dec 3, 2012'
                                 ], className='Tweet-metadata')
@@ -422,6 +420,23 @@ class dashboard():
         def static_file(path):
             static_folder = os.path.join(os.getcwd(), 'static')
             return send_from_directory(static_folder, path)
+
+
+        @app.callback(
+            dash.dependencies.Output('tweet-text-1', 'children'),
+            [],
+            [],
+            [ddp.Event('live-update', 'interval')])
+        def returnTweet1():
+            return 'test1'
+
+        @app.callback(
+            dash.dependencies.Output('tweet-text-2', 'children'),
+            [],
+            [],
+            [ddp.Event('live-update', 'interval')])
+        def returnTweet2():
+            return 'test2'
 
         @app.callback(
             ddp.Output('tweets-live-plot', 'figure'),
