@@ -371,41 +371,7 @@ class dashboard():
                          'Random tweets for the selected topic'])
                 ], className='title'),
                 html.Div([
-                    html.Div([
-                        html.Blockquote([
-                            html.Div([
-                                html.Div([
-                                    html.Img(
-                                        src='/static/Twitter_Social_Icon_Circle_Color.svg', className='Icon')
-                                ], className='Tweet-brand')
-                            ], className='Tweet-header'),
-                            html.Div([
-                                html.P([
-                                ], id='tweet-text-1', className='Tweet-text'),
-                                html.Div([
-                                    '7:51 PM - Dec 3, 2012'
-                                ], className='Tweet-metadata')
-                            ], className='Tweet-body')
-                        ])
-                    ], className='EmbeddedTweet'),
-                    html.Div([
-                        html.Blockquote([
-                            html.Div([
-                                html.Div([
-                                    html.Img(
-                                        src='/static/Twitter_Social_Icon_Circle_Color.svg', className='Icon')
-                                ], className='Tweet-brand')
-                            ], className='Tweet-header'),
-                            html.Div([
-                                html.P([
-                                ], id='tweet-text-2', className='Tweet-text'),
-                                html.Div([
-                                    '7:51 PM - Dec 3, 2012'
-                                ], className='Tweet-metadata')
-                            ], className='Tweet-body')
-                        ])
-                    ], className='EmbeddedTweet')
-                ], className='content')
+                ], id='tweetbox', className='content')
             ], className='box'),
 
             # Footer
@@ -421,22 +387,64 @@ class dashboard():
             static_folder = os.path.join(os.getcwd(), 'static')
             return send_from_directory(static_folder, path)
 
+        def buildTweet(text, timeString):
+            tweet = html.Div([
+                html.Blockquote([
+                    html.Div([
+                        html.Div([
+                            html.Img(
+                                src='/static/Twitter_Social_Icon_Circle_Color.svg', className='Icon')
+                        ], className='Tweet-brand')
+                    ], className='Tweet-header'),
+                    html.Div([
+                        html.P([
+                            text
+                        ], className='Tweet-text'),
+                        html.Div([
+                            timeString
+                        ], className='Tweet-metadata')
+                    ], className='Tweet-body')
+                ])
+            ], className='EmbeddedTweet')
+            return tweet
+
 
         @app.callback(
-            dash.dependencies.Output('tweet-text-1', 'children'),
+            dash.dependencies.Output('tweetbox', 'children'),
             [],
             [],
             [ddp.Event('live-update', 'interval')])
-        def returnTweet1():
-            return 'test1'
+        def returnUpdatedTweetbox():
+            # TODO: get 20 tweets here
 
-        @app.callback(
-            dash.dependencies.Output('tweet-text-2', 'children'),
-            [],
-            [],
-            [ddp.Event('live-update', 'interval')])
-        def returnTweet2():
-            return 'test2'
+            tweets = []
+
+            # Just Testing
+            tweets.append(buildTweet('testtext', '7:51 PM - Dec 3, 2012'))
+            tweets.append(buildTweet('testtext', '7:51 PM - Dec 3, 2012'))
+            tweets.append(buildTweet('testtext', '7:51 PM - Dec 3, 2012'))
+            tweets.append(buildTweet('testtext', '7:51 PM - Dec 3, 2012'))
+            tweets.append(buildTweet('testtext', '7:51 PM - Dec 3, 2012'))
+            tweets.append(buildTweet('testtext', '7:51 PM - Dec 3, 2012'))
+
+            return html.Div(tweets, id='tweetbox', className='content')
+
+        #
+        # @app.callback(
+        #     dash.dependencies.Output('tweet-text-1', 'children'),
+        #     [],
+        #     [],
+        #     [ddp.Event('live-update', 'interval')])
+        # def returnTweet1():
+        #     return 'test1'
+        #
+        # @app.callback(
+        #     dash.dependencies.Output('tweet-text-2', 'children'),
+        #     [],
+        #     [],
+        #     [ddp.Event('live-update', 'interval')])
+        # def returnTweet2():
+        #     return 'test2'
 
         @app.callback(
             ddp.Output('tweets-live-plot', 'figure'),
