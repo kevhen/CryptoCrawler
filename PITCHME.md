@@ -189,6 +189,29 @@ Holger
 
 
 +++
+
+
+```shell
+$ docker exec -it crypto-mongo /bin/bash
+$ mongo
+Mongo > use cryptocrawl
+Mongo > show collections
+> bitcoin
+> ethereum
+> generalcrypto
+> iota
+Mongo > db.bitcoin.createIndex({"timestamp_ms": 1}, {background:true})
+Mongo > db.collection.totalIndexSize()
+```
+
+@[1](Open shell in Docker Container)
+@[2](Start MongoDB CLI client)
+@[3](Open Database with Name "cryptocrawler")
+@[4](List all collections of this DB)
+@[9](Create Index on attribute 'timestamp_ms'. Repeat for all collections.)
+@[10](Show size of Indexes. Should fit in RAM.)
+
++++
 @title[Problem with Aggregation]
 
 #### Problem 1
