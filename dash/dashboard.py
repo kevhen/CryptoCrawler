@@ -411,16 +411,19 @@ class dashboard():
 
         @app.callback(
             dash.dependencies.Output('tweetbox', 'children'),
-            [],
+            [ddp.Input(component_id='global-topic-checklist',
+                       component_property='values'),
+             ddp.Input(component_id='tweets-live-dropdown',
+                       component_property='value')],
             [],
             [ddp.Event('live-update', 'interval')])
-        def returnUpdatedTweetbox():
+        def returnUpdatedTweetbox(topic_values, live_range):
             # TODO: get 20 tweets here
 
             tweets = []
 
             # Just Testing
-            tweets.append(buildTweet('testtext', '7:51 PM - Dec 3, 2012'))
+            tweets.append(buildTweet(topic_values[0], live_range))
             tweets.append(buildTweet('testtext', '7:51 PM - Dec 3, 2012'))
             tweets.append(buildTweet('testtext', '7:51 PM - Dec 3, 2012'))
             tweets.append(buildTweet('testtext', '7:51 PM - Dec 3, 2012'))
