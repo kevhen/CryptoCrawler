@@ -75,11 +75,14 @@ crypto-price-listener_1  |     wr = ref(item)
 crypto-price-listener_1  | RecursionError: maximum recursion depth exceeded while calling a Python object
 ```
 
----
-@title[Planning the Project]
 
-#### Projekt Preparation
-# Planning
+---
+@title[Introduction]
+
+#### Introduction
+# Idea & Planning
+
+Kevin
 
 
 +++
@@ -99,6 +102,7 @@ crypto-price-listener_1  | RecursionError: maximum recursion depth exceeded whil
 - Twitter Stream
 - Crypto-Stock-Market Stream
 - News
+
 
 +++
 @title[KPIs]
@@ -130,6 +134,8 @@ crypto-price-listener_1  | RecursionError: maximum recursion depth exceeded whil
 #### Architecture
 # Docker based Microservices
 
+Kevin
+
 
 +++
 @title[Docker]
@@ -158,6 +164,8 @@ crypto-price-listener_1  | RecursionError: maximum recursion depth exceeded whil
 #### Microservice 1
 # Mongo DB
 
+Holger
+
 
 +++
 @title[MongoDB]
@@ -181,6 +189,29 @@ crypto-price-listener_1  | RecursionError: maximum recursion depth exceeded whil
 
 
 +++
+
+
+```shell
+$ docker exec -it crypto-mongo /bin/bash
+$ mongo
+Mongo > use cryptocrawl
+Mongo > show collections
+> bitcoin
+> ethereum
+> generalcrypto
+> iota
+Mongo > db.bitcoin.createIndex({"timestamp_ms": 1}, {background:true})
+Mongo > db.collection.totalIndexSize()
+```
+
+@[1](Open shell in Docker Container)
+@[2](Start MongoDB CLI client)
+@[3](Open Database with Name "cryptocrawler")
+@[4](List all collections of this DB)
+@[9](Create Index on attribute 'timestamp_ms'. Repeat for all collections.)
+@[10](Show size of Indexes. Should fit in RAM.)
+
++++
 @title[Problem with Aggregation]
 
 #### Problem 1
@@ -200,6 +231,8 @@ crypto-price-listener_1  | RecursionError: maximum recursion depth exceeded whil
 
 #### Microservice 2
 # Twitter Stream Listener
+
+Holger
 
 
 +++
@@ -262,18 +295,31 @@ Didn't work.
 `while true; do python streamlistener.py; done`
 
 
----
+---?image=assets/bg-pricecrawler.png
 @title[Microservice - Price Crawler]
 
 #### Microservice 3
 # Crypto Price Crawler
 
+Kevin
 
----
-@title[Microservice - Anomaly Detection]
+
+---?image=assets/bg-cryptowrapper.png
+@title[Microservice - API Wrapper]
 
 #### Microservice 4
+# Crypto API Wrapper
+
+Kevin
+
+
+---?image=assets/bg-anomaly.png
+@title[Microservice - Anomaly Detection]
+
+#### Microservice 5
 # Anomaly Detection
+
+Holger
 
 
 +++
@@ -289,6 +335,7 @@ Then use them for:
 - Searching News in those time ranges
 to <span class="pink">ease the interpretation</span> of the data.
 
+
 +++
 @title[Anomalies in Timeseries]
 
@@ -300,8 +347,17 @@ favorite editor.
 <span class="aside">It's as easy as README.md with simple
 slide-delimeters (---)</span>
 
----
 
+---?image=assets/bg-topic.png
+@title[Microservice - Topic Modelling]
+
+#### Microservice 6
+# Topic Modelling
+
+Holger
+
+
++++
 @title[Step 2. Git-Commit]
 
 ### <span class="gold">STEP 2. GIT-COMMIT</span>
@@ -320,8 +376,26 @@ Done!
 @[3](Push PITCHME.md to your public repo and you're done!)
 @[5](Supports GitHub, GitLab, Bitbucket, GitBucket, Gitea, and Gogs.)
 
----
 
+---?image=assets/bg-jupyter.png
+@title[Microservice - Jupyter Notebook]
+
+#### Microservice 7
+# Jupyter Notebook
+
+Kevin
+
+
+---?image=assets/bg-dash.png
+@title[Microservice - Dash]
+
+#### Microservice 8
+# Dashbord
+
+Holger & Kevin
+
+
++++
 @title[Step 3. Done!]
 
 ### <span class="gold">STEP 3. GET THE WORD OUT!</span>
@@ -332,53 +406,9 @@ Done!
 #### Instantly use your GitPitch slideshow URL to promote, pitch or
 present absolutely anything.
 
----
-
-@title[Slide Rich]
-
-### <span class="gold">Slide Rich</span>
-
-#### Code Presenting for Blocks, Files, and GISTs
-#### Image, Video, Chart, and Math Slides
-#### Multiple Themes with Easy Customization
-<br>
-#### <span class="gold">Plus collaboration is built-in...</span>
-#### Your Slideshow is Part of Your Project
-#### Under Git Version Control within Your Git Repo
 
 ---
+@title[Wrap up]
 
-@title[Feature Rich]
-
-### <span class="gold">Feature Rich</span>
-
-#### Present Online or Offline
-#### With Speaker Notes Support
-#### Print Presentation as PDF
-#### Auto-Generated Table-of-Contents
-#### Share Presentation on Twitter or LinkedIn
-
----
-
-### <span class="gold">GitPitch Pro - Coming Soon!</span>
-
-<br>
-<div class="left">
-    <i class="fa fa-user-secret fa-5x" aria-hidden="true"> </i><br>
-    <a href="https://gitpitch.com/pro-features" class="pro-link">
-    More details here.</a>
-</div>
-<div class="right">
-    <ul>
-        <li>Private Repos</li>
-        <li>Private URLs</li>
-        <li>Password-Protection</li>
-        <li>Image Opacity</li>
-        <li>SVG Image Support</li>
-    </ul>
-</div>
-
----
-
-### Go for it.
-### Just add <span class="gold">PITCHME.md</span> ;)
+#### What we have learned
+# Wrap up
