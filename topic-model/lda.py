@@ -23,6 +23,11 @@ from nltk.stem.wordnet import WordNetLemmatizer
 import string
 import gensim
 from gensim import corpora
+import logging
+logging.basicConfig(format='%(levelname)s - %(asctime)s: %(message)s',
+                    datefmt='%m/%d/%Y %H:%M:%S',
+                    level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Load wordlist, if not already available
 nltk.download('stopwords')
@@ -38,6 +43,8 @@ def load_tweets(db, collection, start_time, end_time):
     # Remove the mongo-row-id, as it's not needed
     if '_id' in df.columns:
         del df['_id']
+
+    print(df.head())
     return df
 
 
@@ -111,6 +118,10 @@ def indentify_topics(df, num_topics):
     and
     https://rstudio-pubs-static.s3.amazonaws.com/79360_850b2a69980c4488b1db95987a24867a.html
     """
+    # Return empty, if no results
+    if (len(df) < 1) or ('text' not in df.columns.values):
+        return []
+
     # Convert DataFrame Column to list
     docs = df['text'].values.tolist()
     docs = clean(docs)
