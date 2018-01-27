@@ -78,21 +78,20 @@ class dashboard():
         """Convert DateTime object to Unixtimestamp in ms."""
         return round((dt - self.epoch).total_seconds() * 1000.0)
 
-    def get_x(self, relayout_datas):
+    def get_x(self, rd):
         """Get xaxis range settings from layout data."""
         set_range = {'autorange': True}
-        for rd in relayout_datas:
-            if (rd is not None) and \
-                    (('xaxis.autorange' in rd) or
-                     ('yaxis.autorange' in rd)):
-                return {'autorange': True}
-            if (rd is not None) and \
-                    ('xaxis.range[0]' in rd) and \
-                    ('xaxis.range[1]' in rd):
-                set_range = {'range': [
-                    rd['xaxis.range[0]'],
-                    rd['xaxis.range[1]']
-                ]}
+        if (rd is not None) and \
+                (('xaxis.autorange' in rd) or
+                 ('yaxis.autorange' in rd)):
+            return set_range
+        if (rd is not None) and \
+                ('xaxis.range[0]' in rd) and \
+                ('xaxis.range[1]' in rd):
+            set_range = {'range': [
+                rd['xaxis.range[0]'],
+                rd['xaxis.range[1]']
+            ]}
         return set_range
 
     # ============================================
@@ -332,6 +331,7 @@ class dashboard():
             # See: https://plot.ly/dash/sharing-data-between-callbacks
             html.Div(id='hidden-tweet-data', style={'display': 'none'}),
             html.Div(id='hidden-stock-data', style={'display': 'none'}),
+            html.Div(id='hidden-layout-data', style={'display': 'none'}),
 
             # Topic Selection
             html.Div([
@@ -585,13 +585,26 @@ class dashboard():
 
             return data
 
+        axises = ['', '', '']  # Used to store axis scales of the three charts
+
+        @app.callback(ddp.Output('hidden-layout-data', 'children'),
+                      [ddp.Input('tweets-plot', 'relayoutData'),
+                       ddp.Input('senti-plot', 'relayoutData'),
+                       ddp.Input('stock-plot', 'relayoutData')])
+        def set_layout_data(rd_tweet, rd_senti, rd_stock):
+            new_axises = [rd_tweet, rd_senti, rd_stock]
+            for idx, val in enumerate(new_axises):
+                if val != axises[idx]:
+                    axises[idx] = val
+                    return json.dumps(val)
+            return json.dumps({})
+
         @app.callback(
             ddp.Output('tweets-plot', 'figure'),
             [ddp.Input('hidden-tweet-data', 'children'),
-             ddp.Input('senti-plot', 'relayoutData'),
-             ddp.Input('stock-plot', 'relayoutData'),
+             ddp.Input('hidden-layout-data', 'children'),
              ddp.Input('tweet-anoms-toggle', 'values')])
-        def update_timeseries(jsonified_data, rd_senti, rd_stock, toggle):
+        def update_timeseries(jsonified_data, rd_data, toggle):
             data = jsonified_data.split('\n')[0]
             df = pd.read_json(data, orient='split')
             if 'anoms' in toggle:
@@ -599,16 +612,15 @@ class dashboard():
                 df_anoms = pd.read_json(anoms, orient='split')
             else:
                 df_anoms = None
-            x_axis = self.get_x([rd_senti, rd_stock])
+            x_axis = self.get_x(json.loads(rd_data))
             return self.plot_timeseries('Tweets', df, df_anoms, x_axis)
 
         @app.callback(
             ddp.Output('senti-plot', 'figure'),
             [ddp.Input('hidden-tweet-data', 'children'),
-             ddp.Input('tweets-plot', 'relayoutData'),
-             ddp.Input('stock-plot', 'relayoutData'),
+             ddp.Input('hidden-layout-data', 'children'),
              ddp.Input('senti-anoms-toggle', 'values')])
-        def update_senti(jsonified_data, rd_tweets, rd_stock, toggle):
+        def update_senti(jsonified_data, rd_data, toggle):
             data = jsonified_data.split('\n')[1]
             df = pd.read_json(data, orient='split')
             if 'anoms' in toggle:
@@ -616,16 +628,15 @@ class dashboard():
                 df_anoms = pd.read_json(anoms, orient='split')
             else:
                 df_anoms = None
-            x_axis = self.get_x([rd_tweets, rd_stock])
+            x_axis = self.get_x(json.loads(rd_data))
             return self.plot_timeseries('Sentiment Score', df, df_anoms, x_axis)
 
         @app.callback(
             ddp.Output('stock-plot', 'figure'),
             [ddp.Input('hidden-stock-data', 'children'),
-             ddp.Input('tweets-plot', 'relayoutData'),
-             ddp.Input('senti-plot', 'relayoutData'),
+             ddp.Input('hidden-layout-data', 'children'),
              ddp.Input('stock-anoms-toggle', 'values')])
-        def update_plot(jsonified_data, rd_tweets, rd_senti, toggle):
+        def update_plot(jsonified_data, rd_data, toggle):
             data = jsonified_data.split('\n')[0]
             df = pd.read_json(data, orient='split')
             if 'anoms' in toggle:
@@ -633,7 +644,7 @@ class dashboard():
                 df_anoms = pd.read_json(anoms, orient='split')
             else:
                 df_anoms = None
-            x_axis = self.get_x([rd_tweets, rd_senti])
+            x_axis = self.get_x(json.loads(rd_data))
             return self.plot_timeseries('€ Stock Price', df, df_anoms, x_axis)
 
         self.app = app
