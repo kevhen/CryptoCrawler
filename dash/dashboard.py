@@ -243,7 +243,8 @@ class dashboard():
         """Query anomaly detection service, return anomaly data for charts."""
         # url = 'http://0.0.0.0:5001/esd'
         url = 'http://crypto-anoms:5001/esd'
-        data = list(s.values)
+
+        data = s.values.tolist()
         payload = {
             "ary": data,
             "freq": 24,  # as data is aggregated by hour
