@@ -202,7 +202,17 @@ span.icon {
     text-align: left;
 }
 
-#topic-collection-dropdown, #identify-topics-button, .SingleDatePicker {
+#topic-number-input {
+    width: 80px;
+    font-weight: 200;
+    font-size: 18px;
+    line-height: 44px;
+    position: relative;
+    vertical-align: top;
+    top: 1px;
+}
+
+#topic-collection-dropdown, #topic-button, #topicbox .DateRangePicker, #topic-number-input {
     margin: 0px 10px;
 }
 
@@ -210,7 +220,7 @@ span.icon {
     line-height: 48px;
 }
 
-#identify-topics-button {
+#topic-button {
     height: 50px;
 }
 

@@ -442,16 +442,22 @@ class dashboard():
                             value='bitcoin',
                             id='topic-collection-dropdown'
                         ),
-                        dcc.DatePickerSingle(
-                            id='date-picker-start',
-                            date=datetime.datetime(2018, 1, 1)
+                        dcc.DatePickerRange(
+                            id='topic-date-picker',
+                            start_date=datetime.datetime(2018, 1, 1),
+                            end_date_placeholder_text='Select a date!'
                         ),
-                        dcc.DatePickerSingle(
-                            id='date-picker-stop',
-                            date=datetime.datetime(2018, 1, 2)
+                        dcc.Input(
+                            placeholder='No. of Topics...',
+                            type='number',
+                            value='',
+                            min=2,
+                            max=10,
+                            inputmode='numeric',
+                            id='topic-number-input'
                         ),
                         html.Button(className='fa fa-search',
-                                    id='identify-topics-button')
+                                    id='topic-button')
                     ], className='settings-bar'),
                     html.Div([
                         html.Div([html.Span(className='fa fa-arrow-circle-o-up'),
@@ -762,6 +768,7 @@ class dashboard():
         }
 
         return figure
+
 
 if __name__ == '__main__':
     dashboard = dashboard()
