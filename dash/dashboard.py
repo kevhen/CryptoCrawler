@@ -37,7 +37,7 @@ class dashboard():
         conn = MongoClient(self.config['mongodb']['host'],
                            self.config['mongodb']['port'])
         # Use local mongo-container IP for testing
-        conn = MongoClient('172.17.0.2', self.config['mongodb']['port'])
+        # conn = MongoClient('172.17.0.2', self.config['mongodb']['port'])
         self.db = conn[self.config['mongodb']['db']]
 
         # Helper Variable for timestamp conversion
@@ -241,8 +241,8 @@ class dashboard():
 
     def get_anomalies(self, s):
         """Query anomaly detection service, return anomaly data for charts."""
-        url = 'http://0.0.0.0:5001/esd'
-        url = 'http://127.0.0.1:5001/esd'
+        # url = 'http://0.0.0.0:5001/esd'
+        url = 'http://crypto-anoms:5001/esd'
         data = list(s.values)
         payload = {
             "ary": data,
