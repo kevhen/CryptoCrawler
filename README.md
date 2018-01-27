@@ -106,15 +106,15 @@
 
 **Optimize:**
 
-- We do lot's of queries based on "timestamp". Let's create an index on this field:
+We do lot's of queries based on "timestamp". Let's create an index on this field:
 - Bash into mongo: `docker exec -it crypto-mongo /bin/bash`
 - Start mongo client: `mongo`
 - Select DB: `use cryptocrawl` then `show collections`
 - Create Index on timestamp field: `db.$COLLECTIONNAME.createIndex({"timestamp_ms": 1}, {background:true})`
 - `db.collection.totalIndexSize()` should fit into RAM
 
-```bash
 Also run on host:
+```bash
 echo 1 | sudo tee /sys/kernel/mm/transparent_hugepage/khugepaged/defrag
 echo never | sudo tee /sys/kernel/mm/transparent_hugepage/enabled
 echo never | sudo tee /sys/kernel/mm/transparent_hugepage/defrag

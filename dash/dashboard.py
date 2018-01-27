@@ -37,7 +37,7 @@ class dashboard():
         conn = MongoClient(self.config['mongodb']['host'],
                            self.config['mongodb']['port'])
         # Use local mongo-container IP for testing
-        conn = MongoClient('172.17.0.2', self.config['mongodb']['port'])
+        # conn = MongoClient('172.17.0.2', self.config['mongodb']['port'])
         self.db = conn[self.config['mongodb']['db']]
 
         # Helper Variable for timestamp conversion
