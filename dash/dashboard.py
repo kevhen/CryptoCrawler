@@ -37,7 +37,7 @@ class dashboard():
         conn = MongoClient(self.config['mongodb']['host'],
                            self.config['mongodb']['port'])
         # Use local mongo-container IP for testing
-        # conn = MongoClient('172.17.0.2', self.config['mongodb']['port'])
+        conn = MongoClient('172.17.0.2', self.config['mongodb']['port'])
         self.db = conn[self.config['mongodb']['db']]
 
         # Helper Variable for timestamp conversion
@@ -184,26 +184,17 @@ class dashboard():
             # Mongodb aggregation magic....
             cursor = self.db[collection].aggregate([
                 {
-                    '$project': {
-                        'timestamp_ms': '$timestamp_ms',
-                        attr: '$' + attr,
+                    '$addFields': {
                         'div_val': {'$divide': ['$timestamp_ms', agg_range]},
                     }
                 },
                 {
-                    '$project': {
-                        'timestamp_ms': '$timestamp_ms',
-                        attr: '$' + attr,
-                        'div_val': '$div_val',
+                    '$addFields': {
                         'mod_val': {'$mod': ['$div_val', 1]}
                     }
                 },
                 {
-                    '$project': {
-                        'timestamp_ms': '$timestamp_ms',
-                        attr: '$' + attr,
-                        'div_val': '$div_val',
-                        'mod_val': '$mod_val',
+                    '$addFields': {
                         'sub_val': {'$subtract': ['$div_val', '$mod_val']},
                     }
                 },
