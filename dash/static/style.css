@@ -112,6 +112,11 @@ h3 {
     position: relative;
 }
 
+#global-topic-checklist > label:nth-last-child(1),
+#global-topic-checklist > label:nth-last-child(2) {
+    opacity: 0.5;
+}
+
 #tweets-live-plot {
     height: 200px;
 }
