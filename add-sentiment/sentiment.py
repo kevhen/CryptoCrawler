@@ -128,7 +128,7 @@ def update_sentiment(db, collections, update_all=False):
             logger.info('No new tweets.')
 
     logger.info('Waiting 30 sec...')
-    time.sleep(30)
+    time.sleep(60*5)
     update_sentiment(db, collections, update_all)
     return
 
