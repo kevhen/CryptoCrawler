@@ -56,7 +56,6 @@ def clean(docs):
                    'ltc', 'cryptocurrency', 'crypto', 'cryptocurrencies',
                    'coin']
     stop = set(stopwords.words('english') + stop_custom)
-    print(stop)
     min_length = 4
     exclude_custom = '“”…‘’x'
     exclude = set(string.punctuation + exclude_custom)
@@ -94,7 +93,6 @@ def clean(docs):
         # Add to result list
         docs_clean.append(clean_doc.split())
 
-    print(docs_clean)
     i = 0
     for doc in docs_clean:
         i += len(doc)
