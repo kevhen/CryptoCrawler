@@ -4,5 +4,5 @@
 ############################################################
 FROM mongo:jessie
 
-RUN sudo apt-get install sysfsutils
+RUN apt-get install sysfsutils
 ADD https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/mongo/rc.local /etc/sysfs.conf
