@@ -80,7 +80,6 @@ class dashboard():
 
     def get_x(self, relayout_datas):
         """Get xaxis range settings from layout data."""
-        print(relayout_datas)
         set_range = {'autorange': True}
         for rd in relayout_datas:
             if (rd is not None) and \
@@ -247,8 +246,8 @@ class dashboard():
         data = list(s.values)
         payload = {
             "ary": data,
-            "freq": 12,
-            "p": 0.05
+            "freq": 24,  # as data is aggregated by hour
+            "p": 0.15  # Treshold for significance
         }
         response = requests.post(url, json=payload)
 
@@ -358,13 +357,13 @@ class dashboard():
                     dcc.Checklist(
                         id='tweet-anoms-toggle',
                         options=[
-                            {'label': 'Anomalies',
+                            {'label': 'Show Anomalies',
                              'value': 'anoms'}
                         ],
+                        className='anoms-toggle',
                         values=[]
                     ),
                 ], className='content'),
-
                 html.Div([
                     # Chart for All Tweets
                     dcc.Graph(
@@ -381,6 +380,17 @@ class dashboard():
                          'Avg. Sentiment per Hour'])
                 ], className='title'),
                 html.Div([
+                    dcc.Checklist(
+                        id='senti-anoms-toggle',
+                        options=[
+                            {'label': 'Show Anomalies',
+                             'value': 'anoms'}
+                        ],
+                        className='anoms-toggle',
+                        values=[]
+                    ),
+                ], className='content'),
+                html.Div([
                     dcc.Graph(
                         style={'width': '878px', 'height': '250px'},
                         id='senti-plot')
@@ -394,6 +404,17 @@ class dashboard():
                         html.Span('€', className='icon'),
                          'Avg. Stock Prices per Hour'])
                 ], className='title'),
+                html.Div([
+                    dcc.Checklist(
+                        id='stock-anoms-toggle',
+                        options=[
+                            {'label': 'Show Anomalies',
+                             'value': 'anoms'}
+                        ],
+                        values=[],
+                        className='anoms-toggle'
+                    ),
+                ], className='content'),
                 html.Div([
                     dcc.Graph(
                         style={'width': '878px', 'height': '250px'},
@@ -500,16 +521,23 @@ class dashboard():
             df_count = df['count'].sum().unstack('collection').fillna(0)
 
             # Get Anomalies for count
-            df_anoms = pd.DataFrame()
+            df_anoms_count = pd.DataFrame()
             for col in df_count.columns.values:
-                df_anoms[col] = self.get_anomalies(df_count[col])
+                df_anoms_count[col] = self.get_anomalies(df_count[col])
+
+            # Get Anomalies for score
+            df_anoms_score = pd.DataFrame()
+            for col in df_score.columns.values:
+                df_anoms_score[col] = self.get_anomalies(df_score[col])
 
             # Jsonfy & concat DFs, then store string in hidden element
             data = df_count.to_json(date_format='iso', orient='split') \
                 + "\n" + \
                 df_score.to_json(date_format='iso', orient='split') \
                 + "\n" + \
-                df_anoms.to_json(date_format='iso', orient='split') \
+                df_anoms_count.to_json(date_format='iso', orient='split') \
+                + "\n" + \
+                df_anoms_score.to_json(date_format='iso', orient='split') \
 
             return data
 
@@ -530,12 +558,27 @@ class dashboard():
 
             if len(currency_codes) > 0:
                 df = self.get_agg_data(currency_codes, 'EUR')
+
                 # Replace codes with names
                 df['collection'] = df['collection'].replace(currencies)
+
+                # Group and aggregate
+                df = df.groupby(['timestamp_ms', 'collection'])
+                df = df['EUR'].mean().unstack('collection').fillna(0)
             else:
                 df = pd.DataFrame()
-            # Store in hidden element
-            return df.to_json(date_format='iso', orient='split')
+
+            # Get Anomalies for score
+            df_anoms = pd.DataFrame()
+            for col in df.columns.values:
+                df_anoms[col] = self.get_anomalies(df[col])
+
+            # Jsonfy & concat DFs, then store string in hidden element
+            data = df.to_json(date_format='iso', orient='split') \
+                + "\n" + \
+                df_anoms.to_json(date_format='iso', orient='split')
+
+            return data
 
         @app.callback(
             ddp.Output('tweets-plot', 'figure'),
@@ -544,7 +587,6 @@ class dashboard():
              ddp.Input('stock-plot', 'relayoutData'),
              ddp.Input('tweet-anoms-toggle', 'values')])
         def update_timeseries(jsonified_data, rd_senti, rd_stock, toggle):
-            print(toggle)
             data = jsonified_data.split('\n')[0]
             df = pd.read_json(data, orient='split')
             if 'anoms' in toggle:
@@ -553,28 +595,41 @@ class dashboard():
             else:
                 df_anoms = None
             x_axis = self.get_x([rd_senti, rd_stock])
-            return self.plot_tweets(df, df_anoms, x_axis)
+            return self.plot_timeseries('Tweets', df, df_anoms, x_axis)
 
         @app.callback(
             ddp.Output('senti-plot', 'figure'),
             [ddp.Input('hidden-tweet-data', 'children'),
              ddp.Input('tweets-plot', 'relayoutData'),
-             ddp.Input('stock-plot', 'relayoutData')])
-        def update_senti(jsonified_data, rd_tweets, rd_stock):
+             ddp.Input('stock-plot', 'relayoutData'),
+             ddp.Input('senti-anoms-toggle', 'values')])
+        def update_senti(jsonified_data, rd_tweets, rd_stock, toggle):
             data = jsonified_data.split('\n')[1]
             df = pd.read_json(data, orient='split')
+            if 'anoms' in toggle:
+                anoms = jsonified_data.split('\n')[3]
+                df_anoms = pd.read_json(anoms, orient='split')
+            else:
+                df_anoms = None
             x_axis = self.get_x([rd_tweets, rd_stock])
-            return self.plot_senti(df, x_axis)
+            return self.plot_timeseries('Sentiment Score', df, df_anoms, x_axis)
 
         @app.callback(
             ddp.Output('stock-plot', 'figure'),
             [ddp.Input('hidden-stock-data', 'children'),
              ddp.Input('tweets-plot', 'relayoutData'),
-             ddp.Input('senti-plot', 'relayoutData')])
-        def update_plot(jsonified_data, rd_tweets, rd_senti):
-            df = pd.read_json(jsonified_data, orient='split')
+             ddp.Input('senti-plot', 'relayoutData'),
+             ddp.Input('stock-anoms-toggle', 'values')])
+        def update_plot(jsonified_data, rd_tweets, rd_senti, toggle):
+            data = jsonified_data.split('\n')[0]
+            df = pd.read_json(data, orient='split')
+            if 'anoms' in toggle:
+                anoms = jsonified_data.split('\n')[1]
+                df_anoms = pd.read_json(anoms, orient='split')
+            else:
+                df_anoms = None
             x_axis = self.get_x([rd_tweets, rd_senti])
-            return self.plot_stock(df, x_axis)
+            return self.plot_timeseries('€ Stock Price', df, df_anoms, x_axis)
 
         self.app = app
 
@@ -615,7 +670,7 @@ class dashboard():
         }
         return figure
 
-    def plot_tweets(self, df, df_anoms, x_axis):
+    def plot_timeseries(self, label, df, df_anoms, x_axis):
         """Plot the overall twitter chart."""
         # Don't try drawing, if we have no data
         if (df is None) or (len(df) < 1):
@@ -626,6 +681,8 @@ class dashboard():
         if df_anoms is not None:
             for col in df_anoms.columns.values:
                 for idx, item in df_anoms[col].iteritems():
+                    if pd.isnull(item):
+                        continue
                     annos.append(dict(
                         x=idx,
                         y=item,
@@ -641,12 +698,13 @@ class dashboard():
                         ay=-10
                     ))
 
+        # Create chart figure
         figure = {
             'data': [
                 go.Scatter(
                     x=df.index,
                     y=df[i],
-                    text=df[i].astype('int').astype('str') + ' Tweets',
+                    text=df[i].astype('int').astype('str') + ' ' + label,
                     opacity=0.7,
                     name=i,
                     line={'color': self.colors[i]}
@@ -663,63 +721,6 @@ class dashboard():
         }
 
         return figure
-
-    def plot_senti(self, df, x_axis):
-        """Plot the overall twitter chart."""
-        # Don't try drawing, if we have no data
-        if (df is None) or (len(df) < 1):
-            return {'data': []}
-
-        figure = {
-            'data': [
-                go.Scatter(
-                    x=df.index,
-                    y=df[i],
-                    text='Sentiment: ' + df[i].map('{:.2f}'.format),
-                    opacity=0.7,
-                    name=i,
-                    line={'color': self.colors[i]}
-                ) for i in df.columns.values
-            ],
-            'layout': go.Layout(
-                margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
-                showlegend=True,
-                legend={'x': 1.02, 'y': 0.5},
-                hovermode='closest',
-                xaxis=x_axis
-            )
-        }
-        return figure
-
-    def plot_stock(self, df, x_axis):
-        """Plot the average stock prices."""
-        # Don't try drawing, if we have no data
-        if len(df) < 1:
-            return {'data': []}
-        # Group and aggregate
-        df = df.groupby(['timestamp_ms', 'collection'])
-        df = df['EUR'].mean().unstack('collection').fillna(0)
-        figure = {
-            'data': [
-                go.Scatter(
-                    x=df.index,
-                    y=df[i],
-                    text='Stock value: ' + df[i].map('{:.2f}'.format) + ' €',
-                    opacity=0.7,
-                    name=i,
-                    line={'color': self.colors[i]}
-                ) for i in df.columns.values
-            ],
-            'layout': go.Layout(
-                margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
-                showlegend=True,
-                legend={'x': 1.02, 'y': 0.5},
-                hovermode='closest',
-                xaxis=x_axis
-            )
-        }
-        return figure
-
 
 if __name__ == '__main__':
     dashboard = dashboard()
