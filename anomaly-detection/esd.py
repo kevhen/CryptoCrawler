@@ -37,6 +37,11 @@ logger = logging.getLogger(__name__)
 
 def detect_anomalies(ary, freq, p):
     """Use Seasonal Decompose and ESD on residual to detect anomalies."""
+    if len(ary) < freq * 2:
+        logger.warn('Only {} events for frequency of {}. Must be at least {} events.'.format(len(ary), freq, freq * 2))
+        logger.warn('Generate empty response.')
+        return [], 0
+
     # Seasonal decompose
     model = sm.tsa.seasonal_decompose(ary, freq=freq)
 
@@ -76,7 +81,7 @@ def init_flask():
     def detect_anoms():
         """Handle incoming request, send back anomalies."""
         logger.info('Received request.')
-        print(request)
+
         if not request.json:
             logger.warn('No valid JSON in Request.')
             abort(400)
@@ -103,7 +108,7 @@ def init_flask():
                                                                 data['freq'],
                                                                 data['p'])
         logger.info('Sending result:', res)
-        print(res)
+
         return json.dumps(res)
     return app
 

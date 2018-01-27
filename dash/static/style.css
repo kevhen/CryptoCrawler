@@ -11,6 +11,7 @@ h3 {
     padding-left: 10px;
     padding-bottom: 3px;
     margin: 0px;
+    display: inline-flex;
 }
 
 .container {
@@ -111,6 +112,11 @@ h3 {
     position: relative;
 }
 
+#global-topic-checklist > label:nth-last-child(1),
+#global-topic-checklist > label:nth-last-child(2) {
+    opacity: 0.3;
+}
+
 #tweets-live-plot {
     height: 200px;
 }
@@ -151,4 +157,83 @@ h3 {
 span.icon {
     font-weight: bold;
     margin-right: 16px;
+}
+
+.iconImage {
+    height: 21px !important;
+    margin-right: 16px;
+}
+
+.refresh {
+    color: #333;
+    font-size: 16px;
+    float: right;
+    margin: 4px;
+    cursor: pointer;
+}
+
+.anoms-toggle {
+    font-size: 12px;
+    position: absolute;
+    right: 20px;
+    margin-top: -36px;
+}
+
+.anoms-toggle input {
+    top: 3px;
+    position: relative;
+}
+
+/*  Twitter Styling for embedded tweets */
+
+
+.EmbeddedTweet {
+  overflow: hidden;
+  background-color: #fff;
+  border: 1px solid #e1e8ed;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+.Tweet-header {
+  height: 25px;
+  position: relative;
+  padding-left: 45px;
+  white-space: nowrap
+}
+
+.Tweet-brand {
+  position: relative;
+  z-index: 1;
+  float: right !important;
+}
+
+.Icon {
+  display: inline-block;
+  height: 1.25em;
+  background-repeat: no-repeat;
+  background-size: contain;
+  vertical-align: text-bottom
+}
+
+.Tweet-body {
+  margin-top: 14px
+}
+
+.Tweet-text {
+  text-align: left;
+  direction: ltr
+}
+
+a {
+  background-color: transparent
+}
+
+a:active, a:hover {
+  outline: 0
+}
+
+.Tweet-metadata {
+  font-size: 14px;
+  color: #697882
 }
