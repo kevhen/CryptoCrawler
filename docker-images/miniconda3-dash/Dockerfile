@@ -5,6 +5,7 @@
 FROM continuumio/miniconda3
 
 RUN conda install -y pymongo pyyaml pandas
+RUN conda install -c conda-forge requests 
 
 RUN pip install dash==0.19.0  # The core dash backend
 RUN pip install dash-renderer==0.11.1  # The dash front-end
