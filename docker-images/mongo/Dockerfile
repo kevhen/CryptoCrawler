@@ -4,5 +4,5 @@
 ############################################################
 FROM mongo:jessie
 
-RUN rm /etc/rc.local
-ADD https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/mongo/rc.local /etc/rc.local
+RUN sudo apt install sysfsutils
+ADD https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/mongo/rc.local /etc/sysfs.conf
