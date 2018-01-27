@@ -76,7 +76,7 @@ def init_flask():
     def detect_anoms():
         """Handle incoming request, send back anomalies."""
         logger.info('Received request.')
-        print(request)
+
         if not request.json:
             logger.warn('No valid JSON in Request.')
             abort(400)
@@ -103,7 +103,7 @@ def init_flask():
                                                                 data['freq'],
                                                                 data['p'])
         logger.info('Sending result:', res)
-        print(res)
+        
         return json.dumps(res)
     return app
 
