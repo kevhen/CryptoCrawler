@@ -8,7 +8,8 @@ networks:
 
 services:
   crypto-mongo:
-    image: ./mongo
+    build:
+      context: ./mongo
     volumes:
       - /data/mongodb:/data/db:rw
     networks:
