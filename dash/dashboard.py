@@ -241,14 +241,14 @@ class dashboard():
 
     def get_anomalies(self, s):
         """Query anomaly detection service, return anomaly data for charts."""
-        # url = 'http://0.0.0.0:5001/esd'
         url = 'http://crypto-anoms:5001/esd'
+        # url = 'http://127.0.0.1:5001/esd'
 
-        data = s.values.tolist()
+        data = [float(i) for i in s.values.tolist()]
         payload = {
             "ary": data,
             "freq": 24,  # as data is aggregated by hour
-            "p": 0.20  # Treshold for significance
+            "p": 0.15  # Treshold for significance
         }
         response = requests.post(url, json=payload)
 
@@ -512,6 +512,12 @@ class dashboard():
             # Query for Data
             df = self.get_agg_data(topic_values, 'score')
 
+            if (df is None) or (len(df) < 1 or ('timestamp_ms' not in df.columns.values)):
+                df_empty = pd.DataFrame()
+                data = (df_empty.to_json(
+                    date_format='iso', orient='split') + "\n") * 3
+                return data
+
             # Group and aggregate
             df = df.groupby(['timestamp_ms', 'collection'])
             df_score = df['score'].mean().unstack('collection').fillna(0)
@@ -520,12 +526,14 @@ class dashboard():
             # Get Anomalies for count
             df_anoms_count = pd.DataFrame()
             for col in df_count.columns.values:
-                df_anoms_count[col] = self.get_anomalies(df_count[col])
+                df_temp = self.get_anomalies(df_count[col])
+                df_anoms_count = pd.concat([df_anoms_count, df_temp], axis=1)
 
             # Get Anomalies for score
             df_anoms_score = pd.DataFrame()
             for col in df_score.columns.values:
-                df_anoms_score[col] = self.get_anomalies(df_score[col])
+                df_temp = self.get_anomalies(df_score[col])
+                df_anoms_score = pd.concat([df_anoms_score, df_temp], axis=1)
 
             # Jsonfy & concat DFs, then store string in hidden element
             data = df_count.to_json(date_format='iso', orient='split') \
