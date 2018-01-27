@@ -37,7 +37,7 @@ class dashboard():
         conn = MongoClient(self.config['mongodb']['host'],
                            self.config['mongodb']['port'])
         # Use local mongo-container IP for testing
-        # conn = MongoClient('172.17.0.2', self.config['mongodb']['port'])
+        conn = MongoClient('172.17.0.2', self.config['mongodb']['port'])
         self.db = conn[self.config['mongodb']['db']]
 
         # Helper Variable for timestamp conversion
@@ -425,6 +425,40 @@ class dashboard():
                 ], className='title'),
                 html.Div([
                 ], id='tweetbox', className='content')
+            ], className='box'),
+
+            # Topic Models
+            html.Div([
+                html.Div([
+                    html.H3([
+                        html.Span(className='fa fa-newspaper-o icon'),
+                         'Identify Topics'])
+                ], className='title'),
+                html.Div([
+                    html.Div([
+                        dcc.Dropdown(
+                            options=[{'label': i, 'value': i}
+                                     for i in self.topics],
+                            value='bitcoin',
+                            id='topic-collection-dropdown'
+                        ),
+                        dcc.DatePickerSingle(
+                            id='date-picker-start',
+                            date=datetime.datetime(2018, 1, 1)
+                        ),
+                        dcc.DatePickerSingle(
+                            id='date-picker-stop',
+                            date=datetime.datetime(2018, 1, 2)
+                        ),
+                        html.Button(className='fa fa-search',
+                                    id='identify-topics-button')
+                    ], className='settings-bar'),
+                    html.Div([
+                        html.Div([html.Span(className='fa fa-arrow-circle-o-up'),
+                                  'Make your selection'],
+                                 className='topic-placeholder')
+                    ], className='topic-results')
+                ], id='topicbox', className='content')
             ], className='box'),
 
             # Footer
