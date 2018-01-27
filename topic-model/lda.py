@@ -36,7 +36,7 @@ nltk.download('wordnet')
 
 def load_tweets(db, collection, start_time, end_time):
     """Load text from tweets in specified colleciton & time range."""
-    query = {'timestamp_ms': {'$gt': str(start_time), '$lt': str(end_time)}}
+    query = {'timestamp_ms': {'$gt': start_time, '$lt': end_time}}
     fields = {'text': 1}
     cursor = db[collection].find(query, fields)
     df = pd.DataFrame(list(cursor))
@@ -44,16 +44,20 @@ def load_tweets(db, collection, start_time, end_time):
     if '_id' in df.columns:
         del df['_id']
 
-    print(df.head())
+    logger.info('Loaded {} Tweets..'.format(len(df)))
     return df
 
 
 def clean(docs):
     """Clean Documents."""
     # Prepare parameters
-    stop_custom = ['rt']
+    stop_custom = ['rt', 'bitcoin', 'bitcoins', 'iota', 'ethereum', 'btc',
+                   'eth', 'iot', 'ltc', 'litecoin', 'litecoins', 'iotas',
+                   'ltc', 'cryptocurrency', 'crypto', 'cryptocurrencies',
+                   'coin']
     stop = set(stopwords.words('english') + stop_custom)
-    min_length = 3
+    print(stop)
+    min_length = 4
     exclude_custom = '“”…‘’x'
     exclude = set(string.punctuation + exclude_custom)
     lemma = WordNetLemmatizer()
@@ -63,14 +67,18 @@ def clean(docs):
     docs_clean = []
     for doc in docs:
         clean_doc = doc
+
+        # Remove punctuation
+        clean_doc = ''.join(ch for ch in clean_doc if ch not in exclude)
+
         # Remove URLS
         clean_doc = ' '.join([i for i in clean_doc.lower().split()
                               if not i.startswith('http')])
-        # Remove Stopwords
+
+        # Remove anything containing numbers
         clean_doc = ' '.join([i for i in clean_doc.lower().split()
-                              if i not in stop])
-        # Remove punctuation
-        clean_doc = ''.join(ch for ch in clean_doc if ch not in exclude)
+                              if not any(char.isdigit() for char in i)])
+
         # Remove short words
         clean_doc = ' '.join([i for i in clean_doc.lower().split()
                               if len(i) >= min_length])
@@ -78,8 +86,19 @@ def clean(docs):
         if do_lemmatization:
             clean_doc = ' '.join(lemma.lemmatize(word)
                                  for word in clean_doc.split())
+
+        # Remove Stopwords
+        clean_doc = ' '.join([i for i in clean_doc.lower().split()
+                              if i not in stop])
+
         # Add to result list
         docs_clean.append(clean_doc.split())
+
+    print(docs_clean)
+    i = 0
+    for doc in docs_clean:
+        i += len(doc)
+    logger.info('Words in corpus: {}'.format(i))
 
     return docs_clean
 
@@ -93,7 +112,7 @@ def model_lda(docs, num_topics):
     # Training LDA model on the DTM.
     Lda = gensim.models.ldamodel.LdaModel
     ldamodel = Lda(doc_term_matrix, num_topics=num_topics,
-                   id2word=dictionary, passes=50)
+                   id2word=dictionary, passes=10)
 
     # Converts LDA model int nice list
     topic_list = []
@@ -168,6 +187,8 @@ def init_flask():
         result['tweet_count'] = len(df)
         result['topics'] = indentify_topics(df, args['topics'])
         result['num_topics'] = args['topics']
+        logger.info('Results:')
+        logger.info(result)
         return json.dumps(result)
     return app
 
