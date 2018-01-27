@@ -8,7 +8,7 @@ networks:
 
 services:
   crypto-mongo:
-    image: mongo:jessie
+    image: ./mongo
     volumes:
       - /data/mongodb:/data/db:rw
     networks:
