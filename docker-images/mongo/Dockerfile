@@ -4,5 +4,6 @@
 ############################################################
 FROM mongo:jessie
 
-RUN apt-get install sysfsutils
-ADD https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/mongo/rc.local /etc/sysfs.conf
+ADD https://raw.githubusercontent.com/kevhen/CryptoCrawler/master/docker-images/mongo/mongodb-fix.service /etc/systemd/system/mongodb-fix.service
+RUN systemctl daemon-reload
+RUN systemctl enable mongodb-fix
