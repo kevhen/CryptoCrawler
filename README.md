@@ -113,6 +113,13 @@
 - Create Index on timestamp field: `db.$COLLECTIONNAME.createIndex({"timestamp_ms": 1}, {background:true})`
 - `db.collection.totalIndexSize()` should fit into RAM
 
+```bash
+Also run on host:
+echo 1 | sudo tee /sys/kernel/mm/transparent_hugepage/khugepaged/defrag
+echo never | sudo tee /sys/kernel/mm/transparent_hugepage/enabled
+echo never | sudo tee /sys/kernel/mm/transparent_hugepage/defrag
+```
+
 ## Microservice 2: Twitter Stream Listener
 
 **Description:**

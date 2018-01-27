@@ -8,8 +8,7 @@ networks:
 
 services:
   crypto-mongo:
-    build:
-      context: ./mongo
+    image: mongo:jessie
     volumes:
       - /data/mongodb:/data/db:rw
     networks:
