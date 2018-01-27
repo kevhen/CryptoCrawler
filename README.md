@@ -85,6 +85,14 @@
 
 - Install docker: `sudo apt-get install docker.io`
 - Add user to docker-group: `sudo usermod -a -G docker ubuntu`
+- Tune docker by creating config file: `sudo nano /etc/docker/daemon.js`
+```json
+{
+  "storage-driver": "overlay2",
+  "log-driver": "json-file",
+  "log-opts": {"max-size": "5m", "max-file": "2"}
+}
+```
 
 # Microservices
 
