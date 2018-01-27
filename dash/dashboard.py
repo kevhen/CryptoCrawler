@@ -247,7 +247,7 @@ class dashboard():
         payload = {
             "ary": data,
             "freq": 24,  # as data is aggregated by hour
-            "p": 0.15  # Treshold for significance
+            "p": 0.20  # Treshold for significance
         }
         response = requests.post(url, json=payload)
 

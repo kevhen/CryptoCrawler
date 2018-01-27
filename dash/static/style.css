@@ -114,7 +114,7 @@ h3 {
 
 #global-topic-checklist > label:nth-last-child(1),
 #global-topic-checklist > label:nth-last-child(2) {
-    opacity: 0.5;
+    opacity: 0.3;
 }
 
 #tweets-live-plot {
