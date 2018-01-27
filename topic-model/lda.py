@@ -23,6 +23,7 @@ from nltk.stem.wordnet import WordNetLemmatizer
 import string
 import gensim
 from gensim import corpora
+import random
 import logging
 logging.basicConfig(format='%(levelname)s - %(asctime)s: %(message)s',
                     datefmt='%m/%d/%Y %H:%M:%S',
@@ -61,6 +62,11 @@ def clean(docs):
     exclude = set(string.punctuation + exclude_custom)
     lemma = WordNetLemmatizer()
     do_lemmatization = False
+
+    # As processing takes a lot of time, we limit to 10.000 tweets:
+    if len(docs) > 10000:
+        random.shuffle(docs)
+        docs = docs[:10000]
 
     # Do actual cleansing
     docs_clean = []
