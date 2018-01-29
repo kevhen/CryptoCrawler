@@ -251,6 +251,28 @@ class dashboard():
         s_result = s.iloc[result]
         return s_result
 
+    def buildTweet(self, text, timeString):
+        timeIso = datetime.datetime.fromtimestamp(int(timeString)/1000).strftime('%A, %d. %B %Y %I:%M%p')
+        tweet = html.Div([
+            html.Blockquote([
+                html.Div([
+                    html.Div([
+                        html.Img(
+                            src='/static/Twitter_Social_Icon_Circle_Color.svg', className='Icon')
+                    ], className='Tweet-brand')
+                ], className='Tweet-header'),
+                html.Div([
+                    html.P([
+                        text
+                    ], className='Tweet-text'),
+                    html.Div([
+                        timeIso
+                    ], className='Tweet-metadata')
+                ], className='Tweet-body')
+            ])
+        ], className='EmbeddedTweet')
+        return tweet
+
     # ============================================
     # Dash/Charting related methods
     # ============================================
@@ -480,53 +502,48 @@ class dashboard():
             static_folder = os.path.join(os.getcwd(), 'static')
             return send_from_directory(static_folder, path)
 
-        def buildTweet(text, timeString):
-            timeIso = datetime.datetime.fromtimestamp(int(timeString)/1000).strftime('%A, %d. %B %Y %I:%M%p')
-            tweet = html.Div([
-                html.Blockquote([
-                    html.Div([
-                        html.Div([
-                            html.Img(
-                                src='/static/Twitter_Social_Icon_Circle_Color.svg', className='Icon')
-                        ], className='Tweet-brand')
-                    ], className='Tweet-header'),
-                    html.Div([
-                        html.P([
-                            text
-                        ], className='Tweet-text'),
-                        html.Div([
-                            timeIso
-                        ], className='Tweet-metadata')
-                    ], className='Tweet-body')
-                ])
-            ], className='EmbeddedTweet')
-            return tweet
-
         @app.callback(
             dash.dependencies.Output('tweetbox', 'children'),
             [ddp.Input(component_id='global-topic-checklist',
                        component_property='values'),
-             ddp.Input(component_id='refresh-tweets-button', component_property='n_clicks')],
+             ddp.Input(component_id='refresh-tweets-button', component_property='n_clicks'),
+             ddp.Input('tweets-plot', 'relayoutData'),
+             ddp.Input('senti-plot', 'relayoutData'),
+             ddp.Input('stock-plot', 'relayoutData')],
             [],
             [])
-        def returnUpdatedTweetbox(topic_values, n_clicks):
+        def returnUpdatedTweetbox(topic_values, n_clicks, rd_tweets, rd_senti, rd_stock):
+            timeframe = {}
+            if rd_tweets is not None:
+                timeframe = rd_tweets
+            if rd_senti is not None:
+                timeframe = rd_senti
+            if rd_stock is not None:
+                timeframe = rd_stock
+            fromTs = convertDate(timeframe['xaxis.range[0]']) * 1000
+            toTs = convertDate(timeframe['xaxis.range[1]']) * 1000
             payload = {
                 "topics": ','.join(topic_values),
                 "amount": 5,
-                "from": 1516974320532,
-                "to": 1516974332330
+                "from": fromTs,
+                "to": toTs
             }
             tweets = []
             # Local testing
-            # response = requests.get('http://127.0.0.1:8060/tweets', params=payload)
-            response = requests.get('crypto-api-wrapper:8060/tweets', params=payload)
+            response = requests.get('http://127.0.0.1:8060/tweets', params=payload)
+            #response = requests.get('crypto-api-wrapper:8060/tweets', params=payload)
             if response.ok:
                 content = json.loads(response.content)
                 for tweet in content['tweets']:
-                    singleTweet = buildTweet(tweet['text'], tweet['timestamp_ms'])
+                    singleTweet = self.buildTweet(tweet['text'], tweet['timestamp_ms'])
                     tweets.append(singleTweet)
 
             return html.Div(tweets)
+
+        def convertDate(dateString):
+            utc_dt = datetime.datetime.strptime(dateString, '%Y-%m-%d %H:%M:%S.%f')
+            timestamp = (utc_dt - datetime.datetime(1970, 1, 1)).total_seconds() + 3600
+            return int(timestamp)
 
         @app.callback(
             ddp.Output('tweets-live-plot', 'figure'),
