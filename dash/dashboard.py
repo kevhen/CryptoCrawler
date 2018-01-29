@@ -184,26 +184,17 @@ class dashboard():
             # Mongodb aggregation magic....
             cursor = self.db[collection].aggregate([
                 {
-                    '$project': {
-                        'timestamp_ms': '$timestamp_ms',
-                        attr: '$' + attr,
+                    '$addFields': {
                         'div_val': {'$divide': ['$timestamp_ms', agg_range]},
                     }
                 },
                 {
-                    '$project': {
-                        'timestamp_ms': '$timestamp_ms',
-                        attr: '$' + attr,
-                        'div_val': '$div_val',
+                    '$addFields': {
                         'mod_val': {'$mod': ['$div_val', 1]}
                     }
                 },
                 {
-                    '$project': {
-                        'timestamp_ms': '$timestamp_ms',
-                        attr: '$' + attr,
-                        'div_val': '$div_val',
-                        'mod_val': '$mod_val',
+                    '$addFields': {
                         'sub_val': {'$subtract': ['$div_val', '$mod_val']},
                     }
                 },
@@ -434,6 +425,46 @@ class dashboard():
                 ], className='title'),
                 html.Div([
                 ], id='tweetbox', className='content')
+            ], className='box'),
+
+            # Topic Models
+            html.Div([
+                html.Div([
+                    html.H3([
+                        html.Span(className='fa fa-newspaper-o icon'),
+                         'Identify Topics'])
+                ], className='title'),
+                html.Div([
+                    html.Div([
+                        dcc.Dropdown(
+                            options=[{'label': i, 'value': i}
+                                     for i in self.topics],
+                            value='bitcoin',
+                            id='topic-collection-dropdown'
+                        ),
+                        dcc.DatePickerRange(
+                            id='topic-date-picker',
+                            start_date=datetime.datetime(2018, 1, 1),
+                            end_date_placeholder_text='Select a date!'
+                        ),
+                        dcc.Input(
+                            placeholder='No. of Topics...',
+                            type='number',
+                            value='',
+                            min=2,
+                            max=10,
+                            inputmode='numeric',
+                            id='topic-number-input'
+                        ),
+                        html.Button(className='fa fa-search',
+                                    id='topic-button')
+                    ], className='settings-bar'),
+                    html.Div([
+                        html.Div([html.Span(className='fa fa-arrow-circle-o-up'),
+                                  'Make your selection'],
+                                 className='topic-placeholder')
+                    ], className='topic-results')
+                ], id='topicbox', className='content')
             ], className='box'),
 
             # Footer
@@ -737,6 +768,7 @@ class dashboard():
         }
 
         return figure
+
 
 if __name__ == '__main__':
     dashboard = dashboard()

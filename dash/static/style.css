@@ -51,6 +51,7 @@ h3 {
     background: #333;
     margin-bottom: 10px;
 }
+
 .live-box>.title {
     position: absolute;
     background-color: #111;
@@ -64,9 +65,10 @@ h3 {
     z-index: 100;
     height: 24px;
 }
+
 .live-box>.title>h3 {
-    margin:0px;
-    padding:0px;
+    margin: 0px;
+    padding: 0px;
     font-size: 12px;
     font-weight: bold;
     line-height: 24px;
@@ -112,8 +114,7 @@ h3 {
     position: relative;
 }
 
-#global-topic-checklist > label:nth-last-child(1),
-#global-topic-checklist > label:nth-last-child(2) {
+#global-topic-checklist>label:nth-last-child(1), #global-topic-checklist>label:nth-last-child(2) {
     opacity: 0.3;
 }
 
@@ -135,17 +136,21 @@ h3 {
 #tweets-live-dropdown .Select-value-label {
     color: #BBB;
 }
+
 #tweets-live-dropdown .Select-value {
     line-height: 24px;
 }
+
 #tweets-live-dropdown .Select-control {
     background-color: #111;
     border-color: #7f7f7f;
     height: 24px;
 }
+
 #tweets-live-dropdown .Select-input {
     height: 22px;
 }
+
 #tweets-live-dropdown .Select-control input {
     padding: 0px;
 }
@@ -184,56 +189,115 @@ span.icon {
     position: relative;
 }
 
+/* Topic model styling */
+
+#topic-collection-dropdown {
+    display: inline-block;
+    width: 180px;
+    font-weight: 200;
+    font-size: 18px;
+    line-height: 48px;
+    position: relative;
+    vertical-align: top;
+    text-align: left;
+}
+
+#topic-number-input {
+    width: 80px;
+    font-weight: 200;
+    font-size: 18px;
+    line-height: 44px;
+    position: relative;
+    vertical-align: top;
+    top: 1px;
+}
+
+#topic-collection-dropdown, #topic-button, #topicbox .DateRangePicker, #topic-number-input {
+    margin: 0px 10px;
+}
+
+#topic-collection-dropdown .Select-value-label {
+    line-height: 48px;
+}
+
+#topic-button {
+    height: 50px;
+}
+
+#topicbox {
+    min-height: 450px;
+}
+
+span.icon.fa {
+    margin-top: 4px;
+}
+
+#topicbox .settings-bar {
+    text-align: center;
+}
+
+#topicbox .topic-placeholder {
+    padding: 130px;
+    font-weight: 200;
+    font-size: 36px;
+    text-align: center;
+    opacity: 0.2;
+}
+
+#topicbox .topic-placeholder>span {
+    display: block;
+    margin-bottom: 16px;
+}
+
 /*  Twitter Styling for embedded tweets */
 
-
 .EmbeddedTweet {
-  overflow: hidden;
-  background-color: #fff;
-  border: 1px solid #e1e8ed;
-  border-radius: 4px;
-  margin-bottom: 5px;
+    overflow: hidden;
+    background-color: #fff;
+    border: 1px solid #e1e8ed;
+    border-radius: 4px;
+    margin-bottom: 5px;
 }
 
 .Tweet-header {
-  height: 25px;
-  position: relative;
-  padding-left: 45px;
-  white-space: nowrap
+    height: 25px;
+    position: relative;
+    padding-left: 45px;
+    white-space: nowrap
 }
 
 .Tweet-brand {
-  position: relative;
-  z-index: 1;
-  float: right !important;
+    position: relative;
+    z-index: 1;
+    float: right !important;
 }
 
 .Icon {
-  display: inline-block;
-  height: 1.25em;
-  background-repeat: no-repeat;
-  background-size: contain;
-  vertical-align: text-bottom
+    display: inline-block;
+    height: 1.25em;
+    background-repeat: no-repeat;
+    background-size: contain;
+    vertical-align: text-bottom
 }
 
 .Tweet-body {
-  margin-top: 14px
+    margin-top: 14px
 }
 
 .Tweet-text {
-  text-align: left;
-  direction: ltr
+    text-align: left;
+    direction: ltr
 }
 
 a {
-  background-color: transparent
+    background-color: transparent
 }
 
 a:active, a:hover {
-  outline: 0
+    outline: 0
 }
 
 .Tweet-metadata {
-  font-size: 14px;
-  color: #697882
+    font-size: 14px;
+    color: #697882
 }
