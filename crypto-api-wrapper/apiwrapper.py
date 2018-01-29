@@ -134,6 +134,7 @@ def getTweetsForTopics(topicstring, amount, fromTs, toTs):
     else:
         randomListFinal = randomTweets
     resultDict = {'tweets': randomListFinal }
+    print(resultDict)
     return resultDict
 
 
