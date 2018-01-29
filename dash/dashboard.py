@@ -520,8 +520,14 @@ class dashboard():
                 timeframe = rd_senti
             if rd_stock is not None:
                 timeframe = rd_stock
-            fromTs = convertDate(timeframe['xaxis.range[0]'])
-            toTs = convertDate(timeframe['xaxis.range[1]'])
+            if 'xaxis.range[0]' in timeframe:
+                fromTs = convertDate(timeframe['xaxis.range[0]'])
+            else:
+                fromTs = 0
+            if 'xaxis.range[1]' in timeframe:
+                toTs = convertDate(timeframe['xaxis.range[1]'])
+            else:
+                toTs = 999999999999
             payload = {
                 "topics": ','.join(topic_values),
                 "amount": 5,
