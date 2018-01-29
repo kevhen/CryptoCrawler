@@ -12,6 +12,7 @@ import plotly.graph_objs as go
 import pandas as pd
 import yaml
 import datetime
+import time
 import os
 import json
 from flask import send_from_directory
@@ -34,10 +35,11 @@ class dashboard():
             self.config = yaml.load(stream)
 
         # Open Connection to MongoDB
+        self.config['mongodb']['host'] = '172.18.0.2'
         conn = MongoClient(self.config['mongodb']['host'],
                            self.config['mongodb']['port'])
         # Use local mongo-container IP for testing
-        # conn = MongoClient('127.0.0.1', 27017)
+        # conn = MongoClient('127.0.0.1', 27017)  # Holger
         self.db = conn[self.config['mongodb']['db']]
 
         # Helper Variable for timestamp conversion
@@ -66,6 +68,9 @@ class dashboard():
             'car2go': '#A056DB',
             'collection': 'black'
         }
+
+        # Helper Variable to detect new button clicks:
+        self.topic_btn_clicks = 0
 
         # Draw Dashboard
         self.init_dash()
@@ -251,8 +256,28 @@ class dashboard():
         s_result = s.iloc[result]
         return s_result
 
+    def get_topics(self, coll, start_ms, end_ms, number):
+        """Query anomaly detection service, return anomaly data for charts."""
+        url = 'http://crypto-topics:5000/lda'
+        # url = 'http://172.18.0.4:5000/lda'  # Local, Holger
+
+        payload = (
+            ('collection', coll),
+            ('start', start_ms),
+            ('end', end_ms),
+            ('topics', number)
+        )
+        response = requests.get(url, params=payload)
+
+        result = None
+        if response.ok:
+            result = json.loads(response.content)
+
+        return result
+
     def buildTweet(self, text, timeString):
-        timeIso = datetime.datetime.fromtimestamp(int(timeString)/1000).strftime('%A, %d. %B %Y %I:%M%p')
+        timeIso = datetime.datetime.fromtimestamp(
+            int(timeString) / 1000).strftime('%A, %d. %B %Y %I:%M%p')
         tweet = html.Div([
             html.Blockquote([
                 html.Div([
@@ -466,13 +491,14 @@ class dashboard():
                         ),
                         dcc.DatePickerRange(
                             id='topic-date-picker',
-                            start_date=datetime.datetime(2018, 1, 1),
+                            start_date=datetime.datetime(2018, 1, 1, 0, 0, 0),
+                            end_date=datetime.datetime(2018, 2, 1, 0, 0, 0),
                             end_date_placeholder_text='Select a date!'
                         ),
                         dcc.Input(
                             placeholder='No. of Topics...',
                             type='number',
-                            value='',
+                            value=5,
                             min=2,
                             max=10,
                             inputmode='numeric',
@@ -483,9 +509,9 @@ class dashboard():
                     ], className='settings-bar'),
                     html.Div([
                         html.Div([html.Span(className='fa fa-arrow-circle-o-up'),
-                                  'Make your selection'],
+                                  'Make your selection and wait some Minutes!'],
                                  className='topic-placeholder')
-                    ], className='topic-results')
+                    ], id='topic-results')
                 ], id='topicbox', className='content')
             ], className='box'),
 
@@ -506,7 +532,8 @@ class dashboard():
             dash.dependencies.Output('tweetbox', 'children'),
             [ddp.Input(component_id='global-topic-checklist',
                        component_property='values'),
-             ddp.Input(component_id='refresh-tweets-button', component_property='n_clicks'),
+             ddp.Input(component_id='refresh-tweets-button',
+                       component_property='n_clicks'),
              ddp.Input('tweets-plot', 'relayoutData'),
              ddp.Input('senti-plot', 'relayoutData'),
              ddp.Input('stock-plot', 'relayoutData')],
@@ -535,20 +562,25 @@ class dashboard():
                 "to": toTs
             }
             tweets = []
-            # Local testing
-            # response = requests.get('http://127.0.0.1:8060/tweets', params=payload)
+
             response = requests.get('http://crypto-api-wrapper:8060/tweets', params=payload)
+            # response = requests.get('http://127.0.0.1:8060/tweets', params=payload)  # Kevin
+            # response = requests.get('http://172.18.0.2:8060/tweets', params=payload)  # Holger
+
             if response.ok:
                 content = json.loads(response.content)
                 for tweet in content['tweets']:
-                    singleTweet = self.buildTweet(tweet['text'], tweet['timestamp_ms'])
+                    singleTweet = self.buildTweet(
+                        tweet['text'], tweet['timestamp_ms'])
                     tweets.append(singleTweet)
 
             return html.Div(tweets)
 
         def convertDate(dateString):
-            utc_dt = datetime.datetime.strptime(dateString, '%Y-%m-%d %H:%M:%S.%f')
-            timestamp = (utc_dt - datetime.datetime(1970, 1, 1)).total_seconds() + 3600
+            utc_dt = datetime.datetime.strptime(
+                dateString, '%Y-%m-%d %H:%M:%S.%f')
+            timestamp = (utc_dt - datetime.datetime(1970, 1, 1)
+                         ).total_seconds() + 3600
             return int(timestamp)
 
         @app.callback(
@@ -706,6 +738,60 @@ class dashboard():
                 df_anoms = None
             x_axis = self.get_x(json.loads(rd_data))
             return self.plot_timeseries('€ Stock Price', df, df_anoms, x_axis)
+
+        self.app = app
+
+        @app.callback(
+            ddp.Output('topic-results', 'children'),
+            [ddp.Input('topic-button', 'n_clicks')],
+            [ddp.State('topic-collection-dropdown', 'value'),
+             ddp.State('topic-date-picker', 'start_date'),
+             ddp.State('topic-date-picker', 'end_date'),
+             ddp.State('topic-number-input', 'value'),
+             ])
+        def update_topics(btn, coll, start_date, end_date, number):
+            print(btn)
+            placeholder = html.Div([
+                html.Span(className='fa fa-arrow-circle-o-up'),
+                'Make your selection and wait some Minutes!'],
+                className='topic-placeholder')
+
+            if not start_date or not end_date \
+                    or not number or not coll or not btn:
+                logger.warn('Parameter is missing.')
+                return placeholder
+
+            if self.topic_btn_clicks == btn:
+                return placeholder
+            else:
+                self.topic_btn_clicks = btn
+
+            start_ms = int(time.mktime(
+                time.strptime(start_date[:10], '%Y-%m-%d'))) * 1000
+            end_ms = int(time.mktime(
+                time.strptime(end_date[:10], '%Y-%m-%d'))) * 1000
+
+            data = self.get_topics(coll, start_ms, end_ms, number)
+
+            if (not data) or ('topics' not in data):
+                logger.warn('No data received.')
+                return placeholder
+
+            all_topics = [
+                html.Div('Topics from {} Tweets'.format(data['tweet_count']),
+                         className='topic-header')
+            ]
+            for topic in data['topics']:
+                topic_html = html.Div([
+                    html.Div([
+                        t, html.Span('{:.3f}'.format(c)[1:],
+                                     className='topic-value')
+                    ], className='topic-token') for t, c in topic[:15]
+                ],
+                    className='topic-row')
+                all_topics.append(topic_html)
+
+            return html.Div(all_topics)
 
         self.app = app
 

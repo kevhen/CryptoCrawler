@@ -239,7 +239,7 @@ span.icon.fa {
 #topicbox .topic-placeholder {
     padding: 130px;
     font-weight: 200;
-    font-size: 36px;
+    font-size: 28px;
     text-align: center;
     opacity: 0.2;
 }
@@ -247,6 +247,34 @@ span.icon.fa {
 #topicbox .topic-placeholder>span {
     display: block;
     margin-bottom: 16px;
+}
+
+#topicbox .topic-token {
+    font-size: 16px;
+    display: inline-block;
+    color: #555;
+}
+
+#topicbox .topic-value {
+    font-size: 9px;
+    margin-left: 5px;
+    margin-right: 15px;
+    opacity: 0.6;
+}
+
+#topicbox .topic-row {
+    border-top: 1px solid rgb(221, 221, 221);
+    margin: 0px 25px;
+    padding: 10px 10px;
+}
+
+#topicbox .topic-header {
+    margin-left: 25px;
+    padding: 10px 10px;
+    margin-top: 10px;
+    font-size: 20px;
+    font-weight: 200;
+    color: #333;
 }
 
 /*  Twitter Styling for embedded tweets */
