@@ -161,10 +161,10 @@ class HistoricalPrices(Resource):
 
 class RandomTweets(Resource):
     def get(self):
-        now = int(time.time()) * 1000
+        now = int(time.time())
 
-        toTs = handleTs(request.args.get('to'), now)
-        fromTs = handleTs(request.args.get('from'), now)
+        toTs = handleTs(request.args.get('to'), now) * 1000
+        fromTs = handleTs(request.args.get('from'), now) * 1000
 
         topicstring = request.args.get('topics')
         amount = parseAmount(request.args.get('amount'))
