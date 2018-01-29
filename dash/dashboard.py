@@ -35,11 +35,10 @@ class dashboard():
             self.config = yaml.load(stream)
 
         # Open Connection to MongoDB
-        self.config['mongodb']['host'] = '172.18.0.2'
         conn = MongoClient(self.config['mongodb']['host'],
                            self.config['mongodb']['port'])
         # Use local mongo-container IP for testing
-        # conn = MongoClient('127.0.0.1', 27017)  # Holger
+        # conn = MongoClient('172.18.0.2', 27017)  # Holger
         self.db = conn[self.config['mongodb']['db']]
 
         # Helper Variable for timestamp conversion
