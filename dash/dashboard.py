@@ -531,7 +531,7 @@ class dashboard():
             tweets = []
             # Local testing
             # response = requests.get('http://127.0.0.1:8060/tweets', params=payload)
-            response = requests.get('crypto-api-wrapper:8060/tweets', params=payload)
+            response = requests.get('http://crypto-api-wrapper:8060/tweets', params=payload)
             if response.ok:
                 content = json.loads(response.content)
                 for tweet in content['tweets']:
