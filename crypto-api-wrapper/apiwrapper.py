@@ -28,10 +28,10 @@ api = Api(app)
 with open('../config.yaml', 'r') as stream:
     config = yaml.load(stream)
 
-# conn = MongoClient(self.config['mongodb']['host'],
-                   #self.config['mongodb']['port'])
+conn = MongoClient(self.config['mongodb']['host'],
+                   self.config['mongodb']['port'])
 # Use local mongo-container IP for testing
-conn = MongoClient('127.0.0.1', 27017)
+# conn = MongoClient('127.0.0.1', 27017)
 db = conn[config['mongodb']['db']]
 
 def isInt(s):
