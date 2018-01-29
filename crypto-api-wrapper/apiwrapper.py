@@ -15,15 +15,28 @@ from flask_jsonpify import jsonify
 import math
 import requests
 import yaml
+import random
 import json
 import logging
+from pymongo import MongoClient
 logging.basicConfig(format='%(levelname)s - %(asctime)s: %(message)s', datefmt='%m/%d/%Y %H:%M:%S', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 api = Api(app)
 
+with open('../config.yaml', 'r') as stream:
+    config = yaml.load(stream)
+
+# conn = MongoClient(self.config['mongodb']['host'],
+                   #self.config['mongodb']['port'])
+# Use local mongo-container IP for testing
+conn = MongoClient('127.0.0.1', 27017)
+db = conn[config['mongodb']['db']]
+
 def isInt(s):
+    if s is None:
+        return False
     try:
         int(s)
         return True
@@ -40,7 +53,12 @@ def getStepsBetween(step, firstTs, secondTs):
     return math.ceil((secondTs - firstTs)/float(oneUnit))
 
 def parseCoin(coin):
-    allowedCoins = ['ETH', 'BTC', 'IOT']
+    with open('../config.yaml', 'r') as stream:
+        conf = yaml.load(stream)
+    allowedCoins = []
+    for collection in conf['collections']:
+        if 'currencycode' in collection:
+            allowedCoins.append(collection['currencycode'])
     if coin in allowedCoins:
         return coin
     else:
@@ -72,28 +90,59 @@ def parseCurrency(currency):
     else:
         return 'EUR'
 
-def handleToTs(toTs, now):
-    if toTs is None and not isInt(toTs):
+def handleTs(ts, now):
+    if ts is None and not isInt(ts):
         return now
-    elif isInt(toTs) and int(toTs) > now:
+    elif isInt(ts) and int(ts) > now:
         return now
     else:
-        return int(toTs)
+        return int(ts)
 
 def calculateLimit(fromTs, toTs, step):
     if isInt(fromTs):
-        print('here')
         limit = getStepsBetween(step, int(fromTs), toTs)
     else:
         limit = 30
     return limit
+
+def parseTopics(topicstring):
+    if topicstring is None:
+        return ['bitcoin']
+    else:
+        topicList = topicstring.split(',')
+        return topicList
+
+def parseAmount(amount):
+    if amount is None and not isInt(amount):
+        return 20
+    else:
+        return int(amount)
+
+def getTweetsForTopics(topicstring, amount, fromTs, toTs):
+    topicList = parseTopics(topicstring)
+    randomTweets = []
+    for topic in topicList:
+        cursor = db[topic].aggregate([
+                { '$match': { 'timestamp_ms': {'$gt': fromTs , '$lt': toTs }}},
+                { '$sample': { 'size': amount } },
+                { '$project' : { '_id': 0 } }
+            ])
+        tweetListForTopic = list(cursor)
+        randomTweets = randomTweets + tweetListForTopic
+    if len(randomTweets) >= amount:
+        randomListFinal = random.sample(randomTweets, amount)
+    else:
+        randomListFinal = randomTweets
+    resultDict = {'tweets': randomListFinal }
+    return resultDict
+
 
 
 class HistoricalPrices(Resource):
     def get(self):
         now = int(time.time())
 
-        toTs = handleToTs(request.args.get('to'), now)
+        toTs = handleTs(request.args.get('to'), now)
         fromTs = request.args.get('from')
         currency = parseCurrency(request.args.get('currency'))
         coin = parseCoin(request.args.get('coin'))
@@ -110,7 +159,21 @@ class HistoricalPrices(Resource):
         #     result = abort(400, 'Missing `from` and/or `to` timestamp')
         return jsonify(result)
 
+class RandomTweets(Resource):
+    def get(self):
+        now = int(time.time()) * 1000
+
+        toTs = handleTs(request.args.get('to'), now)
+        fromTs = handleTs(request.args.get('from'), now)
+
+        topicstring = request.args.get('topics')
+        amount = parseAmount(request.args.get('amount'))
+
+        result = getTweetsForTopics(topicstring, amount, fromTs, toTs)
+        return jsonify(result)
+
 api.add_resource(HistoricalPrices, '/price')
+api.add_resource(RandomTweets, '/tweets')
 
 if __name__ == '__main__':
      app.run(port=8060)

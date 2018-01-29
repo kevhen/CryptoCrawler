@@ -481,6 +481,7 @@ class dashboard():
             return send_from_directory(static_folder, path)
 
         def buildTweet(text, timeString):
+            timeIso = datetime.datetime.fromtimestamp(int(timeString)/1000).strftime('%A, %d. %B %Y %I:%M%p')
             tweet = html.Div([
                 html.Blockquote([
                     html.Div([
@@ -494,7 +495,7 @@ class dashboard():
                             text
                         ], className='Tweet-text'),
                         html.Div([
-                            timeString
+                            timeIso
                         ], className='Tweet-metadata')
                     ], className='Tweet-body')
                 ])
@@ -505,20 +506,25 @@ class dashboard():
             dash.dependencies.Output('tweetbox', 'children'),
             [ddp.Input(component_id='global-topic-checklist',
                        component_property='values'),
-             ddp.Input(component_id='tweets-live-dropdown',
-                       component_property='value'),
              ddp.Input(component_id='refresh-tweets-button', component_property='n_clicks')],
             [],
-            [ddp.Event('live-update', 'interval')])
-        def returnUpdatedTweetbox(topic_values, live_range, n_clicks):
-            # TODO: get 20 tweets here
-
+            [])
+        def returnUpdatedTweetbox(topic_values, n_clicks):
+            payload = {
+                "topics": ','.join(topic_values),
+                "amount": 5,
+                "from": 1516974320532,
+                "to": 1516974332330
+            }
             tweets = []
-            bspTweet = buildTweet("""Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc tempor pellentesque ante at fringilla. Etiam mattis sollicitudin posuere. Fusce faucibus vehicula diam id ornare. Phasellus congue, velit vel facilisis porttitor, mauris magna tincidunt nunc, non ultricies tellus lorem vel nulla. Cras rutrum turpis justo, non rutrum leo congue porttitor. Morbi ullamcorper ullamcorper lectus in venenatis. Phasellus hendrerit mi sed mauris rhoncus cursus. Nam pretium pretium erat tempus auctor. Sed semper diam ipsum, eu interdum massa ullamcorper in. Pellentesque quis nunc nibh. Aenean vestibulum odio non velit elementum pharetra. Etiam accumsan enim quis nisl porta, sit amet egestas ligula tempor.""", '7:51 PM - Dec 3, 2012')
-            # # Just Testing
-            # tweets.append(buildTweet(','.join(topic_values), live_range))
-            # tweets.append(buildTweet('testtext', n_clicks))
-            tweets.append(bspTweet)
+            # Local testing
+            # response = requests.get('http://127.0.0.1:8060/tweets', params=payload)
+            response = requests.get('crypto-api-wrapper:8060/tweets', params=payload)
+            if response.ok:
+                content = json.loads(response.content)
+                for tweet in content['tweets']:
+                    singleTweet = buildTweet(tweet['text'], tweet['timestamp_ms'])
+                    tweets.append(singleTweet)
 
             return html.Div(tweets)
 

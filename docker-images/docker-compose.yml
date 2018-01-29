@@ -16,7 +16,7 @@ services:
     entrypoint:
       - docker-entrypoint.sh
       - --storageEngine
-      - mmapv1      
+      - mmapv1
 
   crypto-price-listener:
     build:
@@ -34,7 +34,7 @@ services:
       - backend
       - frontend
     ports:
-      - 8050:8050
+      - 8060:8060
 
   crypto-jupyter:
     volumes:
