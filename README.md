@@ -15,11 +15,12 @@
 	- [Microservice 1: Mongo DB](#microservice-1-mongo-db)
 	- [Microservice 2: Twitter Stream Listener](#microservice-2-twitter-stream-listener)
 	- [Microservice 3: Crypto Price Crawler](#microservice-3-crypto-price-crawler)
-	- [Microservice 4: Jupyter Notebook](#microservice-4-jupyter-notebook)
-	- [Microservice 5: Dashboard](#microservice-5-dashboard)
-	- [Microservice 6: LDA Topic Identification](#microservice-6-lda-topic-identification)
-	- [Microservice 7: Anomaly Detection](#microservice-7-anomaly-detection)
-	- [Microservice 8: Sentiment Analysis](#microservice-8-sentiment-analysis)
+	- [Microservice 4: Crypto Api Wrapper](#microservice-9-crypto-api-wrapper)
+	- [Microservice 5: Jupyter Notebook](#microservice-4-jupyter-notebook)
+	- [Microservice 6: Dashboard](#microservice-5-dashboard)
+	- [Microservice 7: LDA Topic Identification](#microservice-6-lda-topic-identification)
+	- [Microservice 8: Anomaly Detection](#microservice-7-anomaly-detection)
+	- [Microservice 9: Sentiment Analysis](#microservice-8-sentiment-analysis)
 - [Useful info & commands](#useful-info-commands)
 	- [Docker](#docker)
 	- [Docker Compose](#docker-compose)
@@ -133,9 +134,47 @@ echo never | sudo tee /sys/kernel/mm/transparent_hugepage/defrag
 
 - Based on jupyter/scipy-notebook Docker Image
 - We will probably use the [Cryptocompare](https://www.cryptocompare.com/api)-API to retrieve the current and historic prices of the currencies.
-- We will probably use the [Cryptocompare](https://www.cryptocompare.com/api)-API to retrieve the current and historic prices of the currencies.
 
-## Microservice 4: Jupyter Notebook
+## Microservice 4: Crypto Api Wrapper
+
+**Description:**
+- Wraps the Histo-APIs of [Cryptocompare](https://www.cryptocompare.com/api) to use [HistoMinute](https://www.cryptocompare.com/api#-api-data-histominute-), [HistoHour](https://www.cryptocompare.com/api#-api-data-histohour-) and [HistoDay](https://www.cryptocompare.com/api#-api-data-histoday-) to a single API
+- Parses all responses to the format required for the dashboard
+
+- Returns a number of random tweets for a topic and a certain timespan to later show them in the Dashboard
+
+**Access the API:**
+
+URL: AWS public DNS-Name/container name + :8060
+
+GET: /price
+
+URL-Parameters:
+
+| Parameter   | Values | Default   | Description  |
+|---|---|---|---|
+| coin  | ETH, BTC, IOT  | BTC   | Defines the coin for which the prices will be retrieved  |
+| currency  | EUR, USD  | EUR   | Defines the currency in which the coin price will be returned  |
+| from  | timestamp in ms   | - | Start of the requested timespan  |
+| to  | timestamp in ms    | current time   | End of the requested timespan   |
+| step   | day, hour, minute   | day   | Step size between two returned price values   |
+
+example: http://********:8060/price?coin=BTC&currency=EUR&from=1516974329398&to=1516974379822&step=day
+
+GET: /tweets
+
+URL-Parameters:
+
+| Parameter   | Values | Default   | Description  |
+|---|---|---|---|
+| amount  | amount of tweets as an int | 20   | Defines the amount of tweets that are retrieved  |
+| topics  | ETH, BTC, IOT  | ETH, BTC, IOT    | Comma separated list of topics for which the tweets are returned  |
+| from  | timestamp in ms   | - | Start of the requested timespan  |
+| to  | timestamp in ms    | current time   | End of the requested timespan   |
+
+example: http://********:8060/tweets?amount=30&topics=ETH,BTC&from=1516974329398&to=1516974379822&
+
+## Microservice 5: Jupyter Notebook
 
 **Description:**
 
@@ -148,7 +187,7 @@ echo never | sudo tee /sys/kernel/mm/transparent_hugepage/defrag
 - Via AWS public DNS-Name + :8888\. E.g.: <https://ec2-34-227-176-103.compute-1.amazonaws.com:8888>
 - The DNS-Name will change! Find out current name via AWS Console, or use command on VM: `hostname -f`
 
-## Microservice 5: Dashboard
+## Microservice 6: Dashboard
 
 **Description:**
 
@@ -160,7 +199,7 @@ echo never | sudo tee /sys/kernel/mm/transparent_hugepage/defrag
 - Via AWS public DNS-Name + :8050\. E.g.: <https://ec2-34-227-176-103.compute-1.amazonaws.com:8050>
 - The DNS-Name will change! Find out current name via AWS Console, or use command on VM: `hostname -f`
 
-## Microservice 6: LDA Topic Identification
+## Microservice 7: LDA Topic Identification
 
 **Description:**
 
@@ -186,7 +225,7 @@ echo never | sudo tee /sys/kernel/mm/transparent_hugepage/defrag
   "num_topics": 6}
   ```
 
-## Microservice 7: Anomaly Detection
+## Microservice 8: Anomaly Detection
 
 **Description:**
 
@@ -217,7 +256,7 @@ echo never | sudo tee /sys/kernel/mm/transparent_hugepage/defrag
 
 ```
 
-## Microservice 8: Sentiment Analysis
+## Microservice 9: Sentiment Analysis
 
 **Description:**
 - Used to add sentiment information to all tweets in MongoDB
@@ -226,6 +265,10 @@ echo never | sudo tee /sys/kernel/mm/transparent_hugepage/defrag
 - Very simple algo: Just look for pos/neg words from [a well known list for financial sentiment analysis](https://www3.nd.edu/~mcdonald/Word_Lists.html).
 - The **Score** value is: (count of positive words) - (count of negative words)
 - **Sentiment** can be "neg" (score < 0), "pos" (score > 0) or "neu" (score = 0)
+
+
+
+
 # Useful info & commands
 
 ## Docker

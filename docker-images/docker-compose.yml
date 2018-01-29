@@ -16,7 +16,7 @@ services:
     entrypoint:
       - docker-entrypoint.sh
       - --storageEngine
-      - mmapv1      
+      - mmapv1
 
   crypto-price-listener:
     build:
@@ -26,6 +26,15 @@ services:
       - frontend
     depends_on:
       - crypto-mongo
+
+  crypto-api-wrapper:
+    build:
+      context: ./miniconda3-api
+    networks:
+      - backend
+      - frontend
+    ports:
+      - 8060:8060
 
   crypto-jupyter:
     volumes:

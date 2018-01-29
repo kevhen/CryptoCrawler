@@ -141,8 +141,8 @@ Kevin
 @title[Docker]
 
 #### Docker
-- to do (Container, Dockerfile,..)
-
+- Virtualized Containers for each Microservice
+- 
 
 +++
 @title[Microservices]

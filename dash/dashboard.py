@@ -2,7 +2,7 @@
 Provides a Dashboard.
 
 Creates an interactive Dashboard using Dash from Plotly and exposes
-it via port 80
+it via port 8050
 """
 import dash
 import dash_core_components as dcc
@@ -251,6 +251,28 @@ class dashboard():
         s_result = s.iloc[result]
         return s_result
 
+    def buildTweet(self, text, timeString):
+        timeIso = datetime.datetime.fromtimestamp(int(timeString)/1000).strftime('%A, %d. %B %Y %I:%M%p')
+        tweet = html.Div([
+            html.Blockquote([
+                html.Div([
+                    html.Div([
+                        html.Img(
+                            src='/static/Twitter_Social_Icon_Circle_Color.svg', className='Icon')
+                    ], className='Tweet-brand')
+                ], className='Tweet-header'),
+                html.Div([
+                    html.P([
+                        text
+                    ], className='Tweet-text'),
+                    html.Div([
+                        timeIso
+                    ], className='Tweet-metadata')
+                ], className='Tweet-body')
+            ])
+        ], className='EmbeddedTweet')
+        return tweet
+
     # ============================================
     # Dash/Charting related methods
     # ============================================
@@ -480,47 +502,48 @@ class dashboard():
             static_folder = os.path.join(os.getcwd(), 'static')
             return send_from_directory(static_folder, path)
 
-        def buildTweet(text, timeString):
-            tweet = html.Div([
-                html.Blockquote([
-                    html.Div([
-                        html.Div([
-                            html.Img(
-                                src='/static/Twitter_Social_Icon_Circle_Color.svg', className='Icon')
-                        ], className='Tweet-brand')
-                    ], className='Tweet-header'),
-                    html.Div([
-                        html.P([
-                            text
-                        ], className='Tweet-text'),
-                        html.Div([
-                            timeString
-                        ], className='Tweet-metadata')
-                    ], className='Tweet-body')
-                ])
-            ], className='EmbeddedTweet')
-            return tweet
-
         @app.callback(
             dash.dependencies.Output('tweetbox', 'children'),
             [ddp.Input(component_id='global-topic-checklist',
                        component_property='values'),
-             ddp.Input(component_id='tweets-live-dropdown',
-                       component_property='value'),
-             ddp.Input(component_id='refresh-tweets-button', component_property='n_clicks')],
+             ddp.Input(component_id='refresh-tweets-button', component_property='n_clicks'),
+             ddp.Input('tweets-plot', 'relayoutData'),
+             ddp.Input('senti-plot', 'relayoutData'),
+             ddp.Input('stock-plot', 'relayoutData')],
             [],
-            [ddp.Event('live-update', 'interval')])
-        def returnUpdatedTweetbox(topic_values, live_range, n_clicks):
-            # TODO: get 20 tweets here
-
+            [])
+        def returnUpdatedTweetbox(topic_values, n_clicks, rd_tweets, rd_senti, rd_stock):
+            timeframe = {}
+            if rd_tweets is not None:
+                timeframe = rd_tweets
+            if rd_senti is not None:
+                timeframe = rd_senti
+            if rd_stock is not None:
+                timeframe = rd_stock
+            fromTs = convertDate(timeframe['xaxis.range[0]']) * 1000
+            toTs = convertDate(timeframe['xaxis.range[1]']) * 1000
+            payload = {
+                "topics": ','.join(topic_values),
+                "amount": 5,
+                "from": fromTs,
+                "to": toTs
+            }
             tweets = []
-            bspTweet = buildTweet("""Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc tempor pellentesque ante at fringilla. Etiam mattis sollicitudin posuere. Fusce faucibus vehicula diam id ornare. Phasellus congue, velit vel facilisis porttitor, mauris magna tincidunt nunc, non ultricies tellus lorem vel nulla. Cras rutrum turpis justo, non rutrum leo congue porttitor. Morbi ullamcorper ullamcorper lectus in venenatis. Phasellus hendrerit mi sed mauris rhoncus cursus. Nam pretium pretium erat tempus auctor. Sed semper diam ipsum, eu interdum massa ullamcorper in. Pellentesque quis nunc nibh. Aenean vestibulum odio non velit elementum pharetra. Etiam accumsan enim quis nisl porta, sit amet egestas ligula tempor.""", '7:51 PM - Dec 3, 2012')
-            # # Just Testing
-            # tweets.append(buildTweet(','.join(topic_values), live_range))
-            # tweets.append(buildTweet('testtext', n_clicks))
-            tweets.append(bspTweet)
+            # Local testing
+            response = requests.get('http://127.0.0.1:8060/tweets', params=payload)
+            #response = requests.get('crypto-api-wrapper:8060/tweets', params=payload)
+            if response.ok:
+                content = json.loads(response.content)
+                for tweet in content['tweets']:
+                    singleTweet = self.buildTweet(tweet['text'], tweet['timestamp_ms'])
+                    tweets.append(singleTweet)
 
             return html.Div(tweets)
+
+        def convertDate(dateString):
+            utc_dt = datetime.datetime.strptime(dateString, '%Y-%m-%d %H:%M:%S.%f')
+            timestamp = (utc_dt - datetime.datetime(1970, 1, 1)).total_seconds() + 3600
+            return int(timestamp)
 
         @app.callback(
             ddp.Output('tweets-live-plot', 'figure'),
