@@ -231,14 +231,16 @@ df = pandas.DataFrame(list(cursor))
 *Show in Robo RT*
 </p>
 
+
 +++
 @title[Problems]
 
 ## Problems
 # <span class="pink">⚔</span>
 
+
 +++
-@title[Problem with Speed]
+@title[Problem with Speed - 1]
 
 #### <span class="pink">⚔</span> Slow Queries over Timestamp
 - We often query for a specified range in the timestamp, e.g:
@@ -248,9 +250,11 @@ query = {'timestamp_ms': {'$gt': 1517243098, '$lt': 1517343098}}
 - Performance was weak
 - CPU usage on VM peaked
 
-<p class="fragment">
-#### <span class="pink">⚔</span> Solution
-- Create Index on Timestamp attribute
+
++++
+@title[Problem with Speed - 2]
+
+#### <span class="pink">✓</span> Create Index on Timestamp attribute
 
 ```shell
 $ mongo
@@ -269,7 +273,7 @@ Mongo > db.collection.totalIndexSize()
 @[3-7](List all collections of this DB)
 @[8](Create Index on attribute 'timestamp_ms'. Repeat for all collections.)
 @[9](Show size of Indexes. Should fit in RAM.)
-</p>
+
 
 +++
 @title[Problem with Aggregation]
