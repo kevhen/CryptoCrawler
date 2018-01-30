@@ -483,35 +483,29 @@ Holger
 - Implemented only in R (Python versions are creepy) |
 - Solution: Implement *very* simplified version |
 
+
 +++
 @title[Step 1]
 
 #### Step 1. Seasonal Decomposition
 ![Seasonal Decomposition](assets/seasonaldec.png)
 
+
 +++
 @title[Step 2]
 
 #### Step 2. Extreme Studentized Deviate test (ESD)
-Detect outliers in univariant data that is approx. normal distributed.
+Detect outliers in univariant data that is approx. normal distributed (had to be tested before!).
 
-```
-Number of outliers:  7
-Indices of outliers:  [73, 63, 111, 119, 87, 117, 118]
-        R      Lambda
- 1   3.92406   2.85719
- 2   3.36138   2.85462
- 3   2.95692   2.85203
- 4   2.96757   2.84941
- 5   2.80918   2.84678
- 6   2.82568   2.84412
- 7   2.92393   2.84144
- 8   2.76510   2.83873
- 9   2.51757   2.83600
-10   2.54265   2.83325
-```
+- Set Parameter for Maximal Outliers |
+- Set Parameter for Significance p |
+- ESD test detects 1 largest outlier |
+- Calculates coefficient |
+- ESD test detects 2 largest outlier |
+- Calculates coefficient |
+- ... |
+- Optimal number of outliers selected by coefficient |
 
-![ESD](assets/esd.png)
 
 +++
 @title[Implementation in Python]
@@ -535,8 +529,26 @@ anomalies = pyasl.generalizedESD(resid, max_anoms, p_value)
 @[9](Apply ESD)
 @[0-9]()
 
-<p class="fragment">(Whole thing wrapped as Flask API)</p>
++++
+@title[Results]
 
+#### Results
+Detect outliers in univariant data that is approx. normal distributed.
+
+```
+Number of outliers:  7
+Indices of outliers:  [73, 63, 111, 119, 87, 117, 118]
+        R      Lambda                   R      Lambda
+ 1   3.92406   2.85719          6   2.82568   2.84412
+ 2   3.36138   2.85462          7   2.92393   2.84144
+ 3   2.95692   2.85203          8   2.76510   2.83873
+ 4   2.96757   2.84941          9   2.51757   2.83600
+ 5   2.80918   2.84678          10  2.54265   2.83325
+```
+
+![ESD](assets/esd.png)
+
+<p class="fragment">Whole thing wrapped as Flask API</p>
 <p class="fragment pink"><i>Show in Postman</i></p>
 
 ---?image=assets/bg-topic.png
