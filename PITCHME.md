@@ -155,6 +155,25 @@ Kevin
 -
 
 +++
+
+#### Dockerfile
+
+```yaml
+FROM continuumio/miniconda3
+
+RUN conda install -y pymongo pyyaml
+RUN conda install -c conda-forge -y tweepy
+RUN conda install -c gomss-nowcast schedule
+
+WORKDIR /home
+RUN git clone https://github.com/kevhen/CryptoCrawler.git
+
+WORKDIR /home/CryptoCrawler/crypto-price-crawler
+
+CMD while true; do python pricelistener.py; done
+```
+
++++
 @title[Microservices]
 
 #### Microservices
@@ -180,12 +199,9 @@ services:
   crypto-mongo:
     image: mongo:jessie
     volumes:
-      - /Users/kevin/Documents/cryptoMongo:/data/db:rw
+      - /data/mongodb:/data/db:rw
     networks:
       - backend
-      - frontend
-    ports:
-      - 27017:27017
     entrypoint:
       - docker-entrypoint.sh
       - --storageEngine
@@ -199,7 +215,6 @@ services:
       - frontend
     depends_on:
       - crypto-mongo
-
 ```
 
 +++
