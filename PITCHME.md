@@ -703,11 +703,11 @@ present absolutely anything.
 @title[What we have learned]
 
 #### What we have learned
-- Plotly Dash is nice, but Data Management & Cross-Selectin is quite difficult
-- Take more care about exception handling, especially for critical services (Stream Listener)
+- Plotly Dash is nice, but Data Management & Cross-Selection is quite difficult.
+- Take more care about exception handling, especially for critical services (e.g. Stream Listener)
 - Docker(-Compose) is really cool for Development & Deployment!
-- Putting the right Data into Models is crucial (Missing Data in Anomaly-Detection?)
-- Choosing the right Model for the Data is not easy (LDA for Tweets?)
+- Putting the right Data into Models is crucial (e.g. Missing Data in Anomaly-Detection)
+- Choosing the right Model for the Data is not easy (e.g. LDA for Tweets)
 
 
 +++
