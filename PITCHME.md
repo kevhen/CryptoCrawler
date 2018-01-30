@@ -288,10 +288,10 @@ Mongo > db.collection.totalIndexSize()
 @title[Problem with Aggregation - 2]
 
 #### <span class="pink">✓</span> Aggregate using Math
-- To aggregate Milliseconds by Hours, get Milliseconds per hour:
+- To aggregate Milliseconds by Hours, get Milliseconds per hour: |
 ```
 1 Hour is 1000ms * 60sec * 60min = 3.600.000 ms
-``` |
+```
 - Then divide Timestamp by this value and round to floor:
 ```
 floor (timestamp / 3.600.000)
