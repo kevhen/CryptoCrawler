@@ -596,11 +596,9 @@ Holger
 
 #### Preprocessing
 ```python
-# Chars to Remove
 exclude_custom = '“”…‘’x'
 exclude = set(string.punctuation + exclude_custom)
 
-# Stopwords to remove
 stop_custom = ['rt', 'bitcoin', 'bitcoins', 'iota', 'ethereum', 'btc',
                'eth', 'iot', 'ltc', 'litecoin', 'litecoins', 'iotas',
                'ltc', 'cryptocurrency', 'crypto', 'cryptocurrencies',
@@ -621,17 +619,24 @@ doc = ' '.join([i for i in doc.lower().split()
 
 # Remove short words
 doc = ' '.join([i for i in doc.lower().split()
-                      if len(i) >= min_length])
+                      if len(i) >= 4])
 
 # Lemmatize
 # clean_doc = ' '.join(lemma.lemmatize(word)
 #     for word in clean_doc.split())
 
-
 # Remove Stopwords
 doc = ' '.join([i for i in doc.lower().split()
                       if i not in stop])
 ```
+@[1-2](Define Chars to remove)
+@[4-8](Define Stopwords)
+@[10-12](Remove Punctuationa and special Chars)
+@[14-16](Remove URLs)
+@[18-20](Remove Words containing numbers)
+@[22-24](Remove Words below 4 chars)
+@[26-28](Lemmatize (not work because of uncommon words))
+@[30-31](Remove Stopwords)
 
 <span class="fragment">Does this work for such short documents like Tweets? Lets try!</span>
 
