@@ -25,13 +25,9 @@ University of Media Stuttgart, Germany<br>
 
 #### Goal
 - Topic: Ongoing Hype on Crypto-Currencies in 2017 and 2018
-
-
 - Idea A: Correlate development of Tweets and Stock-Values over time.
 - Idea B: Provide additional information, that helps to interpret those developments.
 - Idea C: Automatically buy/sell stocks based on prediction. (not done)
-
-
 - Try and use new technologies
 - Gain experience as a reward for the overhead in DevOps
 
@@ -577,8 +573,6 @@ api.add_resource(RandomTweets, '/tweets')
 - implemented to take a timeframe and parse the parameters to fit the CryptoCompare API definitions
 - returns the daily, hourly or minutely prices for a crypto currency
 - planned to replace or support the price listener or replace missing values from system outages
-
-
 - not yet integrated into the dashboard
 
 ---?image=assets/bg-anomaly.png
@@ -651,8 +645,14 @@ Done!
 #### Microservice 7
 # Jupyter Notebook
 
-Kevin
++++
 
+#### Integrate an instance of Jupyter notebook
+
+- Jupyter notebook inside of an own container
+- connection to the database and all other services
+- test environment for database and API calls
+- fast response without redeploying of any of the components
 
 ---?image=assets/bg-dash.png
 @title[Microservice - Dash]
@@ -660,19 +660,9 @@ Kevin
 #### Microservice 8
 # Dashbord
 
-Holger & Kevin
-
-
 +++
-@title[Step 3. Done!]
 
-### <span class="gold">STEP 3. GET THE WORD OUT!</span>
-<br>
-![GitPitch Slideshow URLs](assets/images/gp-slideshow-urls.png)
-<br>
-<br>
-#### Instantly use your GitPitch slideshow URL to promote, pitch or
-present absolutely anything.
+#### Show random tweets from the selected timeframe
 
 
 ---
