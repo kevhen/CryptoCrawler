@@ -497,6 +497,7 @@ Holger
 #### Step 2. Extreme Studentized Deviate test (ESD)
 Detect outliers in univariant data that is approx. normal distributed *(had to be tested before!)*.
 
+<br>
 
 - Set Parameter for Maximal Outliers |
 - Set Parameter for Significance p |
