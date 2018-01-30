@@ -234,8 +234,8 @@ df = pandas.DataFrame(list(cursor))
 +++
 @title[Problem with Speed]
 
-# <span class="pink">&#128498;</span>
 ## 🗲 Problems
+# <span class="pink">⚔</span>
 
 +++
 @title[Problem with Speed]
