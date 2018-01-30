@@ -681,8 +681,6 @@ Kevin
 #### Microservice 8
 # Dashbord
 
-Holger & Kevin
-
 
 +++
 @title[Step 3. Done!]
@@ -699,5 +697,38 @@ present absolutely anything.
 ---
 @title[Wrap up]
 
-#### What we have learned
 # Wrap up
+
++++
+@title[What we have learned]
+
+#### What we have learned
+
+
++++
++++
+@title[What we would improve]
+
+#### What we would improve
+<div class="fragment">
+<p>Architecture & Code:</p>
+<ul>
+<li>Connect frontend through only one single API</li>
+<li>Refactor Dashboardcode</li>
+</ul>
+</div>
+
+Topics:
+   - für LDA vorberechnen?
+   - was besseres für tweets?
+Anoms:
+   - Volle Twitter impl.
+UX / UI:
+   - Non blocking
+   - Loading indicators
+   - Scope selection durchgängig
+   - Performance (topic change)
+- Zusatzfeatures:
+  - Map
+  - Korrelationskoeffizient
+  - News API
