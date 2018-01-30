@@ -429,7 +429,33 @@ Didn't work.
 
 +++
 
-#### Dockerfile
+#### Crypto Price Crawler
+
+- receive prices in a defined interval
+- call api to get all currencies and their current values
+- save the values to the database each in a separate collection
+
++++
+
+#### Scheduled listener
+
+```python
+def init():
+    with open('../config.yaml', 'r') as stream:
+        conf = yaml.load(stream)
+    # Open a connection to mongo:
+    client = MongoClient(conf['mongodb']['host'], conf['mongodb']['port'])
+    db = client[conf['mongodb']['db']]
+    schedule.every(10).seconds.do(startListening, conf, db)
+```
+
+@[2,3](Load config file)
+@[5,6](Connect to the database)
+@[7](Schedule listener to run every 10 seconds)
+
++++
+
+#### REST API Call
 
 ```python
 def getPricesOnce(currencies, conf):
@@ -458,8 +484,60 @@ def getPricesOnce(currencies, conf):
 #### Microservice 4
 # Crypto API Wrapper
 
-Kevin
++++
 
+#### Crypto API Wrapper
+
+- serve an API as an interface between the dashboard and the database or external APIs
+
+- benefits
+  - prevent direct database access
+  - filter data and fit format for later needs
+  - less logic in the frontend
+
+- using `Flask` framework to build the actual API
+
++++
+
+#### Random tweets endpoint
+
+- return random tweets about certain topics in a defined timeframe
+
+Example: `/tweets?topics=bitcoin,ethereum,iota&amount=5&from=1516110498&to=1516290284`
+
+```python
+def getTweetsForTopics(topicstring, amount, fromTs, toTs):
+    topicList = parseTopics(topicstring)
+    randomTweets = []
+    for topic in topicList:
+        cursor = db[topic].aggregate([
+                { '$match': { 'timestamp_ms': {'$gt': fromTs , '$lt': toTs }}},
+                { '$sample': { 'size': amount } },
+                { '$project' : { '_id': 0 } }
+            ])
+        tweetListForTopic = list(cursor)
+        identifiedTweetListForTopic = []
+        for singleTweet in tweetListForTopic:
+            identifiedTweet = { 'topic': topic, 'tweet': singleTweet }
+            identifiedTweetListForTopic.append(identifiedTweet)
+        randomTweets = randomTweets + identifiedTweetListForTopic
+    if len(randomTweets) >= amount:
+        randomListFinal = random.sample(randomTweets, amount)
+    else:
+        randomListFinal = randomTweets
+    resultDict = {'tweets': randomListFinal }
+    return resultDict
+```
+
+@[1](Get URL parameters as input)
+@[2](Get list of topics from the comma separated `topicstring`)
+@[4](Do one request for each topic because every topic is in a separate mongo collection)
+@[5,6,7,8,9](Build mongo aggregation)
+@[6](Match all entries between the start and the end timestamps)
+@[7](Get a random sample with the specified size from the matched entries
+@[8](Remove the `_id` information from the results)
+@[12,13,14](Add the topic to each tweet)
+@[17](From all sample tweets from the collections we take a sample as big as the specified amount)
 
 ---?image=assets/bg-anomaly.png
 @title[Microservice - Anomaly Detection]
