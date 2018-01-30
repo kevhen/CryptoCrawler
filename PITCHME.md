@@ -292,16 +292,16 @@ Mongo > db.collection.totalIndexSize()
 ```
 1 Hour is 1000ms * 60sec * 60min = 3.600.000 ms
 ```
-- Then divide Timestamp by this value and round to floor:
+- Then divide Timestamp by this value and round to floor: |
 ```
 floor (timestamp / 3.600.000)
-``` |
+```
 - All timestamps from the same hour will result in the same value |
 - Sadly, MongoDB has no floor function |
-- Luckily, it has a Modulo function:
+- Luckily, it has a Modulo function: |
 ```
 timestamp/3.600.000 – ( (timestamp/3.600.000) mod 1)
-``` |
+```
 
 +++
 @title[Problem with Aggregation - 3]
