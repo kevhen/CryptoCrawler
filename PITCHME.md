@@ -261,7 +261,28 @@ services:
 @title[In Action]
 
 #### In Action
-- to do (Build, Run, Docker-Compose)
+- `docker-compose build`
+- `docker-compose up`
+
+Combined log output
+
+```shell
+twitter-listener_1       | INFO - 01/30/2018 15:32:36: 374000 Tweets received. Still listening...
+crypto-price-listener_1  | INFO - 01/30/2018 15:32:36: Prices are {'BTC': {'USD': 10407.7, 'EUR': 8416.89}, 'ETH': {'USD': 1115.7, 'EUR': 907.42}, 'IOT': {'USD': 2.39, 'EUR': 1.95}}
+crypto-price-listener_1  | INFO - 01/30/2018 15:32:36: Trying to save the prices for timestamp 1517326356797 to mongo
+crypto-price-listener_1  | INFO - 01/30/2018 15:32:36: Saved prices. Waiting until next call
+crypto-dash_1            | INFO - 01/30/2018 15:32:38: 37.201.7.172 - - [30/Jan/2018 15:32:38] "POST /_dash-update-component HTTP/1.1" 200 -
+crypto-dash_1            | INFO - 01/30/2018 15:32:43: 37.201.7.172 - - [30/Jan/2018 15:32:43] "POST /_dash-update-component HTTP/1.1" 200 -
+crypto-price-listener_1  | INFO - 01/30/2018 15:32:46: Running job Every 10 seconds do startListening({'mongodb': {'host': 'crypto-mongo', 'port': 27017, 'db': 'cryptocrawl'}, 'cryptocompare': {'coinlist': 'https://min-api.cryptocompare.com/data/all/coinlist', 'price': 'https://min-api.cryptocompare.com/data/pricemulti'}, 'collections': {'generalcrypto': {'keywords': ['blockchain', 'crypto', 'altcoins', 'altcoin']}, 'bitcoin': {'keywords': ['bitcoin', 'bitcoins'], 'currencycode': 'BTC'}, 'ethereum': {'keywords': ['ethereum'], 'currencycode': 'ETH'}, 'iota': {'keywords': ['iota', 'iotas'], 'currencycode': 'IOT'}, 'trump': {'keywords': ['trump']}, 'car2go': {'keywords': ['car2go']}}, 'dash': {'live': {'default': ['bitcoin', 'ethereum', 'iota'], 'interval': 5}}}, Database(MongoClient(host=['crypto-mongo:27017'], document_class=dict, tz_aware=False, connect=True), 'cryptocrawl')) (last run: 2018-01-30 15:32:36, next run: 2018-01-30 15:32:46)
+crypto-price-listener_1  | INFO - 01/30/2018 15:32:46: Starting Currency Listener
+crypto-price-listener_1  | INFO - 01/30/2018 15:32:47: Valid coins are ['BTC', 'ETH', 'IOT']
+crypto-price-listener_1  | INFO - 01/30/2018 15:32:47: The coin string is BTC,ETH,IOT
+crypto-price-listener_1  | INFO - 01/30/2018 15:32:48: Prices are {'BTC': {'USD': 10403.83, 'EUR': 8412.23}, 'ETH': {'USD': 1115.97, 'EUR': 903.88}, 'IOT': {'USD': 2.39, 'EUR': 1.94}}
+crypto-price-listener_1  | INFO - 01/30/2018 15:32:48: Trying to save the prices for timestamp 1517326368073 to mongo
+crypto-price-listener_1  | INFO - 01/30/2018 15:32:48: Saved prices. Waiting until next call
+crypto-dash_1            | INFO - 01/30/2018 15:32:48: 37.201.7.172 - - [30/Jan/2018 15:32:48] "POST /_dash-update-component HTTP/1.1" 200 -
+crypto-dash_1            | INFO - 01/30/2018 15:32:53: 37.201.7.172 - - [30/Jan/2018 15:32:53] "POST /_dash-update-component HTTP/1.1" 200 -
+```
 
 
 ---?image=assets/bg-mongodb.png
