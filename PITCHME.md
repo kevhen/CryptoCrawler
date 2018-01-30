@@ -176,8 +176,8 @@ CMD while true; do python pricelistener.py; done
 @[3,4,5](Install additional packages)
 @[7](Change working directory inside the container)
 @[8](Clone preoject into the container)
-@[11](Go to the microservice)
-@[13](Run python script in a loop in case it exits with an error)
+@[10](Go to the microservice)
+@[12](Run python script in a loop in case it exits with an error)
 
 +++
 @title[Microservices]
