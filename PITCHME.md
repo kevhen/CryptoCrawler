@@ -454,8 +454,6 @@ Kevin
 #### Microservice 5
 # Anomaly Detection
 
-Holger
-
 
 +++
 @title[Idea]
