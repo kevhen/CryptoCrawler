@@ -290,11 +290,11 @@ class dashboard():
                         text
                     ], className='Tweet-text'),
                     html.Div([
-                        timeIso
+                        '{} - {}'.format(timeIso, topic.upper())
                     ], className='Tweet-metadata')
                 ], className='Tweet-body')
             ])
-        ], className='EmbeddedTweet', style={'border-color': '{} {}'.format(self.colors[topic], '!important')})
+        ], className='EmbeddedTweet', style={'border-color': self.colors[topic]})
         return tweet
 
     # ============================================
