@@ -118,19 +118,24 @@ Kevin
 +++
 @title[Setup]
 #### Project Setup
+
 **Github** for collaboration
 + Feature Branches & Pull requests
 + Ticketing / Bugs Tracking
 + Slides (gitpitch)
 
++++
+@title[Setup2]
 
 **AWS** for Hosting
 + t2.medium running Ubuntu
 + Access via SSH
 
++++
+@title[Setup3]
 
 **Architecture**
-+ Docker based Microservices
++ Docker based virtualized Microservices
 
 
 ---?image=assets/bg-docker.jpg
@@ -139,13 +144,13 @@ Kevin
 #### Architecture
 # Docker based Microservices
 
-Kevin
-
 
 +++
 @title[Docker]
 
 #### Docker
+- virtualization software
+
 - Virtualized Containers for each Microservice
 -
 
@@ -153,8 +158,49 @@ Kevin
 @title[Microservices]
 
 #### Microservices
-- to do (stateless, independent,...)
+- one Microservice each for single (or small set of) functions
+- every Microservice is independent and stateless
+- restarting of single services or the system without breaking it
+-
 
++++
+@title[Docker Compose]
+
+#### Docker Compose
+```yaml
+version: '3'
+
+networks:
+  backend:
+    internal: true
+  frontend:
+    internal: false
+
+services:
+  crypto-mongo:
+    image: mongo:jessie
+    volumes:
+      - /Users/kevin/Documents/cryptoMongo:/data/db:rw
+    networks:
+      - backend
+      - frontend
+    ports:
+      - 27017:27017
+    entrypoint:
+      - docker-entrypoint.sh
+      - --storageEngine
+      - mmapv1
+
+  crypto-price-listener:
+    build:
+      context: ./miniconda3-prices
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      - crypto-mongo
+
+```
 
 +++
 @title[In Action]
