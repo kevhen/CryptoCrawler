@@ -297,8 +297,9 @@ Mongo > db.collection.totalIndexSize()
 floor (timestamp / 3.600.000)
 ```
 - All timestamps from the same hour will result in the same value |
-- Sadly, MongoDB has no floor function |
-- Luckily, it has a Modulo function: |
+- Then Aggregation can be done on this value
+- Sadly, MongoDB has no `floor` Function |
+- Luckily, it has a `modulo` Function: |
 ```
 timestamp/3.600.000 – ( (timestamp/3.600.000) mod 1)
 ```
