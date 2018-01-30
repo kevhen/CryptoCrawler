@@ -374,11 +374,12 @@ stream.filter(track=list(['bitcoin','iota','...']), async=True)
 @title[Information overload - 1]
 
 #### <span class="pink">✓</span> Filter the data before storing
-- Limit Tweets |
+
+- Limit Tweets
     - Exclude Tweets not marked as English
     - Exclude Retweets
 
-- Limit Attributes |
+- Limit Attributes
     - TweetID
     - AuthorID
     - Text
