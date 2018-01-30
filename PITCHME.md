@@ -271,7 +271,7 @@ Mongo > db.collection.totalIndexSize()
 @[3-7](List all collections of this DB)
 @[8](Create Index on attribute 'timestamp_ms'. Repeat for all collections.)
 @[9](Show size of Indexes. Should fit in RAM.)
-
+@[0-9]()
 
 +++
 @title[Problem with Aggregation - 1]
@@ -353,15 +353,22 @@ stream.filter(track=list(['bitcoin','iota','...']), async=True)
 
 
 +++
-@title[Twitter Stream - Information overload]
+@title[Problems]
 
-#### Problem 1: Too much information
+## Problems
+# <span class="pink">⚔</span>
+
+
++++
+@title[Information overload - 1]
+
+#### <span class="pink">⚔</span> Too much information
 
 Over <span class="pink">500 MB</span> Data during first two hours.
 
-Over <span class="pink">600 Tweets</span> per minute:
+Over <span class="pink">900 Tweets</span> per minute:
 ![Tweets after two hours](assets/too_much_data.png)
-
+*Tweets per 15min, only crypto topics*
 
 +++
 @title[Twitter Stream - Information overload - solution]
