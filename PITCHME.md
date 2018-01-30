@@ -157,7 +157,7 @@ Kevin
 
 #### Dockerfile
 
-```
+```yaml
 FROM continuumio/miniconda3
 
 RUN conda install -y pymongo pyyaml
