@@ -274,7 +274,25 @@ class dashboard():
 
         return result
 
-    def buildTweet(self, text, timeString, topic):
+    def buildSentimentDiv(self, senti):
+        if senti == 'pos':
+            return html.Div([
+                    html.I(className='fa fa-thumbs-o-up', style={'color': 'mediumseagreen'})
+                ], className='Tweet-senti')
+
+        elif senti == 'neg':
+            return html.Div([
+                    html.I(className='fa fa-thumbs-o-down', style={'color': 'orangered'})
+                ], className='Tweet-senti')
+
+        elif senti == 'neu':
+            return html.Div([
+                    html.I(className='fa fa-minus', style={'color': 'darkslategrey'})
+                ], className='Tweet-senti')
+
+
+    def buildTweet(self, text, timeString, topic, senti):
+        sentimentDiv = self.buildSentimentDiv(senti)
         timeIso = datetime.datetime.fromtimestamp(
             int(timeString) / 1000).strftime('%A, %d. %B %Y %I:%M%p')
         tweet = html.Div([
@@ -283,7 +301,8 @@ class dashboard():
                     html.Div([
                         html.Img(
                             src='/static/Twitter_Social_Icon_Circle_Color.svg', className='Icon')
-                    ], className='Tweet-brand')
+                    ], className='Tweet-brand'),
+                    sentimentDiv
                 ], className='Tweet-header'),
                 html.Div([
                     html.P([
@@ -570,7 +589,7 @@ class dashboard():
                 content = json.loads(response.content)
                 for tweet in content['tweets']:
                     singleTweet = self.buildTweet(
-                        tweet['tweet']['text'], tweet['tweet']['timestamp_ms'], tweet['topic'])
+                        tweet['tweet']['text'], tweet['tweet']['timestamp_ms'], tweet['topic'], tweet['tweet']['sentiment'])
                     tweets.append(singleTweet)
 
             return html.Div(tweets)
