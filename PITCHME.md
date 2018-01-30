@@ -182,7 +182,7 @@ Holger
 
 #### Storing Documents with Python
 
-```
+```query
 from pymongo import MongoClient
 
 client = MongoClient('crypto-mongo', 27017)
@@ -207,14 +207,14 @@ db['bitcoin'].insert(json_obj)
 
 #### Query Documents with Python
 
-```
+```python
 import pandas
 from pymongo import MongoClient
 
 client = MongoClient('crypto-mongo', 27017)
 db = client['cryptocrawl']
 
-filte = {'timestamp_ms': {'$gt': 1517343098}}
+query = {'timestamp_ms': {'$gt': 1517343098}}
 projection = {'text': 1, 'timestamp_ms': 1}
 
 cursor = db['bitcoin'].find(query, projection).limit(100)
@@ -234,6 +234,12 @@ df = pandas.DataFrame(list(cursor))
 +++
 @title[Problem with Speed]
 
+# <span class="pink">&#128498;</span>
+## 🗲 Problems
+
++++
+@title[Problem with Speed]
+⚡⚡
 #### Problem 1
 - Slow (CPU-eating) on Queries over Timestamp
 
@@ -241,7 +247,7 @@ df = pandas.DataFrame(list(cursor))
 - Create Index on Timestamp attribute
 - Aggregate in DB, where possible
 
-
+⚡⚡
 +++
 
 
