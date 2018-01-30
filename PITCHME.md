@@ -706,29 +706,61 @@ present absolutely anything.
 
 
 +++
-+++
 @title[What we would improve]
 
-#### What we would improve
+#### What we would improve 1
 <div class="fragment">
-<p>Architecture & Code:</p>
+<p><b>Architecture & Code</b></p>
 <ul>
 <li>Connect frontend through only one single API</li>
 <li>Refactor Dashboardcode</li>
 </ul>
 </div>
 
-Topics:
-   - für LDA vorberechnen?
-   - was besseres für tweets?
-Anoms:
-   - Volle Twitter impl.
-UX / UI:
-   - Non blocking
-   - Loading indicators
-   - Scope selection durchgängig
-   - Performance (topic change)
-- Zusatzfeatures:
-  - Map
-  - Korrelationskoeffizient
-  - News API
+<div class="fragment">
+<p><b>Topic Modelling</b></p>
+<ul>
+<li>Search for a better Model for short texts</li>
+<li>Research, if LDA can be speed up somehow</li>
+</ul>
+</div>
+
+<div class="fragment">
+<p><b>Anomaly Detection</b></p>
+<ul>
+<li>More complete Twitter Algo Implementation</li>
+<li>Or build R Microservice</li>
+</ul>
+</div>
+
+
++++
+@title[What we would improve]
+
+#### What we would improve 2
+<div class="fragment">
+<p><b>Dashboard UX / UI</b></p>
+<ul>
+<li>Non blocking interactions</li>
+<li>Add loading indicators</li>
+<li>Improve cross-selection</li>
+<li>Improve Performance, e.g. on data loading</li>
+</ul>
+</div>
+
+<div class="fragment">
+<p><b>Additional Features</b></p>
+<ul>
+<li>Leverage News APIs</li>
+<li>Calculate and display Correlation coefficent</li>
+<li>Show Tweets on Map</li>
+</ul>
+</div>
+
+
+---
+@title[Thank you!]
+
+# ☺
+
+### Thank you for your Attention!
