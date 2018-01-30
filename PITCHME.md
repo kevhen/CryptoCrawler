@@ -244,8 +244,17 @@ services:
 @[9](Definition of two example microservices)
 
 @[10,11,12,13,14,15,16,17,18,19](MongoDB)
+@[11](Base Image)
+@[12,13](Connect external volumes)
+@[14,15](Define network connection)
+@[16,17,18,19](Start script inside the container and additional parameters)
 
 @[21,22,23,24,25,26,27,28,29,30,31,32,33,34,35](Jupyter Notebook)
+@[22,23](Connect external volumes)
+@[24,25,26](Define network connections)
+@[27,28](Map internal to external ports)
+@[31,32](Dependencies to specify build and start order)
+@[33,34,35](Start script inside the container and additional parameters)
 
 
 +++
