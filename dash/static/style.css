@@ -282,7 +282,7 @@ span.icon.fa {
 .EmbeddedTweet {
     overflow: hidden;
     background-color: #fff;
-    border: 1px solid #e1e8ed;
+    border: 2px solid #e1e8ed;
     border-radius: 4px;
     margin-bottom: 5px;
 }
