@@ -540,7 +540,6 @@ anomalies = pyasl.generalizedESD(resid, max_anoms, p_value)
 ```
 Number of outliers:  7
 Indices of outliers:  [73, 63, 111, 119, 87, 117, 118]
-
         R      Lambda                   R      Lambda
  1   3.92406   2.85719          6   2.82568   2.84412
  2   3.36138   2.85462          7   2.92393   2.84144
