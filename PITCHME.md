@@ -374,18 +374,15 @@ stream.filter(track=list(['bitcoin','iota','...']), async=True)
 @title[Information overload - 1]
 
 #### <span class="pink">✓</span> Limit Tweets
-- Exclude everything not EN |
-- Exclude Retweets |
+- Exclude Tweets not marked as English
+- Exclude Retweets
 
-#### <span class="pink">✓</span> Limit Stored attributes |
-- TweetID |
+#### <span class="pink">✓</span> Limit Stored attributes
+- TweetID
 - AuthorID
 - Text
 - Timestamps
 - Geo-Information
-
-
-
 
 +++
 @title[Twitter Stream - Bug]
