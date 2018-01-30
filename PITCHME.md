@@ -425,7 +425,10 @@ def startListening():
 ```
 
 Just in case: Auto-restart Microservice on exit:
-`while true; do python streamlistener.py; done`
+
+```bash
+while true; do python streamlistener.py; done
+```
 
 
 ---?image=assets/bg-pricecrawler.png
