@@ -88,8 +88,10 @@ University of Media Stuttgart, Germany<br>
 @title[Docker]
 
 #### Docker
-- Virtualized Containers for each part of the software
--
+- virtualized Containers for each part of the software
+- independent from host system
+- deployable locally and in the cloud
+- brings all dependencies
 
 +++
 
@@ -222,6 +224,65 @@ crypto-dash_1            | INFO - 01/30/2018 15:32:48: 37.201.7.172 - - [30/Jan/
 crypto-dash_1            | INFO - 01/30/2018 15:32:53: 37.201.7.172 - - [30/Jan/2018 15:32:53] "POST /_dash-update-component HTTP/1.1" 200 -
 ```
 
++++
+@title[Centralized Configuration]
+
+#### Centralized Configuration
+
+- one configuration file for changes in a single place
+
+```yaml
+mongodb:
+    host: crypto-mongo
+    port: 27017
+    db:   cryptocrawl
+
+cryptocompare:
+    coinlist: https://min-api.cryptocompare.com/data/all/coinlist
+    price: https://min-api.cryptocompare.com/data/pricemulti
+    histo: https://min-api.cryptocompare.com/data/histo
+
+collections:
+    generalcrypto:
+        keywords:
+            - blockchain
+            - crypto
+            - altcoins
+            - altcoin
+    bitcoin:
+        keywords:
+            - bitcoin
+            - bitcoins
+        currencycode: BTC
+    ethereum:
+        keywords:
+            - ethereum
+        currencycode: ETH
+    iota:
+        keywords:
+            - iota
+            - iotas
+        currencycode: IOT
+    trump:
+        keywords:
+            - trump
+    car2go:
+        keywords:
+            - car2go
+
+dash:
+    live:
+        default:
+            - bitcoin
+            - ethereum
+            - iota
+        interval: 5
+
+```
+@[1,2,3,4](MongoDB connection information
+@[6,7,8,9](URLs to the CryptoCompare API)
+@[11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37](URLs to the CryptoCompare API)
+@[39,40,41,42,43,44,45](URLs to the CryptoCompare API)
 
 ---?image=assets/bg-mongodb.png
 @title[Microservice - MongoDB]
@@ -366,7 +427,29 @@ Didn't work.
 #### Microservice 3
 # Crypto Price Crawler
 
-Kevin
++++
+
+#### Dockerfile
+
+```python
+FROM continuumio/miniconda3
+
+RUN conda install -y pymongo pyyaml
+RUN conda install -c conda-forge -y tweepy
+RUN conda install -c gomss-nowcast schedule
+
+WORKDIR /home
+RUN git clone https://github.com/kevhen/CryptoCrawler.git
+
+WORKDIR /home/CryptoCrawler/crypto-price-crawler
+
+CMD while true; do python pricelistener.py; done
+```
+
+@[1](Get defined base image online)
+@[3,4,5](Install additional packages)
+@[8](Clone preoject into the container)
+@[12](Run python script in a loop in case it exits with an error)
 
 
 ---?image=assets/bg-cryptowrapper.png
