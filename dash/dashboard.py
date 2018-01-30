@@ -294,7 +294,7 @@ class dashboard():
                     ], className='Tweet-metadata')
                 ], className='Tweet-body')
             ])
-        ], className='EmbeddedTweet', style={'color': '{} {}'.format(self.color[topic], '!important')})
+        ], className='EmbeddedTweet', style={'color': '{} {}'.format(self.colors[topic], '!important')})
         return tweet
 
     # ============================================
