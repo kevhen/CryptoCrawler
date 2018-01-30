@@ -119,18 +119,18 @@ Kevin
 @title[Setup]
 #### Project Setup
 **Github** for collaboration
-- Feature Branches & Pull requests
-- Ticketing / Bugs Tracking
-- Slides (gitpitch)
++ Feature Branches & Pull requests
++ Ticketing / Bugs Tracking
++ Slides (gitpitch)
 
 
 **AWS** for Hosting
-- t2.medium running Ubuntu
-- Access via SSH
++ t2.medium running Ubuntu
++ Access via SSH
 
 
 **Architecture**
-- Docker based Microservices
++ Docker based Microservices
 
 
 ---?image=assets/bg-docker.jpg
