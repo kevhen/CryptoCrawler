@@ -575,15 +575,65 @@ Holger
 @title[Idea]
 
 #### Identify Topics in Tweet-Texts
-- Aggregated view on what the tweets are about
-- Add information to Dashboard
+- Aggregated view on what the Tweets are about
+- Add Information to Dashboard
 - Search for those Topics in a News API *(not done)*
 
 
 +++
 @title[Method]
 
-#### Method
+#### Latent Dirichlet allocation
+- A "Document" contains some Topics with different Weights |
+- A "Topic" is Probability Distribution about all Words in Corpus |
+- A "Word" can be assigned to more than one topics |
+
+<span class="fragment">Does this work for such short documents like Tweets? Lets try!</span>
+
+
++++
+@title[Preprocessing]
+
+#### Preprocessing
+```python
+# Chars to Remove
+exclude_custom = '“”…‘’x'
+exclude = set(string.punctuation + exclude_custom)
+
+# Stopwords to remove
+stop_custom = ['rt', 'bitcoin', 'bitcoins', 'iota', 'ethereum', 'btc',
+               'eth', 'iot', 'ltc', 'litecoin', 'litecoins', 'iotas',
+               'ltc', 'cryptocurrency', 'crypto', 'cryptocurrencies',
+               'coin']
+stop = set(stopwords.words('english') + stop_custom)
+
+# Remove punctuation
+doc = ''.join(ch for ch in doc
+                      if ch not in exclude)
+
+# Remove URLS
+doc = ' '.join([i for i in doc.lower().split()
+                      if not i.startswith('http')])
+
+# Remove anything containing numbers
+doc = ' '.join([i for i in doc.lower().split()
+                      if not any(char.isdigit() for char in i)])
+
+# Remove short words
+doc = ' '.join([i for i in doc.lower().split()
+                      if len(i) >= min_length])
+
+# Lemmatize
+# clean_doc = ' '.join(lemma.lemmatize(word)
+#     for word in clean_doc.split())
+
+
+# Remove Stopwords
+doc = ' '.join([i for i in doc.lower().split()
+                      if i not in stop])
+```
+
+<span class="fragment">Does this work for such short documents like Tweets? Lets try!</span>
 
 
 +++
