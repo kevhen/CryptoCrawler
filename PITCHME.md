@@ -473,15 +473,34 @@ Holger
 - Searching for News in those time ranges *(not done)*
 
 +++
-@title[Anomalies in Timeseries]
+@title[Method]
 
+#### Simplified version of Algorithm by [Twitter itself](https://blog.twitter.com/engineering/en_us/a/2015/introducing-practical-and-robust-anomaly-detection-in-a-time-series.html)
+(Which is only implemented for R, not Python)
 
-<br>
-#### Create slideshow content using GitHub Flavored Markdown in your
-favorite editor.
+**Step 1. Seasonal decomposition**
 
-<span class="aside">It's as easy as README.md with simple
-slide-delimeters (---)</span>
+**Step 2. ESD**
+
+#### Implementation in Python
+```python
+import statsmodels.api as sm
+from PyAstronomy import pyasl
+
+model = sm.tsa.seasonal_decompose(ary, freq=freq)
+resid = model.resid
+
+# [...] clean/transform resid values
+
+anomalies = pyasl.generalizedESD(resid, max_anoms, p_value)
+```
+<p class="fragment">(Whole thing wrapped as Flask API)</p>
+@[1-2](Load Modules)
+@[4](Seasonal decompositon)
+@[5](We only need resid values)
+@[7](Some transformation for next step (e.g. remove NaN))
+@[9](Apply ESD)
+@[0-9]()
 
 
 ---?image=assets/bg-topic.png
