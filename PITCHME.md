@@ -164,8 +164,6 @@ Kevin
 #### Microservice 1
 # Mongo DB
 
-Holger
-
 
 +++
 @title[MongoDB]
