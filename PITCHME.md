@@ -176,9 +176,9 @@ Holger
 - Multiple Documents grouped to Collections
 - Database can be queried
 
-<div class="fragment pink center">
+<p class="fragment pink center">
 *Show in Robo RT*
-</div>
+</p>
 
 +++
 @title[Problem with Speed]
