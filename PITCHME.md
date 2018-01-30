@@ -478,7 +478,8 @@ Holger
 #### Simplified version of Algorithm by [Twitter itself](https://blog.twitter.com/engineering/en_us/a/2015/introducing-practical-and-robust-anomaly-detection-in-a-time-series.html)
 (Which is only implemented for R, not Python)
 
-**Step 1. Seasonal decomposition**
+**Step 1. Seasonal Decomposition**
+![Seasonal Decomposition](assets/seasonaldec.png)
 
 **Step 2. ESD**
 
