@@ -239,14 +239,20 @@ df = pandas.DataFrame(list(cursor))
 
 +++
 @title[Problem with Speed]
-⚡⚡
-#### Problem 1
-- Slow (CPU-eating) on Queries over Timestamp
 
-#### Solution
-- Create Index on Timestamp attribute
-- Aggregate in DB, where possible
+#### 1. Slow Queries over Timestamp
+- We often queried for a specified range in the timestamp, e.g:
+```python
+query = {'timestamp_ms': {'$gt': 1517243098, '$lt': 1517343098}}
+```
+- Performance was weak
+- CPU usage on VM peaked
 
+<p class="fragment">
+**Solution**
+- Create Index on Timestamp attribute |
+- Aggregate in DB, where possible |
+</p>
 ⚡⚡
 +++
 
