@@ -460,16 +460,16 @@ Holger
 +++
 @title[Idea]
 
-#### General Idea
-
-**Detect 'unusual' Events in:**
+#### Detect 'unusual' Events in:
 - Amount of Tweets received
 - Amount of Tweets with pos/neg sentiment
 - Prices of Crypto-Currencies
 
-**Then use them for:**
+<br><br>
+
+#### Use this information for:
 - Visualization in Dashboard
-- Ease the interpretation of the data
+- Easing the interpretation of the data
 - Searching for News in those time ranges *(not done)*
 
 +++
