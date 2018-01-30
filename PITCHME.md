@@ -551,8 +551,8 @@ Indices of outliers:  [73, 63, 111, 119, 87, 117, 118]
 
 ![ESD](assets/esd.png)
 
-<p class="fragment">Whole thing wrapped as Flask API</p>
-<p class="fragment pink"><i>Show in Postman</i></p>
+<p class="fragment">Whole thing wrapped as Flask API <span class="pink">(<i>Show in Postman</i>)</span></p>
+
 
 ---?image=assets/bg-topic.png
 @title[Microservice - Topic Modelling]
