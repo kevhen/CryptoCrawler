@@ -289,20 +289,28 @@ Mongo > db.collection.totalIndexSize()
 
 #### <span class="pink">✓</span> Aggregate using Math
 - To aggregate Milliseconds by Hours, get Milliseconds per hour:
-```1 Hour is 1000ms * 60sec * 60min = 3.600.000 ms```
+```
+1 Hour is 1000ms * 60sec * 60min = 3.600.000 ms
+```
 - Then divide Timestamp by this value and round to floor:
-```floor (timestamp / 3.600.000)```
+```
+floor (timestamp / 3.600.000)
+```
 - All timestamps from the same hour will result in the same value
 - Sadly, MongoDB has no floor function
 - Luckily, it has a Modulo function:
-```timestamp/3.600.000 – ( (timestamp/3.600.000) mod 1)```
+```
+timestamp/3.600.000 – ( (timestamp/3.600.000) mod 1)
+```
 
-<div class="span"></div>
-**Alternative Solutions**
++++
+@title[Problem with Aggregation - 3]
+
+#### <span class="pink">✓</span> Alternative Solutions
 - Cast to DateTime during Query
 - Convert & store Milliseconds as DateTime value
-Would it be faster?
 
+*Would those be faster?*
 
 
 ---?image=assets/bg-twitterlistener.png
