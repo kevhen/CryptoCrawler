@@ -394,8 +394,7 @@ stream.filter(track=list(['bitcoin','iota','...']), async=True)
 Tweepy kept raising Exceptions after some days of running:
 
 ```
-File "tstreamer.py", line 109, in
-myStream.userstream("with=following")
+File "tstreamer.py", line 109, in myStream.userstream("with=following")
 File "/tweepy/streaming.py", line 394, in userstream
 self._start(async)
 File "/tweepy/streaming.py", line 361, in _start
