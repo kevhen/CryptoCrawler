@@ -364,26 +364,27 @@ stream.filter(track=list(['bitcoin','iota','...']), async=True)
 
 #### <span class="pink">⚔</span> Too much information
 
-Over <span class="pink">500 MB</span> Data during first two hours.
+- Over <span class="pink">500 MB</span> Data during first two hours.
+- Over <span class="pink">900 Tweets</span> per minute
 
-Over <span class="pink">900 Tweets</span> per minute:
 ![Tweets after two hours](assets/too_much_data.png)
 *Tweets per 15min, only crypto topics*
 
 +++
-@title[Twitter Stream - Information overload - solution]
+@title[Information overload - 1]
 
-#### Solution
+#### <span class="pink">✓</span> Limit Tweets
+- Exclude everything not EN |
+- Exclude Retweets |
 
-Limit Stored attributes
-- TweetID
+#### <span class="pink">✓</span> Limit Stored attributes |
+- TweetID |
+- AuthorID
 - Text
 - Timestamps
 - Geo-Information
 
-Limit stored Tweets
-- Exclude everything not EN
-- Exclude Retweets
+
 
 
 +++
