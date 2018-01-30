@@ -175,7 +175,8 @@ Holger
 - A Document contains a JSON object
 - Multiple Documents grouped to Collections
 - Database can be queried
-<div class="fragment pink">
+
+<div class="fragment pink center">
 *Show in Robo RT*
 </div>
 
