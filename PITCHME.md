@@ -703,12 +703,17 @@ present absolutely anything.
 @title[What we have learned]
 
 #### What we have learned
+- Plotly Dash is nice, but Data Management & Cross-Selectin is quite difficult
+- Take more care about exception handling, especially for critical services (Stream Listener)
+- Docker(-Compose) is really cool for Development & Deployment!
+- Putting the right Data into Models is crucial (Missing Data in Anomaly-Detection?)
+- Choosing the right Model for the Data is not easy (LDA for Tweets?)
 
 
 +++
 @title[What we would improve]
 
-#### What we would improve 1
+#### What we would improve (1)
 <div class="fragment">
 <p><b class="pink">Architecture & Code</b></p>
 <ul>
@@ -737,7 +742,7 @@ present absolutely anything.
 +++
 @title[What we would improve]
 
-#### What we would improve 2
+#### What we would improve (2)
 <div class="fragment">
 <p><b class="pink">Dashboard UX / UI</b></p>
 <ul>
