@@ -174,7 +174,58 @@ Holger
 - Document based Database
 - A Document contains a JSON object
 - Multiple Documents grouped to Collections
-- Database can be queried
+- Documents can be queried using JSON-based Syntax
+
+
++++
+@title[Store Documents]
+
+#### Storing Documents with Python
+
+```
+from pymongo import MongoClient
+
+client = MongoClient('crypto-mongo', 27017)
+db = client['cryptocrawl']
+
+json_obj = {
+    'timestamp_ms': 1517343098,
+    'text': 'Something...'
+    }
+
+db['bitcoin'].insert(json_obj)
+```
+@[1](Import Module (has to be installed))
+@[3](Initialize Client-Connection to MongoDB)
+@[4](Select Database)
+@[6-9](MongoDB ♥ JSON Documents)
+@[11](Write JSON as Document in a Collection)
+
+
++++
+@title[Query Documents]
+
+#### Query Documents with Python
+
+```
+import pandas
+from pymongo import MongoClient
+
+client = MongoClient('crypto-mongo', 27017)
+db = client['cryptocrawl']
+
+filte = {'timestamp_ms': {'$gt': 1517343098}}
+projection = {'text': 1, 'timestamp_ms': 1}
+
+cursor = db['bitcoin'].find(query, projection).limit(100)
+
+df = pandas.DataFrame(list(cursor))
+```
+@[1-5](Import Module, Initialize Client-Connection to MongoDB)
+@[7](Define Filter (similar to WHERE in SQL))
+@[8](Define Fields to return (similar to SELECT in SQL))
+@[10](find() returns a cursor object (here also limited to 100 results))
+@[12](Cursor can be converted into list and transformed into Pandas Dataframe)
 
 <p class="fragment pink center">
 *Show in Robo RT*
