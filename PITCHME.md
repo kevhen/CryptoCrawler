@@ -371,13 +371,13 @@ stream.filter(track=list(['bitcoin','iota','...']), async=True)
 *Tweets per 15min, only crypto topics*
 
 +++
-@title[Information overload - 1]
+@title[Information overload - 2]
 
 #### <span class="pink">✓</span> Filter Tweets
 - Exclude non-English Tweets
 - Exclude Retweets
 
-<br><br><br>
+<br><br>
 
 #### <span class="pink">✓</span> Store subset of Attributes
 - TweetID
@@ -387,35 +387,45 @@ stream.filter(track=list(['bitcoin','iota','...']), async=True)
 - Geo-Information
 
 +++
-@title[Twitter Stream - Bug]
+@title[Tweepy Bug - 1]
 
-#### Problem 2: Bug in Tweepy Module
+#### <span class="pink">⚔</span> Bug in Tweepy Module
+
+Tweepy kept raising Exceptions after some days of running:
+
 ```
 File "tstreamer.py", line 109, in
 myStream.userstream("with=following")
-File "/mnt/d5ddf659-feb7-4daf-95c6-09797c84aa98/venvs/python2ds/lib/python2.7/site-packages/tweepy/streaming.py", line 394, in userstream
+File "/tweepy/streaming.py", line 394, in userstream
 self._start(async)
-File "/mnt/d5ddf659-feb7-4daf-95c6-09797c84aa98/venvs/python2ds/lib/python2.7/site-packages/tweepy/streaming.py", line 361, in _start
+File "/tweepy/streaming.py", line 361, in _start
 self._run()
-File "/mnt/d5ddf659-feb7-4daf-95c6-09797c84aa98/venvs/python2ds/lib/python2.7/site-packages/tweepy/streaming.py", line 294, in _run
+File "/tweepy/streaming.py", line 294, in _run
 raise exception
 AttributeError: 'NoneType' object has no attribute 'strip'
 ```
-https://github.com/tweepy/tweepy/issues/869 (open since March 2017)
+
+https://github.com/tweepy/tweepy/issues/869 *(open since March 2017)*
 
 
 +++
-@title[Twitter Stream - Bug - Solution]
+@title[Tweepy Bug - 2]
 
-#### Solution A
-Tried older Version: `conda install -c conda-forge -y tweepy=3.2.0`
-Didn't work.
+#### <span class="pink">✓</span> Implement Workaround
+Handle Exceptions and reconnect Tweepy:
 
-#### Solution B
-**Workaround:**
-- Handle Exceptions and reconnect Tweepy:
-`bla bla`
-- Just in case: Auto-restart Microservice on exit:
+```python
+def startListening():
+    """Start listening to twitter streams."""
+    try:
+        stream_listener = MyStreamListener(conf=conf)
+        # [...]
+    except Exception as e:
+        logger.error('Exception raised!', e)
+        startListening()
+```
+
+Just in case: Auto-restart Microservice on exit:
 `while true; do python streamlistener.py; done`
 
 
