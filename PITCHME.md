@@ -129,6 +129,7 @@ Kevin
 
 
 ---
+---?image=assets/bg-docker.png
 @title[Architecture]
 
 #### Architecture
@@ -142,7 +143,7 @@ Kevin
 
 #### Docker
 - Virtualized Containers for each Microservice
-- 
+-
 
 +++
 @title[Microservices]
