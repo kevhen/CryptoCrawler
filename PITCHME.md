@@ -320,6 +320,41 @@ timestamp/3.600.000 – ( (timestamp/3.600.000) mod 1)
 
 Holger
 
++++
+@title[Tweepy]
+
+#### Using Tweep to listen to Twitter Streaming API
+
+```python
+import tweepy
+
+class MyStreamListener(tweepy.StreamListener):
+
+    def on_status(self, status):
+        print(status.text)
+        # filter and store the tweets...
+
+    def on_error(self, status_code):
+        # Handle API errors. Especially quit in 420 to avoid API penalty.
+        if status_code == 420:
+            time.sleep(300)
+            # Reconnect ...
+
+auth = tweepy.OAuthHandler(api_key, api_secret)
+auth.set_access_token(access_token, access_secret)
+api = tweepy.API(auth)
+
+stream_listener = MyStreamListener(conf=conf)
+stream = tweepy.Stream(auth=api.auth, listener=stream_listener)
+stream.filter(track=list(['bitcoin','iota','ethereum','...']), async=True)
+```
+@[1](Import Module)
+@[3](Inherit StreamListener class)
+@[5-7](Define what to do if tweet arrives)
+@[9-13](Define what to do on API Error)
+@[15-18](Set credentials and create API object)
+@[20-23](Instanciate class, start listening to Tweets with keywords)
+
 
 +++
 @title[Twitter Stream - Information overload]
