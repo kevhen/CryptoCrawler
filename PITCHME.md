@@ -114,7 +114,7 @@ CMD while true; do python pricelistener.py; done
 
 @[1](Get defined base image online)
 @[3,4,5](Install additional packages)
-@[8](Clone preoject into the container)
+@[8](Clone project into the container)
 @[12](Run python script in a loop in case it exits with an error)
 
 +++
@@ -432,24 +432,24 @@ Didn't work.
 #### Dockerfile
 
 ```python
-FROM continuumio/miniconda3
-
-RUN conda install -y pymongo pyyaml
-RUN conda install -c conda-forge -y tweepy
-RUN conda install -c gomss-nowcast schedule
-
-WORKDIR /home
-RUN git clone https://github.com/kevhen/CryptoCrawler.git
-
-WORKDIR /home/CryptoCrawler/crypto-price-crawler
-
-CMD while true; do python pricelistener.py; done
+def getPricesOnce(currencies, conf):
+    """Gets the current price for the currencies defined in the config.yaml"""
+    payload = { 'fsyms': currencies, 'tsyms': 'USD,EUR' }
+    response = requests.get(conf['cryptocompare']['price'], params=payload)
+    if response.status_code == 200:
+        prices = json.loads(response.content)
+        logger.info('Prices are {}'.format(prices))
+        return prices
+    else:
+        logger.warn('Could not get prices. Error code {}'.format(response.status_code))
+        return False
 ```
 
-@[1](Get defined base image online)
-@[3,4,5](Install additional packages)
-@[8](Clone preoject into the container)
-@[12](Run python script in a loop in case it exits with an error)
+@[1](Crypto `currencies` as a comma-separated string and `conf` (config) as parameters)
+@[3](Build payload for the REST-Call)
+@[4](Send request and save response)
+@[5,6,7,8](Handle successful request and parse content)
+@[9,10,11](Handle error case)
 
 
 ---?image=assets/bg-cryptowrapper.png
