@@ -174,9 +174,7 @@ CMD while true; do python pricelistener.py; done
 
 @[1](Get defined base image online)
 @[3,4,5](Install additional packages)
-@[7](Change working directory inside the container)
 @[8](Clone preoject into the container)
-@[10](Go to the microservice)
 @[12](Run python script in a loop in case it exits with an error)
 
 +++
@@ -192,6 +190,9 @@ CMD while true; do python pricelistener.py; done
 @title[Docker Compose]
 
 #### Docker Compose
+
+Configuration file
+
 ```yaml
 version: '3'
 
@@ -213,22 +214,38 @@ services:
       - --storageEngine
       - mmapv1
 
-  crypto-price-listener:
-    build:
-      context: ./miniconda3-prices
+  crypto-jupyter:
+    volumes:
+      - /data/notebooks:/home/jovyan/work
     networks:
       - backend
       - frontend
+    ports:
+      - 8888:8888
+    build:
+      context: ./jupyter
     depends_on:
       - crypto-mongo
+    entrypoint:
+      - start-notebook.sh
+      - --NotebookApp.password='sha1:f6a0093ff7ca:be25a6064ba30e37265b0f800cbb925c636cc4fe'
+  .
+  .
+  .
+  .
 ```
 
-@[1](Open shell in Docker Container)
-@[2](Start MongoDB CLI client)
-@[3](Open Database with Name "cryptocrawler")
-@[4](List all collections of this DB)
-@[9](Create Index on attribute 'timestamp_ms'. Repeat for all collections.)
-@[10](Show size of Indexes. Should fit in RAM.)
+@[1](docker-compose version)
+@[3,4,5,6,7](Define virtual networks for the containers)
+
+@[9](Definition of two example microservices)
+
+@[10,11,12,13,14,15,16,17,18,19](MongoDB)
+@[21,22,23,24,25,26,27,28,29,30,31,32,33,34,35](Jupyter Notebook)
+
+@[4,5](Internal backend network for the Database. Not accessible from outside the containers)
+@[6,7](Hybrid network. Accessible by the containers and from outside via mapped ports)
+
 
 +++
 @title[In Action]
