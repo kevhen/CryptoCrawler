@@ -298,7 +298,7 @@ floor (timestamp / 3.600.000)
 ```
 - All timestamps from the same hour will result in the same value |
 - Then Aggregation can be done on this value
-- Sadly, MongoDB has no `floor` Function |
+- Sadly, MongoDB has no <span class="pink">floor</span> Function |
 - Luckily, it has a `modulo` Function: |
 ```
 timestamp/3.600.000 – ( (timestamp/3.600.000) mod 1)
