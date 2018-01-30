@@ -318,7 +318,6 @@ timestamp/3.600.000 – ( (timestamp/3.600.000) mod 1)
 #### Microservice 2
 # Twitter Stream Listener
 
-Holger
 
 +++
 @title[Tweepy]
@@ -424,7 +423,7 @@ def startListening():
         startListening()
 ```
 
-Just in case: Auto-restart Microservice on exit:
+Auto-restart Microservice on exit (just in case...):
 
 ```bash
 while true; do python streamlistener.py; done
@@ -466,11 +465,11 @@ Detect 'unusual' Events in:
 - Amount of Tweets received
 - Amount of Tweets with pos/neg sentiment
 - Prices of Crypto-Currencies
+
 Then use them for:
 - Visualization in Dashboard
-- Searching News in those time ranges
-to <span class="pink">ease the interpretation</span> of the data.
-
+- Ease the interpretation of the data
+- Searching for News in those time ranges *(not done)*
 
 +++
 @title[Anomalies in Timeseries]
