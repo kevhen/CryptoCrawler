@@ -191,7 +191,7 @@ CMD while true; do python pricelistener.py; done
 
 #### Docker Compose
 
-Configuration file
+Configuration file (docker-compos.yaml)
 
 ```yaml
 version: '3'
@@ -236,15 +236,16 @@ services:
 ```
 
 @[1](docker-compose version)
+
 @[3,4,5,6,7](Define virtual networks for the containers)
+@[4,5](Internal backend network for the Database. Not accessible from outside the containers)
+@[6,7](Hybrid network. Accessible by the containers and from outside via mapped ports)
 
 @[9](Definition of two example microservices)
 
 @[10,11,12,13,14,15,16,17,18,19](MongoDB)
-@[21,22,23,24,25,26,27,28,29,30,31,32,33,34,35](Jupyter Notebook)
 
-@[4,5](Internal backend network for the Database. Not accessible from outside the containers)
-@[6,7](Hybrid network. Accessible by the containers and from outside via mapped ports)
+@[21,22,23,24,25,26,27,28,29,30,31,32,33,34,35](Jupyter Notebook)
 
 
 +++
