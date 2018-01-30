@@ -494,7 +494,6 @@ resid = model.resid
 
 anomalies = pyasl.generalizedESD(resid, max_anoms, p_value)
 ```
-<p class="fragment">(Whole thing wrapped as Flask API)</p>
 @[1-2](Load Modules)
 @[4](Seasonal decompositon)
 @[5](We only need resid values)
@@ -502,6 +501,7 @@ anomalies = pyasl.generalizedESD(resid, max_anoms, p_value)
 @[9](Apply ESD)
 @[0-9]()
 
+<p class="fragment">(Whole thing wrapped as Flask API)</p>
 
 ---?image=assets/bg-topic.png
 @title[Microservice - Topic Modelling]
