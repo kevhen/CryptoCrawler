@@ -476,22 +476,42 @@ Holger
 @title[Method]
 
 #### Method
-- [Twitter itself](https://blog.twitter.com/engineering/en_us/a/2015/introducing-practical-and-robust-anomaly-detection-in-a-time-series.html) published an algorithm
-- Implemented only in R (Python versions are creepy)
-- Solution: Implement *very* simplified version
+- Research on Algorithms |
+- Tested ARIMA Model first (in Jupyter Notebook) |
+- Data doesn't cover a time span long enough |
+- [Twitter itself](https://blog.twitter.com/engineering/en_us/a/2015/introducing-practical-and-robust-anomaly-detection-in-a-time-series.html) published an algorithm |
+- Implemented only in R (Python versions are creepy) |
+- Solution: Implement *very* simplified version |
 
 +++
 @title[Step 1]
 
-### Step 1. Seasonal Decomposition
+#### Step 1. Seasonal Decomposition
 ![Seasonal Decomposition](assets/seasonaldec.png)
 
 +++
 @title[Step 2]
 
-### Step 2. ESD
-![Seasonal Decomposition](assets/seasonaldec.png)
+#### Step 2. Extreme Studentized Deviate test (ESD)
+Detect outliers in univariant data that is approx. normal distributed.
 
+```
+Number of outliers:  7
+Indices of outliers:  [73, 63, 111, 119, 87, 117, 118]
+        R      Lambda
+ 1   3.92406   2.85719
+ 2   3.36138   2.85462
+ 3   2.95692   2.85203
+ 4   2.96757   2.84941
+ 5   2.80918   2.84678
+ 6   2.82568   2.84412
+ 7   2.92393   2.84144
+ 8   2.76510   2.83873
+ 9   2.51757   2.83600
+10   2.54265   2.83325
+```
+
+![ESD](assets/esd.png)
 
 +++
 @title[Implementation in Python]
