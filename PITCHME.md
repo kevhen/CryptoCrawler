@@ -507,6 +507,8 @@ anomalies = pyasl.generalizedESD(resid, max_anoms, p_value)
 
 <p class="fragment">(Whole thing wrapped as Flask API)</p>
 
+<p class="fragment pink"><i>Show in Postman</i></p>
+
 ---?image=assets/bg-topic.png
 @title[Microservice - Topic Modelling]
 
