@@ -531,6 +531,17 @@ anomalies = pyasl.generalizedESD(resid, max_anoms, p_value)
 @[10-11](Apply ESD)
 @[0-11]()
 
+
++++
+@title[Results]
+
+#### Test for normal distribution
+
+![Normal Distribution](assets/distrib.png)
+
+*(Tested already during ARIMA Modelling approach)*
+
+
 +++
 @title[Results]
 
@@ -558,6 +569,21 @@ Indices of outliers:  [73, 63, 111, 119, 87, 117, 118]
 # Topic Modelling
 
 Holger
+
+
++++
+@title[Idea]
+
+#### Identify Topics in Tweet-Texts
+- Aggregated view on what the tweets are about
+- Add information to Dashboard
+- Search for those Topics in a News API *(not done)*
+
+
++++
+@title[Method]
+
+#### Method
 
 
 +++
