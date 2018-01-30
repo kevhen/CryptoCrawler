@@ -244,9 +244,11 @@ df = pandas.DataFrame(list(cursor))
 
 #### <span class="pink">⚔</span> Slow Queries over Timestamp
 - We often query for a specified range in the timestamp, e.g:
+
 ```python
 query = {'timestamp_ms': {'$gt': 1517243098, '$lt': 1517343098}}
 ```
+
 - Performance was weak
 - CPU usage on VM peaked
 
@@ -276,18 +278,32 @@ Mongo > db.collection.totalIndexSize()
 
 
 +++
-@title[Problem with Aggregation]
+@title[Problem with Aggregation - 1]
 
-#### Problem 1
-- MongoDB can aggregate DateTime-Object on Intervals.
-- But we get Timestamps in Milliseconds from Twitter.
-- How to aggregate Milliseconds?
+#### <span class="pink">⚔</span> Aggregate by Timestamp in Milliseconds
+- MongoDB can aggregate DateTime-Object on Intervals (e.g. count Tweets in 1 hour)
+- But we get Timestamps in Milliseconds from Twitter
+- How to aggregate Integer with Milliseconds per hours?
 
-#### Solution A
-- Create & store DateTime value
++++
+@title[Problem with Aggregation - 2]
 
-#### Solution B
-- Use Math
+#### <span class="pink">✓</span> Aggregate using Math
+- To aggregate Milliseconds by Hours, get Milliseconds per hour:
+`1 Hour is 1000ms * 60sec * 60min = 3.600.000 ms`
+- Then divide Timestamp by this value and round to floor:
+`floor (timestamp / 3.600.000)`
+- All timestamps from the same hour will result in the same value
+- Sadly, MongoDB has no floor function
+- Luckily, it has a Modulo function:
+`timestamp/3.600.000 – ( (timestamp/3.600.000) mod 1)`
+
+<div class="fragment">
+**Alternative Solutions**
+- Cast to DateTime during Query
+- Convert & store Milliseconds as DateTime value
+Would it be faster?
+</div>
 
 
 ---?image=assets/bg-twitterlistener.png
