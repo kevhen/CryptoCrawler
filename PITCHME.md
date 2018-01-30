@@ -568,8 +568,6 @@ anomalies = pyasl.generalizedESD(resid, max_anoms, p_value)
 #### Microservice 6
 # Topic Modelling
 
-Holger
-
 
 +++
 @title[Idea]
@@ -636,29 +634,36 @@ doc = ' '.join([i for i in doc.lower().split()
 @[18-20](Remove Words containing numbers)
 @[22-24](Remove Words below 4 chars)
 @[26-28](Lemmatize (not work because of uncommon words))
-@[30-31](Remove Stopwords)
-
-<span class="fragment">Does this work for such short documents like Tweets? Lets try!</span>
+@[30-32](Remove Stopwords)
+@[0-32]
 
 
 +++
-@title[Step 2. Git-Commit]
+@title[LDA in Python]
 
-### <span class="gold">STEP 2. GIT-COMMIT</span>
-<br>
+#### LDA in Python
+```python
+import gensim
+from gensim import corpora
 
-```shell
-$ git add PITCHME.md
-$ git commit -m "New slideshow content."
-$ git push
+dictionary = corpora.Dictionary(docs)
 
-Done!
+doc_term_matrix = [dictionary.doc2bow(doc) for doc in docs]
+
+Lda = gensim.models.ldamodel.LdaModel
+ldamodel = Lda(doc_term_matrix, num_topics=num_topics,
+               id2word=dictionary, passes=20)
+
+# [...] Converts LDA model into nice list
 ```
+@[1-2](Import Gensim Modul for Vector Space Modelling)
+@[4](Load documents into corpora dictionary)
+@[6](Prepare Document Term Matrix)
+@[8-10](Do Modelling with Parameter for Number of Topics and Passes used)
+@[12](Convert results into consumable List)
+@[0-12]()
 
-@[1](Add your PITCHME.md slideshow content file.)
-@[2](Commit PITCHME.md to your local repo.)
-@[3](Push PITCHME.md to your public repo and you're done!)
-@[5](Supports GitHub, GitLab, Bitbucket, GitBucket, Gitea, and Gogs.)
+<p class="fragment">Whole thing wrapped as Flask API <span class="pink">(<i>Show in Postman</i>)</span></p>
 
 
 ---?image=assets/bg-jupyter.png
