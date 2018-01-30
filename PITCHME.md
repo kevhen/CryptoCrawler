@@ -77,7 +77,7 @@ University of Media Stuttgart, Germany<br>
 + Docker based virtualized Microservices
 
 
----?image=assets/bg-docker.jpg
+---?image=assets/bg-docker2.png
 @title[Architecture]
 
 #### Architecture
