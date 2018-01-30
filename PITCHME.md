@@ -128,10 +128,7 @@ Kevin
 - Docker based Microservices
 
 
----
-
-
----?image=assets/bg-docker.png
+---?image=assets/bg-docker.jpg
 @title[Architecture]
 
 #### Architecture
