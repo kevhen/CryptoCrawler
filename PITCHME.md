@@ -710,15 +710,15 @@ present absolutely anything.
 
 #### What we would improve 1
 <div class="fragment">
-<p><b>Architecture & Code</b></p>
+<p><b class="pink">Architecture & Code</b></p>
 <ul>
 <li>Connect frontend through only one single API</li>
-<li>Refactor Dashboardcode</li>
+<li>Refactor Dashboard-Code</li>
 </ul>
 </div>
 
 <div class="fragment">
-<p><b>Topic Modelling</b></p>
+<p><b class="pink">Topic Modelling</b></p>
 <ul>
 <li>Search for a better Model for short texts</li>
 <li>Research, if LDA can be speed up somehow</li>
@@ -726,7 +726,7 @@ present absolutely anything.
 </div>
 
 <div class="fragment">
-<p><b>Anomaly Detection</b></p>
+<p><b class="pink">Anomaly Detection</b></p>
 <ul>
 <li>More complete Twitter Algo Implementation</li>
 <li>Or build R Microservice</li>
@@ -739,7 +739,7 @@ present absolutely anything.
 
 #### What we would improve 2
 <div class="fragment">
-<p><b>Dashboard UX / UI</b></p>
+<p><b class="pink">Dashboard UX / UI</b></p>
 <ul>
 <li>Non blocking interactions</li>
 <li>Add loading indicators</li>
@@ -749,7 +749,7 @@ present absolutely anything.
 </div>
 
 <div class="fragment">
-<p><b>Additional Features</b></p>
+<p><b class="pink">Additional Features</b></p>
 <ul>
 <li>Leverage News APIs</li>
 <li>Calculate and display Correlation coefficent</li>
@@ -761,6 +761,6 @@ present absolutely anything.
 ---
 @title[Thank you!]
 
-# ☺
+# <span class="pink">☺</span>
 
 ### Thank you for your Attention!
