@@ -351,7 +351,7 @@ stream.filter(track=list(['bitcoin','iota','...']), async=True)
 @[15-18](Instanciate class, start listening to Tweets with keywords)
 @[0-18]()
 
-
+7
 +++
 @title[Problems]
 
@@ -375,16 +375,16 @@ stream.filter(track=list(['bitcoin','iota','...']), async=True)
 
 #### <span class="pink">✓</span> Filter the data before storing
 
-- Limit Tweets
-    - Exclude Tweets not marked as English
-    - Exclude Retweets
+**Limit Tweets**
+- Exclude Tweets not marked as English
+- Exclude Retweets
 
-- Limit Attributes
-    - TweetID
-    - AuthorID
-    - Text
-    - Timestamps
-    - Geo-Information
+**Limit Attributes**
+- TweetID
+- AuthorID
+- Text
+- Timestamps
+- Geo-Information
 
 +++
 @title[Twitter Stream - Bug]
