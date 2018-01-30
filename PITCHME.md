@@ -1,4 +1,4 @@
-@title[Title]
+@title[Title Slide]
 
 # CryptoCrawler
 
@@ -142,7 +142,7 @@ Kevin
 
 #### Docker
 - Virtualized Containers for each Microservice
-- 
+-
 
 +++
 @title[Microservices]
@@ -175,7 +175,9 @@ Holger
 - A Document contains a JSON object
 - Multiple Documents grouped to Collections
 - Database can be queried
-
+<span class="fragment">
+*Show in Robo RT*
+</span>
 
 +++
 @title[Problem with Speed]
