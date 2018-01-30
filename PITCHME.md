@@ -150,7 +150,6 @@ Kevin
 
 #### Docker
 - virtualization software
-
 - Virtualized Containers for each Microservice
 -
 
@@ -158,7 +157,7 @@ Kevin
 
 #### Dockerfile
 
-```yaml
+```
 FROM continuumio/miniconda3
 
 RUN conda install -y pymongo pyyaml
@@ -173,6 +172,13 @@ WORKDIR /home/CryptoCrawler/crypto-price-crawler
 CMD while true; do python pricelistener.py; done
 ```
 
+@[1](Get defined base image online)
+@[3,4,5](Install additional packages)
+@[7](Change working directory inside the container)
+@[8](Clone preoject into the container)
+@[11](Go to the microservice)
+@[13](Run python script in a loop in case it exits with an error)
+
 +++
 @title[Microservices]
 
@@ -180,7 +186,7 @@ CMD while true; do python pricelistener.py; done
 - one Microservice each for single (or small set of) functions
 - every Microservice is independent and stateless
 - restarting of single services or the system without breaking it
--
+- internal and external networking
 
 +++
 @title[Docker Compose]
@@ -216,6 +222,13 @@ services:
     depends_on:
       - crypto-mongo
 ```
+
+@[1](Open shell in Docker Container)
+@[2](Start MongoDB CLI client)
+@[3](Open Database with Name "cryptocrawler")
+@[4](List all collections of this DB)
+@[9](Create Index on attribute 'timestamp_ms'. Repeat for all collections.)
+@[10](Show size of Indexes. Should fit in RAM.)
 
 +++
 @title[In Action]

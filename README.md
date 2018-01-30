@@ -168,11 +168,11 @@ URL-Parameters:
 | Parameter   | Values | Default   | Description  |
 |---|---|---|---|
 | amount  | amount of tweets as an int | 20   | Defines the amount of tweets that are retrieved  |
-| topics  | ETH, BTC, IOT  | ETH, BTC, IOT    | Comma separated list of topics for which the tweets are returned  |
-| from  | timestamp in ms   | - | Start of the requested timespan  |
-| to  | timestamp in ms    | current time   | End of the requested timespan   |
+| topics  | ethereum,bitcoin,iota  | bitcoin   | Comma separated list of topics for which the tweets are returned  |
+| from  | timestamp in s   | - | Start of the requested timespan  |
+| to  | timestamp in s    | current time   | End of the requested timespan   |
 
-example: http://********:8060/tweets?amount=30&topics=ETH,BTC&from=1516974329398&to=1516974379822&
+example: http://********:8060/tweets?amount=30&topics=ethereum,bitcoin&from=1516974329&to=1516974379
 
 ## Microservice 5: Jupyter Notebook
 
