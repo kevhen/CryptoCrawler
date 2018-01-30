@@ -16,6 +16,10 @@
     font-size: 60%;
 }
 
+.reveal li {
+line-height: 1.7;
+}
+
 .reveal p {
     margin: 20px 0px 0px 0px;
 }

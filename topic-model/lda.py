@@ -8,6 +8,11 @@ Parameters are:
 
 Example-Call:
 http://0.0.0.0:5000/lda?collection=bitcoin&start=1515082825836&end=1515082840114
+
+Inspired by
+https://www.analyticsvidhya.com/blog/2016/08/beginners-guide-to-topic-modeling-in-python/
+and
+https://rstudio-pubs-static.s3.amazonaws.com/79360_850b2a69980c4488b1db95987a24867a.html
 """
 
 import pandas as pd
@@ -134,13 +139,7 @@ def model_lda(docs, num_topics):
 
 
 def indentify_topics(df, num_topics):
-    """Run DataFrame through preprocessing & modelling pipeline.
-
-    Inspired by
-    https://www.analyticsvidhya.com/blog/2016/08/beginners-guide-to-topic-modeling-in-python/
-    and
-    https://rstudio-pubs-static.s3.amazonaws.com/79360_850b2a69980c4488b1db95987a24867a.html
-    """
+    """Run DataFrame through preprocessing & modelling pipeline."""
     # Return empty, if no results
     if (len(df) < 1) or ('text' not in df.columns.values):
         return []
