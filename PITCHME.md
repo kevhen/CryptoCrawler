@@ -477,10 +477,11 @@ Kevin
 - Research on Algorithms |
 - Tested ARIMA Model first (in Jupyter Notebook) |
 - Data doesn't cover a time span long enough |
-- [Twitter itself](https://blog.twitter.com/engineering/en_us/a/2015/introducing-practical-and-robust-anomaly-detection-in-a-time-series.html) published an algorithm |
+- Twitter itself published an algorithm |
 - Implemented only in R (Python versions are creepy) |
-- Solution: Implement *very* simplified version |
+- Solution: Implement very simplified version |
 
+<span class="fragment">[Twitter's Algorithm explained ](https://blog.twitter.com/engineering/en_us/a/2015/introducing-practical-and-robust-anomaly-detection-in-a-time-series.html)</span>
 
 +++
 @title[Step 1]
