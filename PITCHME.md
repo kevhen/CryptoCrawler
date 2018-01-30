@@ -332,10 +332,9 @@ class MyStreamListener(tweepy.StreamListener):
 
     def on_status(self, status):
         print(status.text)
-        # filter and store the tweets...
+        # Filter and store the tweets...
 
     def on_error(self, status_code):
-        # Handle API errors. Especially quit in 420 to avoid API penalty.
         if status_code == 420:
             time.sleep(300)
             # Reconnect ...
@@ -346,12 +345,12 @@ api = tweepy.API(auth)
 
 stream_listener = MyStreamListener(conf=conf)
 stream = tweepy.Stream(auth=api.auth, listener=stream_listener)
-stream.filter(track=list(['bitcoin','iota','ethereum','...']), async=True)
+stream.filter(track=list(['bitcoin','iota','...']), async=True)
 ```
 @[1](Import Module)
 @[3](Inherit StreamListener class)
 @[5-7](Define what to do if tweet arrives)
-@[9-13](Define what to do on API Error)
+@[9-13](Handle API Error, especially 420 to avoid penalty)
 @[15-18](Set credentials and create API object)
 @[20-23](Instanciate class, start listening to Tweets with keywords)
 
