@@ -89,7 +89,9 @@ Kevin
 @title[Goal]
 
 #### Goal
-- Topic: Hype on Crypto-Currencies
+- Topic: Ongoing Hype on Crypto-Currencies in 2017 and 2018
+
+
 - Idea A: Correlate development of Tweets and Stock-Values over time.
 - Idea B: Provide additional information, that helps to interpret those developments.
 - Idea C: Automatically buy/sell stocks based on prediction. (not done)
@@ -101,7 +103,8 @@ Kevin
 #### Data Sources
 - Twitter Stream
 - Crypto-Stock-Market Stream
-- News
+- Crypto-Prices API
+- News (planned)
 
 
 +++
@@ -120,9 +123,11 @@ Kevin
 - Ticketing / Bugs Tracking
 - Slides (gitpitch)
 
+
 **AWS** for Hosting
 - t2.medium running Ubuntu
 - Access via SSH
+
 
 **Architecture**
 - Docker based Microservices
