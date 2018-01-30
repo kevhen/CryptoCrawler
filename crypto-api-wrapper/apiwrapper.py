@@ -128,7 +128,11 @@ def getTweetsForTopics(topicstring, amount, fromTs, toTs):
                 { '$project' : { '_id': 0 } }
             ])
         tweetListForTopic = list(cursor)
-        randomTweets = randomTweets + tweetListForTopic
+        identifiedTweetListForTopic = []
+        for singleTweet in tweetListForTopic:
+            identifiedTweet = { 'topic': topic, 'tweet': singleTweet }
+            identifiedTweetListForTopic.append(identifiedTweet)
+        randomTweets = randomTweets + identifiedTweetListForTopic
     if len(randomTweets) >= amount:
         randomListFinal = random.sample(randomTweets, amount)
     else:

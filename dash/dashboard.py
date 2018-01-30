@@ -274,7 +274,7 @@ class dashboard():
 
         return result
 
-    def buildTweet(self, text, timeString):
+    def buildTweet(self, text, timeString, topic):
         timeIso = datetime.datetime.fromtimestamp(
             int(timeString) / 1000).strftime('%A, %d. %B %Y %I:%M%p')
         tweet = html.Div([
@@ -294,7 +294,7 @@ class dashboard():
                     ], className='Tweet-metadata')
                 ], className='Tweet-body')
             ])
-        ], className='EmbeddedTweet')
+        ], className='EmbeddedTweet', style={'color': '{} {}'.format(self.color[topic], '!important')})
         return tweet
 
     # ============================================
@@ -570,7 +570,7 @@ class dashboard():
                 content = json.loads(response.content)
                 for tweet in content['tweets']:
                     singleTweet = self.buildTweet(
-                        tweet['text'], tweet['timestamp_ms'])
+                        tweet['tweet']['text'], tweet['tweet']['timestamp_ms'], tweet['topic'])
                     tweets.append(singleTweet)
 
             return html.Div(tweets)
