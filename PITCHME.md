@@ -232,7 +232,243 @@ df = pandas.DataFrame(list(cursor))
 </p>
 
 +++
+@title[Problems]
+
+## Problems
+# <span class="pink">⚔</span>
+
++++
 @title[Problem with Speed]
 
-## 🗲 Problems
-# <span class="pink">
+#### <span class="pink">⚔</span> Slow Queries over Timestamp
+- We often query for a specified range in the timestamp, e.g:
+```python
+query = {'timestamp_ms': {'$gt': 1517243098, '$lt': 1517343098}}
+```
+- Performance was weak
+- CPU usage on VM peaked
+
+<p class="fragment">
+#### <span class="pink">⚔</span> Solution
+- Create Index on Timestamp attribute
+
+```shell
+$ mongo
+Mongo > use cryptocrawl
+Mongo > show collections
+> bitcoin
+> ethereum
+> generalcrypto
+> iota
+Mongo > db.bitcoin.createIndex({"timestamp_ms": 1}, {background:true})
+Mongo > db.collection.totalIndexSize()
+```
+
+@[1](Start MongoDB CLI client)
+@[2](Open Database with Name "cryptocrawler")
+@[3-7](List all collections of this DB)
+@[8](Create Index on attribute 'timestamp_ms'. Repeat for all collections.)
+@[9](Show size of Indexes. Should fit in RAM.)
+</p>
+
++++
+@title[Problem with Aggregation]
+
+#### Problem 1
+- MongoDB can aggregate DateTime-Object on Intervals.
+- But we get Timestamps in Milliseconds from Twitter.
+- How to aggregate Milliseconds?
+
+#### Solution A
+- Create & store DateTime value
+
+#### Solution B
+- Use Math
+
+
+---?image=assets/bg-twitterlistener.png
+@title[Twitter Stream Listener]
+
+#### Microservice 2
+# Twitter Stream Listener
+
+Holger
+
+
++++
+@title[Twitter Stream - Information overload]
+
+#### Problem 1: Too much information
+
+Over <span class="pink">500 MB</span> Data during first two hours.
+
+Over <span class="pink">600 Tweets</span> per minute:
+![Tweets after two hours](assets/too_much_data.png)
+
+
++++
+@title[Twitter Stream - Information overload - solution]
+
+#### Solution
+
+Limit Stored attributes
+- TweetID
+- Text
+- Timestamps
+- Geo-Information
+
+Limit stored Tweets
+- Exclude everything not EN
+- Exclude Retweets
+
+
++++
+@title[Twitter Stream - Bug]
+
+#### Problem 2: Bug in Tweepy Module
+```
+File "tstreamer.py", line 109, in
+myStream.userstream("with=following")
+File "/mnt/d5ddf659-feb7-4daf-95c6-09797c84aa98/venvs/python2ds/lib/python2.7/site-packages/tweepy/streaming.py", line 394, in userstream
+self._start(async)
+File "/mnt/d5ddf659-feb7-4daf-95c6-09797c84aa98/venvs/python2ds/lib/python2.7/site-packages/tweepy/streaming.py", line 361, in _start
+self._run()
+File "/mnt/d5ddf659-feb7-4daf-95c6-09797c84aa98/venvs/python2ds/lib/python2.7/site-packages/tweepy/streaming.py", line 294, in _run
+raise exception
+AttributeError: 'NoneType' object has no attribute 'strip'
+```
+https://github.com/tweepy/tweepy/issues/869 (open since March 2017)
+
+
++++
+@title[Twitter Stream - Bug - Solution]
+
+#### Solution A
+Tried older Version: `conda install -c conda-forge -y tweepy=3.2.0`
+Didn't work.
+
+#### Solution B
+**Workaround:**
+- Handle Exceptions and reconnect Tweepy:
+`bla bla`
+- Just in case: Auto-restart Microservice on exit:
+`while true; do python streamlistener.py; done`
+
+
+---?image=assets/bg-pricecrawler.png
+@title[Microservice - Price Crawler]
+
+#### Microservice 3
+# Crypto Price Crawler
+
+Kevin
+
+
+---?image=assets/bg-cryptowrapper.png
+@title[Microservice - API Wrapper]
+
+#### Microservice 4
+# Crypto API Wrapper
+
+Kevin
+
+
+---?image=assets/bg-anomaly.png
+@title[Microservice - Anomaly Detection]
+
+#### Microservice 5
+# Anomaly Detection
+
+Holger
+
+
++++
+@title[Idea]
+
+#### Idea
+Detect 'unusual' Events in:
+- Amount of Tweets received
+- Amount of Tweets with pos/neg sentiment
+- Prices of Crypto-Currencies
+Then use them for:
+- Visualization in Dashboard
+- Searching News in those time ranges
+to <span class="pink">ease the interpretation</span> of the data.
+
+
++++
+@title[Anomalies in Timeseries]
+
+
+<br>
+#### Create slideshow content using GitHub Flavored Markdown in your
+favorite editor.
+
+<span class="aside">It's as easy as README.md with simple
+slide-delimeters (---)</span>
+
+
+---?image=assets/bg-topic.png
+@title[Microservice - Topic Modelling]
+
+#### Microservice 6
+# Topic Modelling
+
+Holger
+
+
++++
+@title[Step 2. Git-Commit]
+
+### <span class="gold">STEP 2. GIT-COMMIT</span>
+<br>
+
+```shell
+$ git add PITCHME.md
+$ git commit -m "New slideshow content."
+$ git push
+
+Done!
+```
+
+@[1](Add your PITCHME.md slideshow content file.)
+@[2](Commit PITCHME.md to your local repo.)
+@[3](Push PITCHME.md to your public repo and you're done!)
+@[5](Supports GitHub, GitLab, Bitbucket, GitBucket, Gitea, and Gogs.)
+
+
+---?image=assets/bg-jupyter.png
+@title[Microservice - Jupyter Notebook]
+
+#### Microservice 7
+# Jupyter Notebook
+
+Kevin
+
+
+---?image=assets/bg-dash.png
+@title[Microservice - Dash]
+
+#### Microservice 8
+# Dashbord
+
+Holger & Kevin
+
+
++++
+@title[Step 3. Done!]
+
+### <span class="gold">STEP 3. GET THE WORD OUT!</span>
+<br>
+![GitPitch Slideshow URLs](assets/images/gp-slideshow-urls.png)
+<br>
+<br>
+#### Instantly use your GitPitch slideshow URL to promote, pitch or
+present absolutely anything.
+
+
+---
+@title[Wrap up]
+
+#### What we have learned
+# Wrap up
