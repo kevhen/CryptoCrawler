@@ -13,76 +13,11 @@ Master Data Sciene & Business Analytics<br>
 University of Media Stuttgart, Germany<br>
 </div>
 
-
----
-@title[Markdown Syntax Demo]
-
-# Headline 1
-## Headline 2
-### Headline 3
-#### Headline 4
-##### Headline 5
-
-Text <span class="pink">with pink</span> and **bold**, *italic* and normal words and a [Link](https://github.com).
-
-- Numeration A
-- Numeration B
-    - Sub Numeration A
-    - Sub Numeration B
-
-
-+++
-@title[Markdown Syntax Demo]
-
-### Source Code
-
-Some Code Examples:
-
-`Single Code line`
-
-```python
-if self.mute is not True:
-    logger.info('Receiving tweets...')
-    self.mute = True
-```
-
-+++
-@title[Markdown Syntax Demo]
-
-### Color Scheme for Background
-- #2779CC
-- #D66216
-- #CCA91F
-- #00A91F
-
-RecursionError
-```
-crypto-price-listener_1  |     self._backend, self._x509
-crypto-price-listener_1  |   File "/opt/conda/lib/python3.6/site-packages/cryptography/hazmat/backends/openssl/decode_asn1.py", line 249, in parse
-crypto-price-listener_1  |     value = handler(backend, ext_data)
-crypto-price-listener_1  |   File "/opt/conda/lib/python3.6/site-packages/cryptography/hazmat/backends/openssl/decode_asn1.py", line 428, in _decode_subject_alt_name
-crypto-price-listener_1  |     _decode_general_names_extension(backend, ext)
-crypto-price-listener_1  |   File "/opt/conda/lib/python3.6/site-packages/cryptography/x509/extensions.py", line 1008, in __init__
-crypto-price-listener_1  |     self._general_names = GeneralNames(general_names)
-crypto-price-listener_1  |   File "/opt/conda/lib/python3.6/site-packages/cryptography/x509/extensions.py", line 964, in __init__
-crypto-price-listener_1  |     if not all(isinstance(x, GeneralName) for x in general_names):
-crypto-price-listener_1  |   File "/opt/conda/lib/python3.6/site-packages/cryptography/x509/extensions.py", line 964, in <genexpr>
-crypto-price-listener_1  |     if not all(isinstance(x, GeneralName) for x in general_names):
-crypto-price-listener_1  |   File "/opt/conda/lib/python3.6/abc.py", line 182, in __instancecheck__
-crypto-price-listener_1  |     if subclass in cls._abc_cache:
-crypto-price-listener_1  |   File "/opt/conda/lib/python3.6/_weakrefset.py", line 72, in __contains__
-crypto-price-listener_1  |     wr = ref(item)
-crypto-price-listener_1  | RecursionError: maximum recursion depth exceeded while calling a Python object
-```
-
-
----
+---?image=assets/bg-idea.png
 @title[Introduction]
 
 #### Introduction
 # Idea & Planning
-
-Kevin
 
 
 +++
@@ -95,6 +30,10 @@ Kevin
 - Idea A: Correlate development of Tweets and Stock-Values over time.
 - Idea B: Provide additional information, that helps to interpret those developments.
 - Idea C: Automatically buy/sell stocks based on prediction. (not done)
+
+
+- Try and use new technologies
+- Gain experience as a reward for the overhead in DevOps
 
 
 +++
@@ -149,8 +88,7 @@ Kevin
 @title[Docker]
 
 #### Docker
-- virtualization software
-- Virtualized Containers for each Microservice
+- Virtualized Containers for each part of the software
 -
 
 +++
