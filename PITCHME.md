@@ -323,7 +323,7 @@ Holger
 +++
 @title[Tweepy]
 
-#### Using Tweep to listen to Twitter Streaming API
+#### Using Tweepy to listen to Twitter Streaming API
 
 ```python
 import tweepy
@@ -349,6 +349,7 @@ stream.filter(track=list(['bitcoin','iota','...']), async=True)
 @[6-8](Handle API Error, especially 420 to avoid penalty)
 @[10-13](Set credentials and create API object)
 @[15-18](Instanciate class, start listening to Tweets with keywords)
+@[0-18]()
 
 
 +++
