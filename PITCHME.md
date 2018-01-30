@@ -539,6 +539,48 @@ def getTweetsForTopics(topicstring, amount, fromTs, toTs):
 @[12,13,14](Add the topic to each tweet)
 @[17](From all sample tweets from the collections we take a sample as big as the specified amount)
 
++++
+
+#### Add endpoint in Flask
+
+```python
+class RandomTweets(Resource):
+    def get(self):
+        now = int(time.time())
+
+        fromTs = handleTs(request.args.get('from'), now) * 1000
+        toTs = handleTs(request.args.get('to'), now) * 1000
+
+        topicstring = request.args.get('topics')
+        amount = parseAmount(request.args.get('amount'))
+
+        result = getTweetsForTopics(topicstring, amount, fromTs, toTs)
+        return jsonify(result)
+
+api.add_resource(RandomTweets, '/tweets')
+```
+
+@[3](Get current timestamp for timeframe calculations)
+@[5](Handle the begin of the timeframe. Check that it is not in the future. Calculate milliseconds from seconds)
+@[6](Handle the end of the timeframe. Check that it is not in the future. Calculate milliseconds from seconds. Set now as default if not set.)
+@[8](Get the passed topicstring)
+@[9](Handle the amount)
+@[11](Do the actual request with all parameters)
+@[12](Return the result as a json)
+@[14](Add the endpoint to Flask at the route `/tweets`)
+
++++
+
+#### Additional historical price endpoint
+
+- endpoint to retrieve historical prices from the CryptoCompare API
+- implemented to take a timeframe and parse the parameters to fit the CryptoCompare API definitions
+- returns the daily, hourly or minutely prices for a crypto currency
+- planned to replace or support the price listener or replace missing values from system outages
+
+
+- not yet integrated into the dashboard
+
 ---?image=assets/bg-anomaly.png
 @title[Microservice - Anomaly Detection]
 
