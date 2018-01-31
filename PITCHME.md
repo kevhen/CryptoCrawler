@@ -604,10 +604,37 @@ ldamodel = Lda(doc_term_matrix, num_topics=num_topics,
 <p class="fragment">Whole thing wrapped as Flask API <span class="pink">(<i>Show in Postman</i>)</span></p>
 
 
+---?image=assets/bg-senti.png
+@title[Microservice - Sentiment Analysis]
+
+#### Microservice 7
+# Sentiment Analysis
+
+
++++
+@title[Method]
+
+#### Simple Wordlist-based approach
+- Research about Sentiment Analysis in financial Sector
+- Found Wordlist by [Loughran & McDonald (2011)](https://www3.nd.edu/~mcdonald/Word_Lists.html)
+- Decided to use a simple Wordlist based approach
+
+
++++
+@title[Implementation]
+
+#### Implementation
+- As a scheduled Service
+- Runs every 5 minutes
+- Searches for Tweets without Sentiment in MongoDB
+- Counts positive & negative Words contained in the Tweet
+- Sentiment Score = Positive - Negative
+
+
 ---?image=assets/bg-jupyter.png
 @title[Microservice - Jupyter Notebook]
 
-#### Microservice 7
+#### Microservice 8
 # Jupyter Notebook
 
 Kevin
@@ -616,7 +643,7 @@ Kevin
 ---?image=assets/bg-dash.png
 @title[Microservice - Dash]
 
-#### Microservice 8
+#### Microservice 9
 # Dashbord
 
 
