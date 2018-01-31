@@ -519,7 +519,7 @@ anomalies = pyasl.generalizedESD(resid, max_anoms, p_value)
 +++
 @title[Method]
 
-#### Latent Dirichlet allocation
+#### Latent Dirichlet Allocation (LDA)
 - A "Document" contains some Topics with different Weights |
 - A "Topic" is Probability Distribution about all Words in Corpus |
 - A "Word" can be assigned to more than one Topics |
