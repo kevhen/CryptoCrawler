@@ -15,68 +15,6 @@ University of Media Stuttgart, Germany<br>
 
 
 ---
-@title[Markdown Syntax Demo]
-
-# Headline 1
-## Headline 2
-### Headline 3
-#### Headline 4
-##### Headline 5
-
-Text <span class="pink">with pink</span> and **bold**, *italic* and normal words and a [Link](https://github.com).
-
-- Numeration A
-- Numeration B
-    - Sub Numeration A
-    - Sub Numeration B
-
-
-+++
-@title[Markdown Syntax Demo]
-
-### Source Code
-
-Some Code Examples:
-
-`Single Code line`
-
-```python
-if self.mute is not True:
-    logger.info('Receiving tweets...')
-    self.mute = True
-```
-
-+++
-@title[Markdown Syntax Demo]
-
-### Color Scheme for Background
-- #2779CC
-- #D66216
-- #CCA91F
-- #00A91F
-
-RecursionError
-```
-crypto-price-listener_1  |     self._backend, self._x509
-crypto-price-listener_1  |   File "/opt/conda/lib/python3.6/site-packages/cryptography/hazmat/backends/openssl/decode_asn1.py", line 249, in parse
-crypto-price-listener_1  |     value = handler(backend, ext_data)
-crypto-price-listener_1  |   File "/opt/conda/lib/python3.6/site-packages/cryptography/hazmat/backends/openssl/decode_asn1.py", line 428, in _decode_subject_alt_name
-crypto-price-listener_1  |     _decode_general_names_extension(backend, ext)
-crypto-price-listener_1  |   File "/opt/conda/lib/python3.6/site-packages/cryptography/x509/extensions.py", line 1008, in __init__
-crypto-price-listener_1  |     self._general_names = GeneralNames(general_names)
-crypto-price-listener_1  |   File "/opt/conda/lib/python3.6/site-packages/cryptography/x509/extensions.py", line 964, in __init__
-crypto-price-listener_1  |     if not all(isinstance(x, GeneralName) for x in general_names):
-crypto-price-listener_1  |   File "/opt/conda/lib/python3.6/site-packages/cryptography/x509/extensions.py", line 964, in <genexpr>
-crypto-price-listener_1  |     if not all(isinstance(x, GeneralName) for x in general_names):
-crypto-price-listener_1  |   File "/opt/conda/lib/python3.6/abc.py", line 182, in __instancecheck__
-crypto-price-listener_1  |     if subclass in cls._abc_cache:
-crypto-price-listener_1  |   File "/opt/conda/lib/python3.6/_weakrefset.py", line 72, in __contains__
-crypto-price-listener_1  |     wr = ref(item)
-crypto-price-listener_1  | RecursionError: maximum recursion depth exceeded while calling a Python object
-```
-
-
----
 @title[Introduction]
 
 #### Introduction
@@ -350,7 +288,7 @@ stream.filter(track=list(['bitcoin','iota','...']), async=True)
 @[15-18](Instanciate class, start listening to Tweets with keywords)
 @[0-18]()
 
-7
+
 +++
 @title[Problems]
 
@@ -584,9 +522,9 @@ anomalies = pyasl.generalizedESD(resid, max_anoms, p_value)
 #### Latent Dirichlet allocation
 - A "Document" contains some Topics with different Weights |
 - A "Topic" is Probability Distribution about all Words in Corpus |
-- A "Word" can be assigned to more than one topics |
+- A "Word" can be assigned to more than one Topics |
 
-<span class="fragment">Does this work for such short documents like Tweets? Lets try!</span>
+<span class="fragment">Does this work for such short Documents like Tweets? Lets try!</span>
 
 
 +++
@@ -629,10 +567,10 @@ doc = ' '.join([i for i in doc.lower().split()
 ```
 @[1-2](Define Chars to remove)
 @[4-8](Define Stopwords)
-@[10-12](Remove Punctuationa and special Chars)
+@[10-12](Remove Punctuation and special Chars)
 @[14-16](Remove URLs)
-@[18-20](Remove Words containing numbers)
-@[22-24](Remove Words below 4 chars)
+@[18-20](Remove Words containing Numbers)
+@[22-24](Remove Words below 4 Chars)
 @[26-28](Lemmatize (not work because of uncommon words))
 @[30-32](Remove Stopwords)
 @[0-32]
@@ -657,10 +595,10 @@ ldamodel = Lda(doc_term_matrix, num_topics=num_topics,
 # [...] Converts LDA model into nice list
 ```
 @[1-2](Import Gensim Modul for Vector Space Modelling)
-@[4](Load documents into corpora dictionary)
+@[4](Load Documents into Corpora Dictionary)
 @[6](Prepare Document Term Matrix)
 @[8-10](Do Modelling with Parameter for Number of Topics and Passes used)
-@[12](Convert results into consumable List)
+@[12](Convert Results into consumable List)
 @[0-12]()
 
 <p class="fragment">Whole thing wrapped as Flask API <span class="pink">(<i>Show in Postman</i>)</span></p>
@@ -704,7 +642,7 @@ present absolutely anything.
 
 #### What we have learned
 - Plotly Dash is nice, but Data Management & Cross-Selection is quite difficult.
-- Take more care about exception handling, especially for critical services (e.g. Stream Listener)
+- Take more care about Exception Handling, especially for critical Services (e.g. Stream Listener)
 - Docker(-Compose) is really cool for Development & Deployment!
 - Putting the right Data into Models is crucial (e.g. Missing Data in Anomaly-Detection)
 - Choosing the right Model for the Data is not easy (e.g. LDA for Tweets)
@@ -717,7 +655,7 @@ present absolutely anything.
 <div class="fragment">
 <p><b class="pink">Architecture & Code</b></p>
 <ul>
-<li>Connect frontend through only one single API</li>
+<li>Connect Frontend through only one single API</li>
 <li>Refactor Dashboard-Code</li>
 </ul>
 </div>
@@ -725,7 +663,7 @@ present absolutely anything.
 <div class="fragment">
 <p><b class="pink">Topic Modelling</b></p>
 <ul>
-<li>Search for a better Model for short texts</li>
+<li>Search for a better Model for short Texts</li>
 <li>Research, if LDA can be speed up somehow</li>
 </ul>
 </div>
@@ -733,7 +671,7 @@ present absolutely anything.
 <div class="fragment">
 <p><b class="pink">Anomaly Detection</b></p>
 <ul>
-<li>More complete Twitter Algo Implementation</li>
+<li>More complete Twitter Algorithm Implementation</li>
 <li>Or build R Microservice</li>
 </ul>
 </div>
@@ -746,10 +684,10 @@ present absolutely anything.
 <div class="fragment">
 <p><b class="pink">Dashboard UX / UI</b></p>
 <ul>
-<li>Non blocking interactions</li>
-<li>Add loading indicators</li>
-<li>Improve cross-selection</li>
-<li>Improve Performance, e.g. on data loading</li>
+<li>Non blocking Interactions</li>
+<li>Add loading Indicators</li>
+<li>Improve Cross-Selection</li>
+<li>Improve Performance, e.g. on Data-Loading</li>
 </ul>
 </div>
 
@@ -757,7 +695,7 @@ present absolutely anything.
 <p><b class="pink">Additional Features</b></p>
 <ul>
 <li>Leverage News APIs</li>
-<li>Calculate and display Correlation coefficent</li>
+<li>Calculate and display Correlation Coefficent</li>
 <li>Show Tweets on Map</li>
 </ul>
 </div>
