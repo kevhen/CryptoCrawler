@@ -233,7 +233,7 @@ Mongo > db.collection.totalIndexSize()
 floor (timestamp / 3.600.000)
 ```
 - All Timestamps from the same Hour will result in the same Value |
-- Then aggregation can be done on this Value |
+- Then Aggregation can be done on this Value |
 - Sadly, MongoDB has no floor-Function |
 - Luckily, it has a modulo- Function: |
 ```
