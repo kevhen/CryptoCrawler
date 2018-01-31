@@ -424,14 +424,14 @@ Kevin
 +++
 @title[Step 1]
 
-#### Step 1. Seasonal Decomposition
+#### <span class="pink">Step 1:</span> Seasonal Decomposition
 ![Seasonal Decomposition](assets/seasonaldec.png)
 
 
 +++
 @title[Step 2]
 
-#### Step 2. Extreme Studentized Deviate test (ESD)
+#### <span class="pink">Step 2:</span> Extreme Studentized Deviate test (ESD)
 Detect Outliers in univariant Data that is approx. normal distributed *(had to be tested before!)*.
 
 <br>
@@ -571,7 +571,7 @@ doc = ' '.join([i for i in doc.lower().split()
 @[14-16](Remove URLs)
 @[18-20](Remove Words containing Numbers)
 @[22-24](Remove Words below 4 Chars)
-@[26-28](Lemmatize (not work because of uncommon words))
+@[26-28](Lemmatize (did not work because of uncommon Words))
 @[30-32](Remove Stopwords)
 @[0-32]
 
