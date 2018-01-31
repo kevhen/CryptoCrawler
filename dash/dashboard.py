@@ -35,10 +35,10 @@ class dashboard():
             self.config = yaml.load(stream)
 
         # Open Connection to MongoDB
-        # conn = MongoClient(self.config['mongodb']['host'],
-        #                    self.config['mongodb']['port'])
+        conn = MongoClient(self.config['mongodb']['host'],
+                           self.config['mongodb']['port'])
         # Use local mongo-container IP for testing
-        conn = MongoClient('127.0.0.1', 27017)  # Holger
+        # conn = MongoClient('172.18.0.2', 27017)  # Holger
         self.db = conn[self.config['mongodb']['db']]
 
         # Helper Variable for timestamp conversion
@@ -185,29 +185,6 @@ class dashboard():
         df = None
         agg_range = 1000 * 60 * 60  # by hours
         for collection in collections:
-            print([
-                {
-                    '$addFields': {
-                        'div_val': {'$divide': ['$timestamp_ms', agg_range]},
-                    }
-                },
-                {
-                    '$addFields': {
-                        'mod_val': {'$mod': ['$div_val', 1]}
-                    }
-                },
-                {
-                    '$addFields': {
-                        'sub_val': {'$subtract': ['$div_val', '$mod_val']},
-                    }
-                },
-                {
-                    '$group': {
-                        '_id': '$sub_val',
-                        attr: {'$avg': '$' + attr},
-                        'count': {'$sum': 1}
-                    }
-                }])
             # Mongodb aggregation magic....
             cursor = self.db[collection].aggregate([
                 {
@@ -677,7 +654,6 @@ class dashboard():
                 + "\n" + \
                 df_anoms_score.to_json(date_format='iso', orient='split') \
 
-            print(data)
             return data
 
         @app.callback(ddp.Output('hidden-stock-data', 'children'),
