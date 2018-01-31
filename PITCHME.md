@@ -980,6 +980,25 @@ ldamodel = Lda(doc_term_matrix, num_topics=num_topics,
 
 #### Show random tweets from the selected timeframe
 
+```python
+html.Div([
+    html.Div([
+        html.H3([
+            html.Span('€', className='icon'),
+             'Avg. Stock Prices per Hour'])
+    ], className='title'),
+    html.Div([
+        dcc.Graph(
+            style={'width': '878px', 'height': '250px'},
+            id='stock-plot')
+    ], className='content')
+], className='box'),
+```
+@[1,12](Surrounding div element)
+@[2-11](Array of inner elements)
+@[2-6](Headline)
+@[7-11](Stock graph)
+
 
 ---
 @title[Wrap up]
