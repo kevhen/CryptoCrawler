@@ -43,6 +43,10 @@
 - Access via: <https://gitpitch.com/kevhen/CryptoCrawler/master> ("master" can be replaced by other branch-name)
 - About Slide-Styling see [Wiki](https://github.com/gitpitch/gitpitch/wiki/Slideshow-Settings)
 
+**Dashboard**
+
+- See [Screenshot of Dashboard](screenshot_dashboard.png)
+
 # Architecture
 
 **Microservice Architecture**
