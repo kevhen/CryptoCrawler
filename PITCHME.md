@@ -179,12 +179,12 @@ df = pandas.DataFrame(list(cursor))
 @title[Problem with Speed - 1]
 
 #### <span class="pink">⚔</span> Slow Queries over Timestamp
-- We often query for a specified range in the timestamp, e.g:
+- We often query for a specified Range in the Timestamp, e.g:
 ```python
 query = {'timestamp_ms': {'$gt': 1517243098, '$lt': 1517343098}}
 ```
 - Performance was weak
-- CPU usage on VM peaked
+- CPU-Usage on VM peaked
 
 
 +++
@@ -206,9 +206,9 @@ Mongo > db.collection.totalIndexSize()
 
 @[1](Start MongoDB CLI client)
 @[2](Open Database with Name "cryptocrawler")
-@[3-7](List all collections of this DB)
-@[8](Create Index on attribute 'timestamp_ms'. Repeat for all collections.)
-@[9](Show size of Indexes. Should fit in RAM.)
+@[3-7](List all Collections of this DB)
+@[8](Create Index on Attribute 'timestamp_ms'. Repeat for all Collections.)
+@[9](Show Size of Indexes. Should fit in RAM.)
 @[0-9]()
 
 +++
@@ -218,24 +218,24 @@ Mongo > db.collection.totalIndexSize()
 - We need to aggregate on Time-Intervals, e.g. for Tweets per Hour
 - MongoDB can aggregate DateTime-Object on Intervals
 - But we get Timestamps in Milliseconds from Twitter
-- How to aggregate Integer with Milliseconds per hours?
+- How to aggregate Integer with Milliseconds on hourly Interval?
 
 +++
 @title[Problem with Aggregation - 2]
 
 #### <span class="pink">✓</span> Aggregate using Math
-- To aggregate Milliseconds by Hours, get Milliseconds per hour: |
+- To aggregate Milliseconds by Hours, get Milliseconds per Hour: |
 ```
 1 Hour is 1000ms * 60sec * 60min = 3.600.000 ms
 ```
-- Then divide Timestamp by this value and round to floor: |
+- Then divide Timestamp by this Value and round to floor: |
 ```
 floor (timestamp / 3.600.000)
 ```
-- All timestamps from the same hour will result in the same value |
-- Then Aggregation can be done on this value |
-- Sadly, MongoDB has no floor Function |
-- Luckily, it has a modulo Function: |
+- All Timestamps from the same Hour will result in the same Value |
+- Then aggregation can be done on this Value |
+- Sadly, MongoDB has no floor-Function |
+- Luckily, it has a modulo- Function: |
 ```
 timestamp/3.600.000 – ( (timestamp/3.600.000) mod 1)
 ```
@@ -245,7 +245,7 @@ timestamp/3.600.000 – ( (timestamp/3.600.000) mod 1)
 
 #### <span class="pink">✓</span> Alternative Solutions
 - Cast to DateTime during Query
-- Convert & store Milliseconds as DateTime value
+- Convert & store Milliseconds as DateTime-Value
 
 *Would those be faster?*
 
@@ -301,8 +301,8 @@ stream.filter(track=list(['bitcoin','iota','...']), async=True)
 
 #### <span class="pink">⚔</span> Too much information
 
-- Over <span class="pink">500 MB</span> Data during first two hours.
-- Over <span class="pink">900 Tweets</span> per minute
+- Over <span class="pink">500 MB</span> Data during first two Hours.
+- Over <span class="pink">900 Tweets</span> per Minute
 
 ![Tweets after two hours](assets/too_much_data.png)
 *Tweets per 15min, only crypto topics*
@@ -328,7 +328,7 @@ stream.filter(track=list(['bitcoin','iota','...']), async=True)
 
 #### <span class="pink">⚔</span> Bug in Tweepy Module
 
-Tweepy kept raising Exceptions after some days of running:
+Tweepy kept raising Exceptions after some Days of running:
 
 ```
 File "tstreamer.py", line 109, in myStream.userstream("with=following")
@@ -398,15 +398,15 @@ Kevin
 
 #### Detect 'unusual' Events in:
 - Amount of Tweets received
-- Amount of Tweets with pos/neg sentiment
+- Sentiment
 - Prices of Crypto-Currencies
 
 <br><br>
 
 #### Use this information for:
 - Visualization in Dashboard
-- Easing the interpretation of the data
-- Searching for News in those time ranges *(not done)*
+- Easing the Interpretation of the Data
+- Searching for News in those Time-Ranges *(not done)*
 
 +++
 @title[Method]
@@ -414,10 +414,10 @@ Kevin
 #### Method
 - Research on Algorithms |
 - Tested ARIMA Model first (in Jupyter Notebook) |
-- Data doesn't cover a time span long enough |
-- Twitter itself published an algorithm |
-- Implemented only in R (Python versions are creepy) |
-- Solution: Implement very simplified version |
+- Data doesn't cover a Time-Span long enough |
+- Twitter itself published an Algorithm |
+- Implemented only in R (Python-Versions are creepy) |
+- Solution: Implement very simplified Version |
 
 <span class="fragment">[Twitter's Algorithm explained ](https://blog.twitter.com/engineering/en_us/a/2015/introducing-practical-and-robust-anomaly-detection-in-a-time-series.html)</span>
 
@@ -432,18 +432,18 @@ Kevin
 @title[Step 2]
 
 #### Step 2. Extreme Studentized Deviate test (ESD)
-Detect outliers in univariant data that is approx. normal distributed *(had to be tested before!)*.
+Detect Outliers in univariant Data that is approx. normal distributed *(had to be tested before!)*.
 
 <br>
 
 - Set Parameter for Maximal Outliers |
 - Set Parameter for Significance p |
-- ESD test detects 1 largest outlier |
-- Calculates coefficient |
-- ESD test detects 2 largest outliers |
-- Calculates coefficient |
+- ESD test detects 1 largest Outlier |
+- Calculates Coefficient |
+- ESD test detects 2 largest Outliers |
+- Calculates Coefficient |
 - ... |
-- Optimal number of outliers selected by coefficient |
+- Optimal Number of Outliers selected by Coefficient |
 
 +++
 @title[Results]
@@ -491,9 +491,9 @@ resid = model.resid
 anomalies = pyasl.generalizedESD(resid, max_anoms, p_value)
 ```
 @[1-2](Load Modules)
-@[4-5](Seasonal decompositon)
-@[6](We only need resid values)
-@[8](Some transformation for next step (e.g. remove NaN))
+@[4-5](Seasonal Decompositon)
+@[6](We only need resid Values)
+@[8](Some Transformation for next Step (e.g. remove NaN))
 @[10-11](Apply ESD)
 @[0-11]()
 
